@@ -40,7 +40,7 @@ if P.dataset == 'imagenet' and ood_eval:
 image_size_ = (P.image_size, P.image_size, 3)
 
 if P.dataset=="MVTecAD":
-    train_set, test_set, image_size, n_classes = mvtecad_dataset(P=P, category=P.one_class_idx, root = "./mvtec_anomaly_detection",  image_size=image_size_)
+    train_set, test_set, image_size, n_classes = mvtecad_dataset(P=P, category=P.one_class_idx, root = "/kaggle/input/mvtec-ad",  image_size=image_size_)
 else:
     train_set, test_set, image_size, n_classes = get_dataset(P, dataset=P.dataset, eval=True, download=True, image_size=image_size_, labels=normal_labels)
 P.image_size = image_size

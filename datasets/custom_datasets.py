@@ -89,6 +89,9 @@ class MVTecDataset(Dataset):
         self.transform = transform
         self.image_files = []
         print("category MVTecDataset:", category)
+        print("train: ", train)
+        print("path: ", os.path.join(root, category, "test", "*", "*.png"))
+        print("normal path: ", os.path.join(root, category, "test", "good", "*.png"))
         if train:
             self.image_files = glob(os.path.join(root, category, "train", "good", "*.png"))
         else:
