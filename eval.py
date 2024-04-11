@@ -47,7 +47,7 @@ elif P.mode in ['ood', 'ood_pre']:
         bests.append(best_auroc)
 
     bests = map('{:.4f}'.format, bests)
-    print('\t'.join(bests))
+    # print('\t'.join(bests))
 
 
     if P.print_3_score:
