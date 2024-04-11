@@ -15,7 +15,7 @@ P = parse_args()
 normal_labels = None
 if P.normal_labels:
     normal_labels = [int(num) for num in P.normal_labels.split(',')]
-    print("normal_labels: ", normal_labels)
+    # print("normal_labels: ", normal_labels)
 
 cls_list = get_superclass_list(P.dataset)
 anomaly_labels = [elem for elem in cls_list if elem not in normal_labels]
@@ -46,8 +46,8 @@ else:
 P.image_size = image_size
 P.n_classes = n_classes
 
-print("full test set:", len(test_set))
-print("full train set:", len(train_set))
+# print("full test set:", len(test_set))
+# print("full train set:", len(train_set))
 
 
 full_test_set = deepcopy(test_set)  # test set of full classes
@@ -61,38 +61,38 @@ else:
     train_set = get_subclass_dataset(P, train_set, classes=normal_labels, count=P.main_count)
     test_set = get_subclass_dataset(P, test_set, classes=normal_labels)
         
-print("number of normal test set:", len(test_set))
-print("number of normal train set:", len(train_set))
+# print("number of normal test set:", len(test_set))
+# print("number of normal train set:", len(train_set))
 
 kwargs = {'pin_memory': False, 'num_workers': 4}
 
 train_loader = DataLoader(train_set, shuffle=True, batch_size=P.batch_size, **kwargs)
 test_loader = DataLoader(test_set, shuffle=False, batch_size=P.test_batch_size, **kwargs)
 
-
-print("len train_set", len(train_set))
-print("len test_set", len(test_set))
-
-print("Unique labels(test_loader):", get_loader_unique_label(test_loader))
-print("Unique labels(train_loader):", get_loader_unique_label(train_loader))
+#
+# print("len train_set", len(train_set))
+# print("len test_set", len(test_set))
+#
+# print("Unique labels(test_loader):", get_loader_unique_label(test_loader))
+# print("Unique labels(train_loader):", get_loader_unique_label(train_loader))
 
 
 P.ood_dataset = anomaly_labels
 if  P.dataset=='cub-birds' or P.dataset=='cifar10-versus-other-eval' or P.dataset=='cifar100-versus-other-eval' or P.dataset=='ISIC2018' or P.dataset=='high-variational-brain-tumor' or P.dataset=='WBC' or P.dataset=='mvtec-high-var-corruption' or P.dataset=="MVTecAD" or P.dataset=="mvtec-high-var" or P.dataset=='cifar10-versus-100' or P.dataset=='cifar100-versus-10':
     P.ood_dataset = [1]
-print("P.ood_dataset",  P.ood_dataset)
+# print("P.ood_dataset",  P.ood_dataset)
 
 ood_test_loader = dict()
 for ood in P.ood_dataset:
     ood_test_set = get_subclass_dataset(P, full_test_set, classes=ood)
     ood = f'one_class_{ood}'
-    print(f"testset anomaly(class {ood}):", len(ood_test_set))
+    # print(f"testset anomaly(class {ood}):", len(ood_test_set))
     ood_test_loader[ood] = DataLoader(ood_test_set, shuffle=False, batch_size=P.test_batch_size, **kwargs)
-    print("Unique labels(ood_test_loader):", get_loader_unique_label(ood_test_loader[ood]))
+    # print("Unique labels(ood_test_loader):", get_loader_unique_label(ood_test_loader[ood]))
  
 
-print("train loader batchs", len(train_loader))
-print("train_set:", len(train_set))
+# print("train loader batchs", len(train_loader))
+# print("train_set:", len(train_set))
 ### Initialize model ###
 
 simclr_aug = C.get_simclr_augmentation(P, image_size=P.image_size).to(device)

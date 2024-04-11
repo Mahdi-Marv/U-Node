@@ -140,8 +140,8 @@ def mvtecad_dataset(P, category, root = "./mvtec_anomaly_detection", image_size=
     test_ds_mvtech = MVTecDataset(root=root, train=False, category=categories[category], transform=test_transform, count=-1)
     train_ds_mvtech_normal = MVTecDataset(root=root, train=True, category=categories[category], transform=train_transform, count=P.main_count)
     
-    print("test_ds_mvtech shapes: ", test_ds_mvtech[0][0].shape)
-    print("train_ds_mvtech_normal shapes: ", train_ds_mvtech_normal[0][0].shape)
+    # print("test_ds_mvtech shapes: ", test_ds_mvtech[0][0].shape)
+    # print("train_ds_mvtech_normal shapes: ", train_ds_mvtech_normal[0][0].shape)
     
     return  train_ds_mvtech_normal, test_ds_mvtech, image_size, n_classes
         
@@ -182,7 +182,7 @@ def get_exposure_dataloader(P, batch_size = 64, image_size=(224, 224, 3),
     cutpast_count = int(P.cutpast_data_percent*count)
     if (fake_count+tiny_count+cutpast_count)!=count:
         tiny_count += (count - (cutpast_count+fake_count+tiny_count))
-    print("fake_count, tiny_count, cutpast_count", fake_count, tiny_count, cutpast_count)
+    # print("fake_count, tiny_count, cutpast_count", fake_count, tiny_count, cutpast_count)
     if P.dataset == "MVTecAD":
         fake_transform = transforms.Compose([
             transforms.Resize((256,256)),
@@ -846,10 +846,10 @@ def get_dataset(P, dataset, test_only=False, image_size=(32, 32, 3), download=Fa
 
         train_set = ConcatDataset(train_dataset)
         test_set = ConcatDataset(test_dataset)
-        print("train_set shapes: ", train_set[0][0].shape)
-        print("test_set shapes: ", test_set[0][0].shape)
+        # print("train_set shapes: ", train_set[0][0].shape)
+        # print("test_set shapes: ", test_set[0][0].shape)
         
-        print("len(test_dataset), len(train_dataset)", len(test_set), len(train_set))
+        # print("len(test_dataset), len(train_dataset)", len(test_set), len(train_set))
     elif dataset == 'mvtec-high-var-corruption':
         n_classes = 2
         train_dataset = []
@@ -878,10 +878,10 @@ def get_dataset(P, dataset, test_only=False, image_size=(32, 32, 3), download=Fa
 
         train_set = ConcatDataset(train_dataset)
         test_set = ConcatDataset(test_dataset)
-        print("train_set shapes: ", train_set[0][0].shape)
-        print("test_set shapes: ", test_set[0][0].shape)
-        
-        print("len(test_dataset), len(train_dataset)", len(test_set), len(train_set))
+        # print("train_set shapes: ", train_set[0][0].shape)
+        # print("test_set shapes: ", test_set[0][0].shape)
+        #
+        # print("len(test_dataset), len(train_dataset)", len(test_set), len(train_set))
     elif dataset == 'fashion-mnist':
         # image_size = (32, 32, 3)
         n_classes = 10
