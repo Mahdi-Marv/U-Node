@@ -43,14 +43,13 @@ DATA_PATH = './data/'
 def center_paste(large_img, small_img, shrink_factor):
 
     # Calculate the center position
+    width , height = small_img.size
+
+    large_img = large_img.resize((width, height))
 
 
-    large_img = large_img.resize((256, 256))
-    large_width, large_height = large_img.size
-
-
-    new_width = int(large_width * shrink_factor)
-    new_height = int(large_height * shrink_factor)
+    new_width = int(width * shrink_factor)
+    new_height = int(height * shrink_factor)
 
     # print(new_height, new_width)
 
@@ -64,8 +63,8 @@ def center_paste(large_img, small_img, shrink_factor):
     # print(large_img.size, small_img.size)
 
     # Calculate the top-left position
-    left = (large_width - small_width) // 2
-    top = (large_height - small_height) // 2
+    left = (width - small_width) // 2
+    top = (height - small_height) // 2
 
     # Create a copy of the large image to keep the original unchanged
     result_img = large_img.copy()
