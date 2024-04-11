@@ -130,7 +130,8 @@ def mvtecad_dataset(P, category, root = "./mvtec_anomaly_detection", image_size=
             transforms.RandomHorizontalFlip(),
             transforms.ToTensor(),
         ])
-    
+
+
     test_transform = transforms.Compose([
             transforms.Resize((image_size[0], image_size[1])),
             transforms.ToTensor(),
