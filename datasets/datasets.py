@@ -825,7 +825,7 @@ def get_dataset(P, dataset, test_only=False, image_size=(32, 32, 3), download=Fa
         n_classes = 2
         train_dataset = []
         test_dataset = []
-        root = "./mvtec_anomaly_detection"
+        root = "/kaggle/input/mvtec-ad"
         train_transform = transforms.Compose([
                 transforms.Resize((256, 256)),
                 transforms.CenterCrop((image_size[0], image_size[1])),
