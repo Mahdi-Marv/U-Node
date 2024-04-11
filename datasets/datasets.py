@@ -523,7 +523,8 @@ def get_breastmnist_train(anomaly_class_indx, path, transform):
     return train_dataset
 
 
-def get_dataset(P, dataset, test_only=False, image_size=(32, 32, 3), download=False, eval=False, train_transform_cutpasted=None, labels=None):
+def get_dataset(P, dataset, test_only=False, image_size=(32, 32, 3), download=False, eval=False, train_transform_cutpasted=None, labels=None,
+                shrink_factor=1):
     if dataset in ['imagenet', 'cub', 'stanford_dogs', 'flowers102',
                    'places365', 'food_101', 'caltech_256', 'dtd', 'pets']:
         if eval:
@@ -1495,7 +1496,7 @@ def get_superclass_list(dataset):
         raise NotImplementedError()
 
 
-def get_subclass_dataset(P, dataset, classes, count=-1):
+def get_subclass_dataset(P, dataset, classes, count=-1, shrink_factor=1):
     if not isinstance(classes, list):
         classes = [classes]
 

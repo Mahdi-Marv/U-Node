@@ -32,8 +32,33 @@ import zipfile
 import time
 import gdown
 
+from imagenet_30 import IMAGENET30_TEST_DATASET
+
 CLASS_NAMES = ['toothbrush', 'zipper', 'transistor', 'tile', 'grid', 'wood', 'pill', 'bottle', 'capsule', 'metal_nut', 'hazelnut', 'screw', 'carpet', 'leather', 'cable']
 DATA_PATH = './data/'
+
+
+def pasteC(image):
+
+    imagenet_30 = IMAGENET30_TEST_DATASET()
+    random_index = int(random.random() * len(imagenet_30))
+    imagenet30_img = imagenet_30[random_index]
+    imagenet30_img = cv2.resize(imagenet30_img, dsize=(256, 256))
+
+    h, w, _ = image.shape
+
+    hh, ww, _ = imagenet30_img.shape
+
+    # compute xoff and yoff for placement of upper left corner of resized image
+    yoff = round((hh - h) / 2)
+    xoff = round((ww - w) / 2)
+    # print(yoff, xoff)
+
+    result = imagenet30_img.copy()
+    result[yoff:yoff + h, xoff:xoff + w] = image
+    return result
+
+
 class MultiDataTransform(object):
     def __init__(self, transform):
         self.transform1 = transform
@@ -113,6 +138,9 @@ class MVTecDataset(Dataset):
         image_file = self.image_files[index]
         image = Image.open(image_file)
         image = image.convert('RGB')
+
+        print(image.shape[:2])
+
         if self.transform is not None:
             image = self.transform(image)
         if os.path.dirname(image_file).endswith("good"):

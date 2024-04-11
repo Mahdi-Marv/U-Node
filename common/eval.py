@@ -12,6 +12,10 @@ from utils_.utils import get_loader_unique_label
 
 P = parse_args()
 
+shrink_factor = P.shrink_factor
+
+print('shrink factor: ', shrink_factor)
+
 normal_labels = None
 if P.normal_labels:
     normal_labels = [int(num) for num in P.normal_labels.split(',')]
@@ -42,7 +46,8 @@ image_size_ = (P.image_size, P.image_size, 3)
 if P.dataset=="MVTecAD":
     train_set, test_set, image_size, n_classes = mvtecad_dataset(P=P, category=P.one_class_idx, root = "/kaggle/input/mvtec-ad",  image_size=image_size_)
 else:
-    train_set, test_set, image_size, n_classes = get_dataset(P, dataset=P.dataset, eval=True, download=True, image_size=image_size_, labels=normal_labels)
+    train_set, test_set, image_size, n_classes = get_dataset(P, dataset=P.dataset, eval=True, download=True, image_size=image_size_,
+                                                             labels=normal_labels, shrink_factor=shrink_factor)
 P.image_size = image_size
 P.n_classes = n_classes
 
@@ -51,12 +56,13 @@ P.n_classes = n_classes
 
 
 full_test_set = deepcopy(test_set)  # test set of full classes
+
 if P.dataset=='cub-birds' or P.dataset=='cifar10-versus-other-eval' or P.dataset=='cifar100-versus-other-eval' or P.dataset=='ISIC2018' or P.dataset=='high-variational-brain-tumor' or P.dataset=='mvtec-high-var-corruption' or P.dataset=='mvtec-high-var' or P.dataset=="MVTecAD" or P.dataset=="WBC" or P.dataset=='cifar10-versus-100' or P.dataset=='cifar100-versus-10':
     train_set = set_dataset_count(train_set, count=P.main_count)
     if P.dataset=="WBC":
         test_set = get_subclass_dataset(P, test_set, classes=normal_labels)
     else:
-        test_set = get_subclass_dataset(P, test_set, classes=[0])
+        test_set = get_subclass_dataset(P, test_set, classes=[0], shrink_factor=shrink_factor)
 else:
     train_set = get_subclass_dataset(P, train_set, classes=normal_labels, count=P.main_count)
     test_set = get_subclass_dataset(P, test_set, classes=normal_labels)
