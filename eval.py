@@ -43,7 +43,7 @@ elif P.mode in ['ood', 'ood_pre']:
                 best_auroc = auroc
         message += '[%s %s %.4f] ' % (ood, 'best', best_auroc)
         if P.print_score:
-            # print(message)
+            print()
         bests.append(best_auroc)
 
     bests = map('{:.4f}'.format, bests)
@@ -74,7 +74,7 @@ elif P.mode in ['ood', 'ood_pre']:
                     best_auroc = auroc
             message += '[%s %s %.4f] ' % (ood, 'best', best_auroc)
             if P.print_score:
-                # print(message)
+                print()
             bests.append(best_auroc)
 
         bests = map('{:.4f}'.format, bests)
@@ -105,7 +105,7 @@ elif P.mode in ['ood', 'ood_pre']:
                     best_auroc = auroc
             message += '[%s %s %.4f] ' % (ood, 'best', best_auroc)
             if P.print_score:
-                # print(message)
+                print()
             bests.append(best_auroc)
 
         bests = map('{:.4f}'.format, bests)
