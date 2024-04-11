@@ -38,33 +38,25 @@ CLASS_NAMES = ['toothbrush', 'zipper', 'transistor', 'tile', 'grid', 'wood', 'pi
 DATA_PATH = './data/'
 
 
-def pasteC(image, shrink_factor):
 
-    height, width = image.shape[:2]
+def center_paste(large_img, small_img):
+    # Calculate the center position
+    large_width, large_height = large_img.size
+    small_width, small_height = small_img.size
 
-    imagenet_30 = IMAGENET30_TEST_DATASET()
-    random_index = int(random.random() * len(imagenet_30))
-    imagenet30_img = imagenet_30[random_index]
-    imagenet30_img = cv2.resize(imagenet30_img, dsize=(height, width))
+    # print(large_img.size, small_img.size)
 
-    new_height = height * shrink_factor
-    new_width = width * shrink_factor
+    # Calculate the top-left position
+    left = (large_width - small_width) // 2
+    top = (large_height - small_height) // 2
 
-    image = cv2.resize(image, (new_height, new_width))
+    # Create a copy of the large image to keep the original unchanged
+    result_img = large_img.copy()
 
-    h, w, _ = image.shape
+    # Paste the small image onto the large one at the calculated position
+    result_img.paste(small_img, (left, top))
 
-    hh, ww, _ = imagenet30_img.shape
-
-    # compute xoff and yoff for placement of upper left corner of resized image
-    yoff = round((hh - h) / 2)
-    xoff = round((ww - w) / 2)
-    # print(yoff, xoff)
-
-    result = imagenet30_img.copy()
-    result[yoff:yoff + h, xoff:xoff + w] = image
-    return result
-
+    return result_img
 
 class MultiDataTransform(object):
     def __init__(self, transform):
@@ -147,7 +139,20 @@ class MVTecDataset(Dataset):
         image = Image.open(image_file)
         image = image.convert('RGB')
 
-        print(image.shape[:2])
+        imagenet_30 = IMAGENET30_TEST_DATASET
+        imagenet30_img = imagenet_30[int(random.random() * len(imagenet_30))][0].resize(
+            (224, 224))
+
+        # Convert the PIL Image to a NumPy array
+        image_np = np.array(image)
+
+        # Now you can use the shape attribute
+        height, width = image_np.shape[:2]
+
+        print(height, width)
+
+
+        # print(image.shape[:2])
         # image = pasteC(image, self.shrink_factor)
 
         if self.transform is not None:
