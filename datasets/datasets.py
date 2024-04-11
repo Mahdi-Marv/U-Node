@@ -843,7 +843,7 @@ def get_dataset(P, dataset, test_only=False, image_size=(32, 32, 3), download=Fa
                 train_dataset.append(MVTecDataset_Cutpasted(root=root, train=True, category=CLASS_NAMES[class_idx], transform=train_transform_cutpasted, count=-1))
             else:
                 train_dataset.append(MVTecDataset(root=root, train=True, category=CLASS_NAMES[class_idx], transform=train_transform, count=-1))
-            test_dataset.append(MVTecDataset(root=root, train=False, category=CLASS_NAMES[class_idx], transform=test_transform, count=-1), shrink_factor=shrink_factor)
+            test_dataset.append(MVTecDataset(root=root, train=False, category=CLASS_NAMES[class_idx], transform=test_transform, count=-1, shrink_factor=shrink_factor))
 
         train_set = ConcatDataset(train_dataset)
         test_set = ConcatDataset(test_dataset)
