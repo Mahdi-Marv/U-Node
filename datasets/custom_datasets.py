@@ -47,9 +47,14 @@ def center_paste(large_img, small_img, shrink_factor):
     new_width = int(large_width * shrink_factor)
     new_height = int(large_height * shrink_factor)
 
+    print(new_height, new_width)
+
     # Resize the image
     small_img = small_img.resize((new_width, new_height))
     small_width, small_height = small_img.size
+
+    print(new_height, new_width)
+
 
     # print(large_img.size, small_img.size)
 
@@ -60,8 +65,13 @@ def center_paste(large_img, small_img, shrink_factor):
     # Create a copy of the large image to keep the original unchanged
     result_img = large_img.copy()
 
+    print(new_height, new_width)
+
     # Paste the small image onto the large one at the calculated position
     result_img.paste(small_img, (left, top))
+
+    print(new_height, new_width)
+
 
     return result_img
 
