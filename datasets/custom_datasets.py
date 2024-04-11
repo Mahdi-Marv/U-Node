@@ -45,7 +45,7 @@ def center_paste(large_img, small_img, shrink_factor):
     # Calculate the center position
     width , height = small_img.size
 
-    large_img = large_img.resize((width, height))
+    large_img = large_img.resize((height, width))
 
 
     new_width = int(width * shrink_factor)
