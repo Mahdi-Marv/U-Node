@@ -31,6 +31,7 @@ import random
 import zipfile
 import time
 import gdown
+from PIL import Image
 
 from datasets.imagenet_30 import IMAGENET30_TEST_DATASET
 
@@ -39,9 +40,15 @@ DATA_PATH = './data/'
 
 
 
-def center_paste(large_img, small_img):
+def center_paste(large_img, small_img, shrink_factor):
     # Calculate the center position
     large_width, large_height = large_img.size
+
+    new_width = int(large_width * shrink_factor)
+    new_height = int(large_height * shrink_factor)
+
+    # Resize the image
+    small_img = small_img.resize((new_width, new_height))
     small_width, small_height = small_img.size
 
     # print(large_img.size, small_img.size)
@@ -142,15 +149,12 @@ class MVTecDataset(Dataset):
 
         imagenet_30 = IMAGENET30_TEST_DATASET()
         random_index = int(random.random() * len(imagenet_30))
+
+
         imagenet30_img = imagenet_30[random_index]
 
-        # Convert the PIL Image to a NumPy array
-        image_np = np.array(image)
+        image = center_paste(imagenet30_img, image, self.shrink_factor)
 
-        # Now you can use the shape attribute
-        height, width = image_np.shape[:2]
-
-        print(height, width)
 
 
         # print(image.shape[:2])
