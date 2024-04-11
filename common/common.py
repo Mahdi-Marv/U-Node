@@ -142,6 +142,8 @@ def parse_args(default=False):
 
     parser.add_argument('--freezing_layer', help='Freezing Layer',
                         default=133, type=int)
+
+    parser.add_argument('--shrink_factor', default=1, type=int)
     if default:
         return parser.parse_args('')  # empty string
     else:
