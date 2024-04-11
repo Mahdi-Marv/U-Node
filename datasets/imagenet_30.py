@@ -41,5 +41,5 @@ class IMAGENET30_TEST_DATASET(Dataset):
     def __getitem__(self, idx):
         img_path = self.img_path_list[idx]
         label = self.targets[idx]
-        img = cv2.imread(img_path, cv2.IMREAD_COLOR)
+        img = Image.open(img_path)
         return img

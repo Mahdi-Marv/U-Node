@@ -139,9 +139,10 @@ class MVTecDataset(Dataset):
         image = Image.open(image_file)
         image = image.convert('RGB')
 
-        imagenet_30 = IMAGENET30_TEST_DATASET
-        imagenet30_img = imagenet_30[int(random.random() * len(imagenet_30))][0].resize(
-            (224, 224))
+
+        imagenet_30 = IMAGENET30_TEST_DATASET()
+        random_index = int(random.random() * len(imagenet_30))
+        imagenet30_img = imagenet_30[random_index]
 
         # Convert the PIL Image to a NumPy array
         image_np = np.array(image)
