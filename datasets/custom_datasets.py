@@ -32,18 +32,25 @@ import zipfile
 import time
 import gdown
 
-from imagenet_30 import IMAGENET30_TEST_DATASET
+from datasets.imagenet_30 import IMAGENET30_TEST_DATASET
 
 CLASS_NAMES = ['toothbrush', 'zipper', 'transistor', 'tile', 'grid', 'wood', 'pill', 'bottle', 'capsule', 'metal_nut', 'hazelnut', 'screw', 'carpet', 'leather', 'cable']
 DATA_PATH = './data/'
 
 
-def pasteC(image):
+def pasteC(image, shrink_factor):
+
+    height, width = image.shape[:2]
 
     imagenet_30 = IMAGENET30_TEST_DATASET()
     random_index = int(random.random() * len(imagenet_30))
     imagenet30_img = imagenet_30[random_index]
-    imagenet30_img = cv2.resize(imagenet30_img, dsize=(256, 256))
+    imagenet30_img = cv2.resize(imagenet30_img, dsize=(height, width))
+
+    new_height = height * shrink_factor
+    new_width = width * shrink_factor
+
+    image = cv2.resize(image, (new_height, new_width))
 
     h, w, _ = image.shape
 
@@ -110,9 +117,10 @@ class ImageNetExposure(Dataset):
         return len(self.image_files)
 
 class MVTecDataset(Dataset):
-    def __init__(self, root, category, transform=None, train=True, count=-1):
+    def __init__(self, root, category, transform=None, train=True, count=-1, shrink_factor=1):
         self.transform = transform
         self.image_files = []
+        self.shrink_factor = shrink_factor
         print("category MVTecDataset:", category)
         # print("train: ", train)
         # print("path: ", os.path.join(root, category, "test", "*", "*.png"))
@@ -140,6 +148,7 @@ class MVTecDataset(Dataset):
         image = image.convert('RGB')
 
         print(image.shape[:2])
+        # image = pasteC(image, self.shrink_factor)
 
         if self.transform is not None:
             image = self.transform(image)
