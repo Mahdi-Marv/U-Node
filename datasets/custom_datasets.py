@@ -45,7 +45,7 @@ def center_paste(large_img, small_img, shrink_factor):
     # Calculate the center position
     width , height = small_img.size
 
-    large_img = large_img.resize((height, width))
+    large_img = large_img.resize((width, height))
 
 
     new_width = int(width * shrink_factor)
@@ -166,6 +166,7 @@ class MVTecDataset(Dataset):
 
 
         imagenet30_img = imagenet_30[random_index]
+        imagenet30_img = imagenet30_img.convert('RGB')
 
         image = center_paste(imagenet30_img, image, self.shrink_factor)
 
