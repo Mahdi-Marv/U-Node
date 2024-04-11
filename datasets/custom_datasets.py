@@ -153,7 +153,7 @@ class MVTecDataset(Dataset):
 
         imagenet30_img = imagenet_30[random_index]
 
-        # image = center_paste(imagenet30_img, image, self.shrink_factor)
+        image = center_paste(imagenet30_img, image, self.shrink_factor)
 
 
 
