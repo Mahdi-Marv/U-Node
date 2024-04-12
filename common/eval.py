@@ -47,7 +47,7 @@ if P.dataset=="MVTecAD":
     train_set, test_set, image_size, n_classes = mvtecad_dataset(P=P, category=P.one_class_idx, root = "/kaggle/input/mvtec-ad",  image_size=image_size_)
 else:
     train_set, test_set, image_size, n_classes = get_dataset(P, dataset=P.dataset, eval=True, download=True, image_size=image_size_,
-                                                             labels=normal_labels, shrink_factor=shrink_factor)
+                                                             labels=normal_labels, shrink_factor=shrink_factor, is_train = False)
 P.image_size = image_size
 P.n_classes = n_classes
 

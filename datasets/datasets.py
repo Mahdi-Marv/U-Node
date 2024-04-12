@@ -48,6 +48,55 @@ WBC_SUPERCLASS = list(range(2))
 DIOR_SUPERCLASS = list(range(19))
 ISIC2018_SUPERCLASS = list(range(2))
 
+
+
+def show_images(images, labels, dataset_name):
+    num_images = len(images)
+    rows = int(np.ceil(num_images / 5))  # Use np.ceil to ensure enough rows
+
+    fig, axes = plt.subplots(rows, 5, figsize=(15, rows * 3), squeeze=False)  # Ensure axes is always a 2D array
+
+    for i, ax in enumerate(axes.flatten()):
+        if i < num_images:
+            # Check if image is a tensor, if so, convert to numpy
+            if isinstance(images[i], torch.Tensor):
+                image = images[i].numpy()
+            else:
+                image = images[i]
+            # If image is in (C, H, W) format, transpose it to (H, W, C)
+            if image.shape[0] in {1, 3}:  # Assuming grayscale (1 channel) or RGB (3 channels)
+                image = image.transpose(1, 2, 0)
+            if image.shape[2] == 1:  # If grayscale, convert to RGB for consistency
+                image = np.repeat(image, 3, axis=2)
+            ax.imshow(image)
+            ax.set_title(f"Label: {labels[i].item()}")
+        ax.axis("off")
+
+    plt.tight_layout()
+    plt.savefig(f'{dataset_name}_visualization.png')
+
+
+def visualize_random_samples_from_clean_dataset(dataset, dataset_name):
+    print(f"Start visualization of clean dataset: {dataset_name}")
+    # Choose 20 random indices from the dataset
+    if len(dataset) > 20:
+        random_indices = random.sample(range(len(dataset)), 20)
+    else:
+        random_indices = list(range(len(dataset)))
+
+    # Retrieve corresponding samples
+    random_samples = [dataset[i] for i in random_indices]
+
+    # Extract images and 'has_anomaly' flags
+    images = [sample['image'] for sample in random_samples]
+    has_anomalies = [sample['has_anomaly'] for sample in random_samples]
+
+    # Convert 'has_anomalies' list to a tensor
+    labels = torch.tensor(has_anomalies)
+
+    # Show the 20 random samples
+    show_images(images, labels, dataset_name)
+
 def sparse2coarse(targets):
     coarse_labels = np.array(
         [4,1,14, 8, 0, 6, 7, 7, 18, 3, 3,
@@ -208,14 +257,12 @@ def get_exposure_dataloader(P, batch_size = 64, image_size=(224, 224, 3),
     elif P.dataset=="mvtec-high-var":
         fake_root = './fake_mvtecad'
         fake_transform = transforms.Compose([
-            transforms.Resize((256,256)),
-            transforms.CenterCrop((image_size[0], image_size[1])),
+            transforms.Resize((image_size[0], image_size[1])),
             transforms.RandomHorizontalFlip(),
             transforms.ToTensor()
         ])
         train_transform_cutpasted = transforms.Compose([
-            transforms.Resize((256,256)),
-            transforms.CenterCrop((image_size[0], image_size[1])),
+            transforms.Resize((image_size[0], image_size[1])),
             CutPasteUnion(transform = transforms.Compose([transforms.ToTensor(),])),
         ])
         imagenet_exposure = ImageNetExposure(root=base_path, count=tiny_count, transform=tiny_transform)
@@ -236,6 +283,7 @@ def get_exposure_dataloader(P, batch_size = 64, image_size=(224, 224, 3),
         train_ds_mvtech_fake = ConcatDataset(train_ds_mvtech_fake)
 
         exposureset = torch.utils.data.ConcatDataset([train_ds_mvtech_fake, imagenet_exposure, train_ds_mvtech_cutpasted])
+        visualize_random_samples_from_clean_dataset(exposureset, "exposure data for class " + CLASS_NAMES[P.one_class_idx])
         if len(train_ds_mvtech_fake) > 0:
             print("number of fake data:", len(train_ds_mvtech_fake), "shape:", train_ds_mvtech_fake[0][0].shape)
         if len(train_ds_mvtech_cutpasted) > 0:
@@ -524,7 +572,7 @@ def get_breastmnist_train(anomaly_class_indx, path, transform):
 
 
 def get_dataset(P, dataset, test_only=False, image_size=(32, 32, 3), download=False, eval=False, train_transform_cutpasted=None, labels=None,
-                shrink_factor=1):
+                shrink_factor=1, is_train=False):
     if dataset in ['imagenet', 'cub', 'stanford_dogs', 'flowers102',
                    'places365', 'food_101', 'caltech_256', 'dtd', 'pets']:
         if eval:
@@ -648,7 +696,6 @@ def get_dataset(P, dataset, test_only=False, image_size=(32, 32, 3), download=Fa
         test_set = torch.utils.data.ConcatDataset([anomaly_testset, normal_testset]) 
         print("train_set shapes: ", train_set[0][0].shape)
         print("test_set shapes: ", test_set[0][0].shape)
-        
     elif dataset == 'head-ct':
         n_classes = 2
         train_transform = transforms.Compose([
@@ -821,15 +868,13 @@ def get_dataset(P, dataset, test_only=False, image_size=(32, 32, 3), download=Fa
         print("train_set shapes: ", train_set[0][0].shape, len(train_set))
         print("test_set shapes: ", test_set[0][0].shape, len(test_set))
         '''
-
     elif dataset == 'mvtec-high-var':
         n_classes = 2
         train_dataset = []
         test_dataset = []
         root = "/kaggle/input/mvtec-ad"
         train_transform = transforms.Compose([
-                transforms.Resize((256, 256)),
-                transforms.CenterCrop((image_size[0], image_size[1])),
+                transforms.Resize((image_size[0], image_size[1])),
                 transforms.RandomHorizontalFlip(),
                 transforms.ToTensor(),
             ])
@@ -840,6 +885,7 @@ def get_dataset(P, dataset, test_only=False, image_size=(32, 32, 3), download=Fa
             ])
         for class_idx in labels:
             if train_transform_cutpasted:
+                print('train transform cutpasted is true')
                 train_dataset.append(MVTecDataset_Cutpasted(root=root, train=True, category=CLASS_NAMES[class_idx], transform=train_transform_cutpasted, count=-1))
             else:
                 train_dataset.append(MVTecDataset(root=root, train=True, category=CLASS_NAMES[class_idx], transform=train_transform, count=-1))
@@ -847,6 +893,15 @@ def get_dataset(P, dataset, test_only=False, image_size=(32, 32, 3), download=Fa
 
         train_set = ConcatDataset(train_dataset)
         test_set = ConcatDataset(test_dataset)
+
+        if is_train:
+            for class_idx in labels:
+                visualize_random_samples_from_clean_dataset(train_set, class_idx + " train dataset")
+        else:
+            for class_idx in labels:
+                visualize_random_samples_from_clean_dataset(test_set, class_idx + f" test dataset with shrink factor {shrink_factor}")
+
+
         # print("train_set shapes: ", train_set[0][0].shape)
         # print("test_set shapes: ", test_set[0][0].shape)
         
@@ -922,7 +977,6 @@ def get_dataset(P, dataset, test_only=False, image_size=(32, 32, 3), download=Fa
         test_set = datasets.DTD('./data', split="test", download=True, transform=test_transform)
         print("train_set shapes: ", train_set[0][0].shape)
         print("test_set shapes: ", test_set[0][0].shape)
-
     elif dataset == 'cifar100':
         # image_size = (32, 32, 3)
         n_classes = 100
@@ -979,7 +1033,6 @@ def get_dataset(P, dataset, test_only=False, image_size=(32, 32, 3), download=Fa
 
         print("train_set shapes: ", train_set[0][0].shape)
         print("test_set shapes: ", test_set[0][0].shape)
-    
     elif dataset=='mnist-corruption':
         n_classes = 10
         transform = transforms.Compose([
@@ -991,7 +1044,6 @@ def get_dataset(P, dataset, test_only=False, image_size=(32, 32, 3), download=Fa
         train_set = datasets.MNIST(DATA_PATH, train=True, download=True, transform=transform)
         print("train_set shapes: ", train_set[0][0].shape)
         print("test_set shapes: ", test_set[0][0].shape)
-        
     elif dataset == 'svhn-10':
         # image_size = (32, 32, 3)
         n_classes = 10
@@ -1020,8 +1072,6 @@ def get_dataset(P, dataset, test_only=False, image_size=(32, 32, 3), download=Fa
         test_set = datasets.STL10(DATA_PATH, split='test', download=download, transform=transform)
         print("train_set shapes: ", train_set[0][0].shape)
         print("test_set shapes: ", test_set[0][0].shape)
-
-    
     elif dataset == 'svhn-10-corruption':
 
         def gaussian_noise(image, mean=P.noise_mean, std = P.noise_std, noise_scale = P.noise_scale):
@@ -1043,7 +1093,6 @@ def get_dataset(P, dataset, test_only=False, image_size=(32, 32, 3), download=Fa
         test_set = datasets.SVHN(DATA_PATH, split='test', download=download, transform=test_transform)
         print("train_set shapes: ", train_set[0][0].shape)
         print("test_set shapes: ", test_set[0][0].shape)
-    
     elif dataset == 'high-variational-brain-tumor':
         if eval:
             head_ct_cnt = -1
@@ -1239,8 +1288,6 @@ def get_dataset(P, dataset, test_only=False, image_size=(32, 32, 3), download=Fa
         test_set = torch.utils.data.ConcatDataset([anomaly_testset, normal_testset]) 
         print("train_set shapes: ", train_set[0][0].shape)
         print("test_set shapes: ", test_set[0][0].shape)
-
-
     elif dataset == 'cifar10-versus-other-eval':
         n_classes = 2
         cifar_transform = transforms.Compose([
@@ -1357,31 +1404,25 @@ def get_dataset(P, dataset, test_only=False, image_size=(32, 32, 3), download=Fa
         print("train_set shapes: ", train_set[0][0].shape)
         print("test_set shapes: ", test_set[0][0].shape)
         print("len(test_set), len(train_set): ", len(test_set), len(train_set))
-
     elif dataset == 'svhn':
         assert test_only and image_size is not None
         test_set = datasets.SVHN(DATA_PATH, split='test', download=download, transform=test_transform)
-
     elif dataset == 'lsun_resize':
         assert test_only and image_size is not None
         test_dir = os.path.join(DATA_PATH, 'LSUN_resize')
         test_set = datasets.ImageFolder(test_dir, transform=test_transform)
-
     elif dataset == 'lsun_pil':
         assert test_only and image_size is not None
         test_dir = os.path.join(DATA_PATH, 'LSUN_fix')
         test_set = datasets.ImageFolder(test_dir, transform=test_transform)
-
     elif dataset == 'imagenet_resize':
         assert test_only and image_size is not None
         test_dir = os.path.join(DATA_PATH, 'Imagenet_resize')
         test_set = datasets.ImageFolder(test_dir, transform=test_transform)
-
     elif dataset == 'imagenet_pil':
         assert test_only and image_size is not None
         test_dir = os.path.join(DATA_PATH, 'Imagenet_fix')
         test_set = datasets.ImageFolder(test_dir, transform=test_transform)
-
     elif dataset == 'imagenet':
         image_size = (224, 224, 3)
         n_classes = 30
@@ -1391,49 +1432,41 @@ def get_dataset(P, dataset, test_only=False, image_size=(32, 32, 3), download=Fa
         test_set = datasets.ImageFolder(test_dir, transform=test_transform)
         print("train_set shapes: ", train_set[0][0].shape)
         print("test_set shapes: ", test_set[0][0].shape)
-
     elif dataset == 'stanford_dogs':
         assert test_only and image_size is not None
         test_dir = os.path.join(DATA_PATH, 'stanford_dogs')
         test_set = datasets.ImageFolder(test_dir, transform=test_transform)
         test_set = get_subset_with_len(test_set, length=3000, shuffle=True)
-
     elif dataset == 'cub':
         assert test_only and image_size is not None
         test_dir = os.path.join(DATA_PATH, 'cub200')
         test_set = datasets.ImageFolder(test_dir, transform=test_transform)
         test_set = get_subset_with_len(test_set, length=3000, shuffle=True)
-
     elif dataset == 'flowers102':
         assert test_only and image_size is not None
         test_dir = os.path.join(DATA_PATH, 'flowers102')
         test_set = datasets.ImageFolder(test_dir, transform=test_transform)
         test_set = get_subset_with_len(test_set, length=3000, shuffle=True)
-
     elif dataset == 'places365':
         assert test_only and image_size is not None
         test_dir = os.path.join(DATA_PATH, 'places365')
         test_set = datasets.ImageFolder(test_dir, transform=test_transform)
         test_set = get_subset_with_len(test_set, length=3000, shuffle=True)
-
     elif dataset == 'food_101':
         assert test_only and image_size is not None
         test_dir = os.path.join(DATA_PATH, 'food-101', 'images')
         test_set = datasets.ImageFolder(test_dir, transform=test_transform)
         test_set = get_subset_with_len(test_set, length=3000, shuffle=True)
-
     elif dataset == 'caltech_256':
         assert test_only and image_size is not None
         test_dir = os.path.join(DATA_PATH, 'caltech-256')
         test_set = datasets.ImageFolder(test_dir, transform=test_transform)
         test_set = get_subset_with_len(test_set, length=3000, shuffle=True)
-
     elif dataset == 'dtd':
         assert test_only and image_size is not None
         test_dir = os.path.join(DATA_PATH, 'dtd', 'images')
         test_set = datasets.ImageFolder(test_dir, transform=test_transform)
         test_set = get_subset_with_len(test_set, length=3000, shuffle=True)
-
     elif dataset == 'pets':
         assert test_only and image_size is not None
         test_dir = os.path.join(DATA_PATH, 'pets')

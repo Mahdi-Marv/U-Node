@@ -106,22 +106,52 @@ class MultiDataTransformList(object):
         return sample_list, self.clean_transform(sample)
 
 
+def add_pad(image):
+    imagenet_30 = IMAGENET30_TEST_DATASET()
+    random_index = int(random.random() * len(imagenet_30))
+
+    imagenet30_img = imagenet_30[random_index]
+    imagenet30_img = imagenet30_img.convert('RGB')
+    factors = [0.98, 0.95, 0.9, 0.85, 0.8]
+
+    return center_paste(imagenet30_img, image, random.choice(factors))
+
+
+
 class ImageNetExposure(Dataset):
     def __init__(self, root, count, transform=None):
         self.transform = transform
-        image_files = glob(os.path.join(root, 'train', "*", "images", "*.JPEG"))
-        if count==-1:
-            final_length = len(image_files)
-        else:
-            random.shuffle(image_files)
-            final_length = min(len(image_files), count)
-        self.image_files = image_files[:final_length]
-        self.image_files.sort(key=lambda y: y.lower())
+        good_images = glob(os.path.join(root, 'train', "*", "images", "*.JPEG"))
+        good_images.sort(key=lambda y: y.lower())
+
+        if count != -1:
+            if count < len(good_images):
+                good_images = good_images[:count]
+            else:
+                t = len(good_images)
+                for i in range(count - t):
+                    good_images.append(random.choice(good_images[:t]))
+
+        augmented_images = []
+        for img in good_images:
+            augmented_images.append((img, True))  # Mark this image for augmentation
+        good_images = [(img, False) for img in good_images]
+        self.image_files = good_images + augmented_images
+
+        # if count==-1:
+        #     final_length = len(self.image_files)
+        # else:
+        #     random.shuffle(self.image_files)
+        #     final_length = min(len(self.image_files), count)
+        # self.image_files = self.image_files[:final_length]
+        # self.image_files.sort(key=lambda y: y.lower())
 
     def __getitem__(self, index):
-        image_file = self.image_files[index]
+        image_file, augment = self.image_files[index]
         image = Image.open(image_file)
         image = image.convert('RGB')
+        if augment:
+            image = add_pad(image)
         if self.transform is not None:
             image = self.transform(image)
         return image, -1
@@ -135,11 +165,14 @@ class MVTecDataset(Dataset):
         self.image_files = []
         self.shrink_factor = shrink_factor
         print("category MVTecDataset:", category)
-        # print("train: ", train)
-        # print("path: ", os.path.join(root, category, "test", "*", "*.png"))
-        # print("normal path: ", os.path.join(root, category, "test", "good", "*.png"))
+
         if train:
-            self.image_files = glob(os.path.join(root, category, "train", "good", "*.png"))
+            good_images = glob(os.path.join(root, category, "train", "good", "*.png"))
+            augmented_images = []
+            for img in good_images:
+                augmented_images.append((img, True))  # Mark this image for augmentation
+            good_images = [(img, False) for img in good_images]  # Original images not for augmentation
+            self.image_files = good_images + augmented_images
         else:
             image_files = glob(os.path.join(root, category, "test", "*", "*.png"))
             normal_image_files = glob(os.path.join(root, category, "test", "good", "*.png"))
@@ -191,22 +224,46 @@ class FakeMVTecDataset(Dataset):
         self.transform = transform
         self.image_files = []
         print("category FakeMVTecDataset:", category)
-        self.image_files = glob(os.path.join(root, category, "*.jpeg"))
-        if count!=-1:
-            if count<len(self.image_files):
-                self.image_files = self.image_files[:count]
+        good_images = glob(os.path.join(root, category, "*.jpeg"))
+        good_images.sort(key=lambda y: y.lower())
+
+        if count != -1:
+            if count < len(good_images):
+                good_images = good_images[:count]
             else:
-                t = len(self.image_files)
-                for i in range(count-t):
-                    self.image_files.append(random.choice(self.image_files[:t]))
-        self.image_files.sort(key=lambda y: y.lower())
+                t = len(good_images)
+                for i in range(count - t):
+                    good_images.append(random.choice(good_images[:t]))
+
+        augmented_images = []
+        for img in good_images:
+            augmented_images.append((img, True))  # Mark this image for augmentation
+        good_images = [(img, False) for img in good_images]
+        self.image_files = good_images + augmented_images
+
+
+        # if count!=-1:
+        #     if count<len(self.image_files):
+        #         self.image_files = self.image_files[:count]
+        #     else:
+        #         t = len(self.image_files)
+        #         for i in range(count-t):
+        #             self.image_files.append(random.choice(self.image_files[:t]))
+
+
+
 
     def __getitem__(self, index):
         image_file = self.image_files[index]
-        image = Image.open(image_file)
+        image, augment = Image.open(image_file)
         image = image.convert('RGB')
+
+        if augment:
+            image = add_pad(image)
+
         if self.transform is not None:
             image = self.transform(image)
+
         return image, -1
     def __len__(self):
         return len(self.image_files)
@@ -216,26 +273,42 @@ class MVTecDataset_Cutpasted(Dataset):
         self.transform = transform
         self.image_files = []
         print("category MVTecDataset_Cutpasted:", category)
+
         if train:
-            self.image_files = glob(os.path.join(root, category, "train", "good", "*.png"))
+            good_images = glob(os.path.join(root, category, "train", "good", "*.png"))
+            good_images.sort(key=lambda y: y.lower())
+
+            if count != -1:
+                if count < len(good_images):
+                    good_images = good_images[:count]
+                else:
+                    t = len(good_images)
+                    for i in range(count - t):
+                        good_images.append(random.choice(good_images[:t]))
+
+            augmented_images = []
+            for img in good_images:
+                augmented_images.append((img, True))  # Mark this image for augmentation
+            good_images = [(img, False) for img in good_images]
+            self.image_files = good_images + augmented_images
+
+
         else:
             image_files = glob(os.path.join(root, category, "test", "*", "*.png"))
             normal_image_files = glob(os.path.join(root, category, "test", "good", "*.png"))
             anomaly_image_files = list(set(image_files) - set(normal_image_files))
             self.image_files = image_files
-        if count!=-1:
-            if count<len(self.image_files):
-                self.image_files = self.image_files[:count]
-            else:
-                t = len(self.image_files)
-                for i in range(count-t):
-                    self.image_files.append(random.choice(self.image_files[:t]))
-        self.image_files.sort(key=lambda y: y.lower())
+
+
         self.train = train
     def __getitem__(self, index):
-        image_file = self.image_files[index]
+        image_file, augment = self.image_files[index]
         image = Image.open(image_file)
         image = image.convert('RGB')
+
+        if augment:
+            image = add_pad(image)
+
         if self.transform is not None:
             image = self.transform(image)
         return image, -1

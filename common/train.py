@@ -52,12 +52,12 @@ image_size_ = (P.image_size, P.image_size, 3)
 if P.dataset=="MVTecAD":
     train_set, test_set, image_size, n_classes = mvtecad_dataset(P=P, category=P.one_class_idx, root = "./mvtec_anomaly_detection",  image_size=image_size_)
 else:
-    train_set, test_set, image_size, n_classes = get_dataset(P, dataset=P.dataset, download=True, image_size=image_size_, labels=normal_labels)
+    train_set, test_set, image_size, n_classes = get_dataset(P, dataset=P.dataset, download=True, image_size=image_size_, labels=normal_labels, is_train=True)
 P.image_size = image_size
 P.n_classes = n_classes
 
-print("full test set:", len(test_set))
-print("full train set:", len(train_set))
+# print("full test set:", len(test_set))
+# print("full train set:", len(train_set))
 
 full_test_set = deepcopy(test_set)  # test set of full classes
 
