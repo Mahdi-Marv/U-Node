@@ -896,10 +896,10 @@ def get_dataset(P, dataset, test_only=False, image_size=(32, 32, 3), download=Fa
 
         if is_train:
             for class_idx in labels:
-                visualize_random_samples_from_clean_dataset(train_set, class_idx + " train dataset")
+                visualize_random_samples_from_clean_dataset(train_set, CLASS_NAMES[class_idx] + " train dataset")
         else:
             for class_idx in labels:
-                visualize_random_samples_from_clean_dataset(test_set, class_idx + f" test dataset with shrink factor {shrink_factor}")
+                visualize_random_samples_from_clean_dataset(test_set, CLASS_NAMES[class_idx] + f" test dataset with shrink factor {shrink_factor}")
 
 
         # print("train_set shapes: ", train_set[0][0].shape)
