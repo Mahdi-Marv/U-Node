@@ -168,6 +168,16 @@ class MVTecDataset(Dataset):
 
         if train:
             good_images = glob(os.path.join(root, category, "train", "good", "*.png"))
+
+            if count != -1:
+                if count < len(good_images):
+                    good_images = good_images[:count]
+                else:
+                    t = len(good_images)
+                    for i in range(count - t):
+                        good_images.append(random.choice(good_images[:t]))
+            good_images.sort(key=lambda y: y.lower())
+
             augmented_images = []
             for img in good_images:
                 augmented_images.append((img, True))  # Mark this image for augmentation
@@ -178,14 +188,7 @@ class MVTecDataset(Dataset):
             normal_image_files = glob(os.path.join(root, category, "test", "good", "*.png"))
             anomaly_image_files = list(set(image_files) - set(normal_image_files))
             self.image_files = image_files
-        if count != -1:
-            if count<len(self.image_files):
-                self.image_files = self.image_files[:count]
-            else:
-                t = len(self.image_files)
-                for i in range(count-t):
-                    self.image_files.append(random.choice(self.image_files[:t]))
-        self.image_files.sort(key=lambda y: y.lower())
+
         self.train = train
 
     def __getitem__(self, index):
