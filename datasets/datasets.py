@@ -82,17 +82,15 @@ def visualize_random_samples_from_clean_dataset(dataset, dataset_name):
     if len(dataset) > 20:
         random_indices = random.sample(range(len(dataset)), 20)
     else:
-        random_indices = list(range(len(dataset)))
+        random_indices = [i for i in range(len(dataset))]
 
     # Retrieve corresponding samples
     random_samples = [dataset[i] for i in random_indices]
 
-    # Extract images and 'has_anomaly' flags
-    images = [sample['image'] for sample in random_samples]
-    has_anomalies = [sample['has_anomaly'] for sample in random_samples]
+    # Separate images and labels
+    images, labels = zip(*random_samples)
 
-    # Convert 'has_anomalies' list to a tensor
-    labels = torch.tensor(has_anomalies)
+    labels = torch.tensor(labels)
 
     # Show the 20 random samples
     show_images(images, labels, dataset_name)
