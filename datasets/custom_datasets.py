@@ -192,10 +192,12 @@ class MVTecDataset(Dataset):
         self.train = train
 
     def __getitem__(self, index):
-        image_file = self.image_files[index]
+        image_file , augment= self.image_files[index]
         image = Image.open(image_file)
         image = image.convert('RGB')
 
+        if self.train:
+            image = add_pad(image)
 
         imagenet_30 = IMAGENET30_TEST_DATASET()
         random_index = int(random.random() * len(imagenet_30))
