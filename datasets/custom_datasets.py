@@ -188,6 +188,7 @@ class MVTecDataset(Dataset):
             normal_image_files = glob(os.path.join(root, category, "test", "good", "*.png"))
             anomaly_image_files = list(set(image_files) - set(normal_image_files))
             self.image_files = image_files
+            self.image_files = [(img, False) for img in image_files]
 
         self.train = train
 
