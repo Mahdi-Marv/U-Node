@@ -84,7 +84,9 @@ test_loader = DataLoader(test_set, shuffle=False, batch_size=P.test_batch_size, 
 print("len train_set", len(train_set))
 print("len test_set", len(test_set))
 
+print('X')
 print("Unique labels(test_loader):", get_loader_unique_label(test_loader))
+print('Y')
 print("Unique labels(train_loader):", get_loader_unique_label(train_loader))
 
 P.ood_dataset = anomaly_labels
