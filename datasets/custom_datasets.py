@@ -9,7 +9,7 @@ import glob
 from utils_.utils import set_random_seed
 from datasets.cutpast_transformation import *
 from PIL import Image
-from glob import glob
+from glob
 import pickle
 import random
 import rasterio
