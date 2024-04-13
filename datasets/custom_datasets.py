@@ -40,17 +40,17 @@ class Brain(Dataset):
         self.is_train = is_train
         self.transform = transform
         if is_train:
-            self.image_paths = glob.glob('./Br35H/dataset/train/normal/*')
+            self.image_paths = glob('./Br35H/dataset/train/normal/*')
         else:
             if test_id==1:
-                test_normal_path = glob.glob('./Br35H/dataset/test/normal/*')
-                test_anomaly_path = glob.glob('./Br35H/dataset/test/anomaly/*')
+                test_normal_path = glob('./Br35H/dataset/test/normal/*')
+                test_anomaly_path = glob('./Br35H/dataset/test/anomaly/*')
 
                 self.image_paths = test_normal_path + test_anomaly_path
                 self.test_label = [0] * len(test_normal_path) + [1] * len(test_anomaly_path)
             else:
-                test_normal_path = glob.glob('./brats/dataset/test/normal/*')
-                test_anomaly_path = glob.glob('./brats/dataset/test/anomaly/*')
+                test_normal_path = glob('./brats/dataset/test/normal/*')
+                test_anomaly_path = glob('./brats/dataset/test/anomaly/*')
 
                 self.image_paths = test_normal_path + test_anomaly_path
                 self.test_label = [0] * len(test_normal_path) + [1] * len(test_anomaly_path)
@@ -101,7 +101,7 @@ class MultiDataTransformList(object):
 class ImageNetExposure(Dataset):
     def __init__(self, root, count, transform=None):
         self.transform = transform
-        image_files = glob.glob(os.path.join(root, 'train', "*", "images", "*.JPEG"))
+        image_files = glob(os.path.join(root, 'train', "*", "images", "*.JPEG"))
         if count==-1:
             final_length = len(image_files)
         else:
