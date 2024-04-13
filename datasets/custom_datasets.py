@@ -5,7 +5,7 @@ import torch
 from torch.utils.data.dataset import Subset
 from torchvision import datasets, transforms
 from torch.utils.data import DataLoader, Dataset
-
+import glob
 from utils_.utils import set_random_seed
 from datasets.cutpast_transformation import *
 from PIL import Image
@@ -34,6 +34,43 @@ import gdown
 
 CLASS_NAMES = ['toothbrush', 'zipper', 'transistor', 'tile', 'grid', 'wood', 'pill', 'bottle', 'capsule', 'metal_nut', 'hazelnut', 'screw', 'carpet', 'leather', 'cable']
 DATA_PATH = './data/'
+
+class Brain(Dataset):
+    def __init__(self, transform, is_train=True, test_id=1):
+        self.is_train = is_train
+        self.transform = transform
+        if is_train:
+            self.image_paths = glob.glob('/kaggle/working/DRAEMT/Br35H/dataset/train/normal/*')
+        else:
+            if test_id==1:
+                test_normal_path = glob.glob('./Br35H/dataset/test/normal/*')
+                test_anomaly_path = glob.glob('./Br35H/dataset/test/anomaly/*')
+
+                self.image_paths = test_normal_path + test_anomaly_path
+                self.test_label = [0] * len(test_normal_path) + [1] * len(test_anomaly_path)
+            else:
+                test_normal_path = glob.glob('./brats/dataset/test/normal/*')
+                test_anomaly_path = glob.glob('./brats/dataset/test/anomaly/*')
+
+                self.image_paths = test_normal_path + test_anomaly_path
+                self.test_label = [0] * len(test_normal_path) + [1] * len(test_anomaly_path)
+
+
+    def __len__(self):
+        return len(self.image_paths)
+
+    def __getitem__(self, idx):
+        img = Image.open(self.image_paths[idx])
+        img = Image.convert('RGB')
+        if self.transform is not None:
+            img = self.transform(img)
+        if self.is_train:
+            return img, 0
+        else :
+            return img, self.test_label[idx]
+
+
+
 class MultiDataTransform(object):
     def __init__(self, transform):
         self.transform1 = transform
@@ -336,10 +373,6 @@ class Fake_SVHN_Dataset(Dataset):
     def __len__(self):
         return len(self.image_files)
 
-
-
-
-
 class MVTecDataset_High_VAR(Dataset):
     def __init__(
         self,
@@ -434,7 +467,6 @@ class MVTecDataset_High_VAR(Dataset):
         assert len(x) == len(y), "number of x and y should be same"
         return list(x), list(y), list(mask)
 
-
 class FakeCIFAR100(Dataset):
     def __init__(self, root, category, transform=None, target_transform=None, train=True, count=2500):
         self.transform = transform
@@ -457,7 +489,6 @@ class FakeCIFAR100(Dataset):
         return image, -1
     def __len__(self):
         return len(self.image_files)
-
 
 class FakeDTD(Dataset):
     def __init__(self, root, category, transform=None, target_transform=None, train=True, count=2500):
@@ -491,8 +522,6 @@ class FakeDTD(Dataset):
         return image, -1
     def __len__(self):
         return len(self.image_files)
-
-
 
 class UCSDDataset(Dataset):
     def __init__(self, root, dataset='ped1', is_normal=True, transform=None, target_transform=None, download=False):
@@ -583,10 +612,6 @@ class UCSDDataset(Dataset):
 
     def __len__(self):
         return len(self.images_dir)
-
-
-
-
 class TumorDetection(torch.utils.data.Dataset):
     def __init__(self, transform=None, train=True, count=None):
         self._download_and_extract()
@@ -666,9 +691,6 @@ class TumorDetection(torch.utils.data.Dataset):
         new_image_files = [self.image_files[idx] for idx in indices]
 
         return new_image_files
-
-
-
 class BrainMRI(Dataset):
     def __init__(self, image_path, labels, transform=None, count=-1):
         self.transform = transform
@@ -695,10 +717,6 @@ class BrainMRI(Dataset):
     
     def __len__(self):
         return len(self.image_files)
-
-
-
-
 class AdaptiveExposure(Dataset):
     def __init__(self, root, transform, count=None):
         super(AdaptiveExposure, self).__init__()
@@ -736,8 +754,6 @@ class AdaptiveExposure(Dataset):
         new_image_files = [self.image_files[idx] for idx in indices]
 
         return new_image_files
-
-
 class HEAD_CT_FAKE(Dataset):
     def __init__(self, transform=None, count=6000):
         self.transform = transform
@@ -758,8 +774,6 @@ class HEAD_CT_FAKE(Dataset):
     def __len__(self):
         return len(self.image_files)
 
-
-
 import torch
 from torchvision import transforms
 from torch.utils.data import Dataset, DataLoader
@@ -778,7 +792,6 @@ def sparse2coarse(targets):
          15, 13, 16, 19, 2, 4, 6, 19, 5, 5, 8,
          19, 18, 1, 2, 15, 6, 0, 17, 8, 14, 13,])
     return coarse_labels[targets]
-
 class CIFAR_CORRUCPION(Dataset):
     def __init__(self, transform=None, normal_idx = [0], cifar_corruption_label = 'CIFAR-10-C/labels.npy', cifar_corruption_data = './CIFAR-10-C/defocus_blur.npy'):
         self.labels_10 = np.load(cifar_corruption_label)
@@ -811,7 +824,6 @@ class CIFAR_CORRUCPION(Dataset):
     
     def __len__(self):
         return len(self.data)
-
 class MNIST_CORRUPTION(Dataset):
     def __init__(self, root_dir, corruption_type, transform=None, train=True):
         self.root_dir = root_dir
@@ -855,7 +867,6 @@ class MNIST_CORRUPTION(Dataset):
 
         label = self.labels[idx]
         return image, label
-    
 class MyDataset_Binary(torch.utils.data.Dataset):
   'Characterizes a dataset for PyTorch'
   def __init__(self, x, labels,transform=None, cutpast_transformation=None):
@@ -883,9 +894,6 @@ class MyDataset_Binary(torch.utils.data.Dataset):
            x = self.transform(self.x[index])
            y = self.labels[index]         
         return x, y
-
-
-
 class DIOR(Dataset):
 
     links = {
@@ -967,8 +975,6 @@ class DIOR(Dataset):
             img = self.transform(img)
         
         return img, target
-
-
 class DIOR_OOD(DIOR):
 
     def __init__(self, root, train=True, download=False, transform=None, target_transform=None, count=-1, verbose=False, normal_classes=0, **kwargs):
@@ -989,7 +995,6 @@ class DIOR_OOD(DIOR):
         else:
             target = 1
         return img, target
-
 
 if __name__ == '__main__':
     from torchvision import transforms
@@ -1093,9 +1098,6 @@ class ArtBench10(CIFAR10):
         "key": "styles",
         "md5": "5bdcafa7398aa6b75d569baaec5cd4aa",
     }
-
-
-
 class ISIC2018(Dataset):
     def __init__(self, image_path, labels, transform=None, count=-1):
         self.transform = transform
@@ -1121,8 +1123,6 @@ class ISIC2018(Dataset):
 
     def __len__(self):
         return len(self.image_files)
-
-
 class ImageNet30_Dataset(Dataset):
     def __init__(self, image_path, labels, transform=None):
         self.transform = transform
@@ -1139,8 +1139,6 @@ class ImageNet30_Dataset(Dataset):
 
     def __len__(self):
         return len(self.image_files)
-
-
 class Custom_Dataset(Dataset):
     def __init__(self, image_path, targets, transform=None):
         self.transform = transform
@@ -1157,9 +1155,6 @@ class Custom_Dataset(Dataset):
 
     def __len__(self):
         return len(self.image_files)
-        
-
-
 class CustomCub2011(Dataset):
     base_folder = 'CUB_200_2011/images'
     url = 'http://www.vision.caltech.edu/visipedia-data/CUB-200-2011/CUB_200_2011.tgz'
@@ -1242,8 +1237,6 @@ class CustomCub2011(Dataset):
             target = self.target_transform(target)
 
         return img, target
-
-
 def subsample_dataset(dataset, idxs):
 
     mask = np.zeros(len(dataset)).astype('bool')
@@ -1253,8 +1246,6 @@ def subsample_dataset(dataset, idxs):
     dataset.uq_idxs = dataset.uq_idxs[idxs]
 
     return dataset
-
-
 def subsample_classes(dataset, include_classes=range(160)):
 
     include_classes_cub = np.array(include_classes) + 1     # CUB classes are indexed 1 --> 200 instead of 0 --> 199

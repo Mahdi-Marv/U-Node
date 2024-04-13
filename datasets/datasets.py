@@ -149,7 +149,8 @@ def mvtecad_dataset(P, category, root = "./mvtec_anomaly_detection", image_size=
 def get_exposure_dataloader(P, batch_size = 64, image_size=(224, 224, 3),
                             base_path = './tiny-imagenet-200', fake_root="./fake_mvtecad", root="./mvtec_anomaly_detection" ,count=-1, cls_list=None, labels=None):
     categories = ['toothbrush', 'zipper', 'transistor', 'tile', 'grid', 'wood', 'pill', 'bottle', 'capsule', 'metal_nut', 'hazelnut', 'screw', 'carpet', 'leather', 'cable']
-    if P.dataset=='high-variational-brain-tumor' or P.dataset=='head-ct' or P.dataset=='breastmnist' or  P.dataset=='mnist' or P.dataset=='fashion-mnist' or P.dataset=='Tomor_Detection':
+    if (P.dataset=='high-variational-brain-tumor' or P.dataset=='head-ct' or P.dataset=='brain' or  P.dataset=='mnist' or P.dataset=='fashion-mnist' or P.dataset=='Tomor_Detection'
+            or P.dataset=='brain'):
         tiny_transform = transforms.Compose([
                 transforms.Resize((image_size[0], image_size[1])),
                 transforms.Grayscale(num_output_channels=1),
@@ -251,7 +252,7 @@ def get_exposure_dataloader(P, batch_size = 64, image_size=(224, 224, 3),
                 transforms.RandomRotation((90, 270)),
                 CutPasteUnion(transform = transforms.Compose([transforms.ToTensor(),])),
             ])
-        elif P.dataset=='head-ct':
+        elif P.dataset=='head-ct' or P.dataset=='brain':
             train_transform_cutpasted = transforms.Compose([
                 transforms.Resize((image_size[0], image_size[1])),
                 transforms.Grayscale(num_output_channels=1),
@@ -357,7 +358,6 @@ def get_exposure_dataloader(P, batch_size = 64, image_size=(224, 224, 3),
             if len(train_ds_cifar10_fake) > 0:
                 print("number of fake data:", len(train_ds_cifar10_fake), "shape:", train_ds_cifar10_fake[0][0].shape)
             exposureset = torch.utils.data.ConcatDataset([cutpast_train_set, train_ds_cifar10_fake, imagenet_exposure])
-        
         elif P.dataset=="cifar100-versus-10":
             cls_list = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19]
             fake_transform = transforms.Compose([
@@ -373,7 +373,6 @@ def get_exposure_dataloader(P, batch_size = 64, image_size=(224, 224, 3),
             if len(train_ds_cifar100_fake) > 0:
                 print("number of fake data:", len(train_ds_cifar100_fake), "shape:", train_ds_cifar100_fake[0][0].shape)
             exposureset = torch.utils.data.ConcatDataset([cutpast_train_set, train_ds_cifar100_fake, imagenet_exposure])
-
         elif P.dataset=="cifar100":
             fake_transform = transforms.Compose([
                 transforms.Resize((image_size[0],image_size[1])),
@@ -388,7 +387,6 @@ def get_exposure_dataloader(P, batch_size = 64, image_size=(224, 224, 3),
             if len(train_ds_cifar100_fake) > 0:
                 print("number of fake data:", len(train_ds_cifar100_fake), "shape:", train_ds_cifar100_fake[0][0].shape)
             exposureset = torch.utils.data.ConcatDataset([cutpast_train_set, train_ds_cifar100_fake, imagenet_exposure])
-        
         elif P.dataset=="dtd":
             fake_transform = transforms.Compose([
                 transforms.Resize((image_size[0],image_size[1])),
@@ -403,7 +401,6 @@ def get_exposure_dataloader(P, batch_size = 64, image_size=(224, 224, 3),
             if len(train_ds_dtd_fake) > 0:
                 print("number of fake data:", len(train_ds_dtd_fake), "shape:", train_ds_dtd_fake[0][0].shape)
             exposureset = torch.utils.data.ConcatDataset([cutpast_train_set, train_ds_dtd_fake, imagenet_exposure])
-
         elif P.dataset=="svhn-10":
             fake_transform = transforms.Compose([
                 transforms.Resize((image_size[0],image_size[1])),
@@ -418,7 +415,6 @@ def get_exposure_dataloader(P, batch_size = 64, image_size=(224, 224, 3),
             if len(train_ds_svhn_fake) > 0:
                 print("number of fake data:", len(train_ds_svhn_fake), "shape:", train_ds_svhn_fake[0][0].shape)
             exposureset = torch.utils.data.ConcatDataset([cutpast_train_set, train_ds_svhn_fake, imagenet_exposure])
-        
         elif P.dataset=="mnist":
             fake_transform = transforms.Compose([
                 transforms.Resize((image_size[0],image_size[1])),
@@ -459,7 +455,8 @@ def get_exposure_dataloader(P, batch_size = 64, image_size=(224, 224, 3),
             if len(train_ds_tumor_detection_fake) > 0:
                 print("number of fake data:", len(train_ds_tumor_detection_fake), "shape:", train_ds_tumor_detection_fake[0][0].shape)
             exposureset = torch.utils.data.ConcatDataset([cutpast_train_set, train_ds_tumor_detection_fake, imagenet_exposure])
-        
+        elif P.dataset=='brain':
+            exposureset = torch.utils.data.ConcatDataset([cutpast_train_set, imagenet_exposure])
         elif P.dataset=="head-ct":
             fake_transform = transforms.Compose([
                 transforms.Resize((image_size[0],image_size[1])),
@@ -552,7 +549,6 @@ def get_dataset(P, dataset, test_only=False, image_size=(32, 32, 3), download=Fa
         test_set = ArtBench10(root=DATA_PATH, train=False, download=True, transform=test_transform)
         print("train_set shapes: ", train_set[0][0].shape)
         print("test_set shapes: ", test_set[0][0].shape)
-        
     elif dataset == 'dior':
         transform = transforms.Compose([
             transforms.Resize((image_size[0], image_size[1])),
@@ -646,7 +642,6 @@ def get_dataset(P, dataset, test_only=False, image_size=(32, 32, 3), download=Fa
         test_set = torch.utils.data.ConcatDataset([anomaly_testset, normal_testset]) 
         print("train_set shapes: ", train_set[0][0].shape)
         print("test_set shapes: ", test_set[0][0].shape)
-        
     elif dataset == 'head-ct':
         n_classes = 2
         train_transform = transforms.Compose([
@@ -819,7 +814,6 @@ def get_dataset(P, dataset, test_only=False, image_size=(32, 32, 3), download=Fa
         print("train_set shapes: ", train_set[0][0].shape, len(train_set))
         print("test_set shapes: ", test_set[0][0].shape, len(test_set))
         '''
-
     elif dataset == 'mvtec-high-var':
         n_classes = 2
         train_dataset = []
@@ -920,7 +914,6 @@ def get_dataset(P, dataset, test_only=False, image_size=(32, 32, 3), download=Fa
         test_set = datasets.DTD('./data', split="test", download=True, transform=test_transform)
         print("train_set shapes: ", train_set[0][0].shape)
         print("test_set shapes: ", test_set[0][0].shape)
-
     elif dataset == 'cifar100':
         # image_size = (32, 32, 3)
         n_classes = 100
@@ -977,7 +970,6 @@ def get_dataset(P, dataset, test_only=False, image_size=(32, 32, 3), download=Fa
 
         print("train_set shapes: ", train_set[0][0].shape)
         print("test_set shapes: ", test_set[0][0].shape)
-    
     elif dataset=='mnist-corruption':
         n_classes = 10
         transform = transforms.Compose([
@@ -989,7 +981,6 @@ def get_dataset(P, dataset, test_only=False, image_size=(32, 32, 3), download=Fa
         train_set = datasets.MNIST(DATA_PATH, train=True, download=True, transform=transform)
         print("train_set shapes: ", train_set[0][0].shape)
         print("test_set shapes: ", test_set[0][0].shape)
-        
     elif dataset == 'svhn-10':
         # image_size = (32, 32, 3)
         n_classes = 10
@@ -1018,8 +1009,6 @@ def get_dataset(P, dataset, test_only=False, image_size=(32, 32, 3), download=Fa
         test_set = datasets.STL10(DATA_PATH, split='test', download=download, transform=transform)
         print("train_set shapes: ", train_set[0][0].shape)
         print("test_set shapes: ", test_set[0][0].shape)
-
-    
     elif dataset == 'svhn-10-corruption':
 
         def gaussian_noise(image, mean=P.noise_mean, std = P.noise_std, noise_scale = P.noise_scale):
@@ -1041,7 +1030,6 @@ def get_dataset(P, dataset, test_only=False, image_size=(32, 32, 3), download=Fa
         test_set = datasets.SVHN(DATA_PATH, split='test', download=download, transform=test_transform)
         print("train_set shapes: ", train_set[0][0].shape)
         print("test_set shapes: ", test_set[0][0].shape)
-    
     elif dataset == 'high-variational-brain-tumor':
         if eval:
             head_ct_cnt = -1
@@ -1237,8 +1225,6 @@ def get_dataset(P, dataset, test_only=False, image_size=(32, 32, 3), download=Fa
         test_set = torch.utils.data.ConcatDataset([anomaly_testset, normal_testset]) 
         print("train_set shapes: ", train_set[0][0].shape)
         print("test_set shapes: ", test_set[0][0].shape)
-
-
     elif dataset == 'cifar10-versus-other-eval':
         n_classes = 2
         cifar_transform = transforms.Compose([
@@ -1355,31 +1341,25 @@ def get_dataset(P, dataset, test_only=False, image_size=(32, 32, 3), download=Fa
         print("train_set shapes: ", train_set[0][0].shape)
         print("test_set shapes: ", test_set[0][0].shape)
         print("len(test_set), len(train_set): ", len(test_set), len(train_set))
-
     elif dataset == 'svhn':
         assert test_only and image_size is not None
         test_set = datasets.SVHN(DATA_PATH, split='test', download=download, transform=test_transform)
-
     elif dataset == 'lsun_resize':
         assert test_only and image_size is not None
         test_dir = os.path.join(DATA_PATH, 'LSUN_resize')
         test_set = datasets.ImageFolder(test_dir, transform=test_transform)
-
     elif dataset == 'lsun_pil':
         assert test_only and image_size is not None
         test_dir = os.path.join(DATA_PATH, 'LSUN_fix')
         test_set = datasets.ImageFolder(test_dir, transform=test_transform)
-
     elif dataset == 'imagenet_resize':
         assert test_only and image_size is not None
         test_dir = os.path.join(DATA_PATH, 'Imagenet_resize')
         test_set = datasets.ImageFolder(test_dir, transform=test_transform)
-
     elif dataset == 'imagenet_pil':
         assert test_only and image_size is not None
         test_dir = os.path.join(DATA_PATH, 'Imagenet_fix')
         test_set = datasets.ImageFolder(test_dir, transform=test_transform)
-
     elif dataset == 'imagenet':
         image_size = (224, 224, 3)
         n_classes = 30
@@ -1389,54 +1369,55 @@ def get_dataset(P, dataset, test_only=False, image_size=(32, 32, 3), download=Fa
         test_set = datasets.ImageFolder(test_dir, transform=test_transform)
         print("train_set shapes: ", train_set[0][0].shape)
         print("test_set shapes: ", test_set[0][0].shape)
-
     elif dataset == 'stanford_dogs':
         assert test_only and image_size is not None
         test_dir = os.path.join(DATA_PATH, 'stanford_dogs')
         test_set = datasets.ImageFolder(test_dir, transform=test_transform)
         test_set = get_subset_with_len(test_set, length=3000, shuffle=True)
-
     elif dataset == 'cub':
         assert test_only and image_size is not None
         test_dir = os.path.join(DATA_PATH, 'cub200')
         test_set = datasets.ImageFolder(test_dir, transform=test_transform)
         test_set = get_subset_with_len(test_set, length=3000, shuffle=True)
-
     elif dataset == 'flowers102':
         assert test_only and image_size is not None
         test_dir = os.path.join(DATA_PATH, 'flowers102')
         test_set = datasets.ImageFolder(test_dir, transform=test_transform)
         test_set = get_subset_with_len(test_set, length=3000, shuffle=True)
-
     elif dataset == 'places365':
         assert test_only and image_size is not None
         test_dir = os.path.join(DATA_PATH, 'places365')
         test_set = datasets.ImageFolder(test_dir, transform=test_transform)
         test_set = get_subset_with_len(test_set, length=3000, shuffle=True)
-
     elif dataset == 'food_101':
         assert test_only and image_size is not None
         test_dir = os.path.join(DATA_PATH, 'food-101', 'images')
         test_set = datasets.ImageFolder(test_dir, transform=test_transform)
         test_set = get_subset_with_len(test_set, length=3000, shuffle=True)
-
     elif dataset == 'caltech_256':
         assert test_only and image_size is not None
         test_dir = os.path.join(DATA_PATH, 'caltech-256')
         test_set = datasets.ImageFolder(test_dir, transform=test_transform)
         test_set = get_subset_with_len(test_set, length=3000, shuffle=True)
-
     elif dataset == 'dtd':
         assert test_only and image_size is not None
         test_dir = os.path.join(DATA_PATH, 'dtd', 'images')
         test_set = datasets.ImageFolder(test_dir, transform=test_transform)
         test_set = get_subset_with_len(test_set, length=3000, shuffle=True)
-
     elif dataset == 'pets':
         assert test_only and image_size is not None
         test_dir = os.path.join(DATA_PATH, 'pets')
         test_set = datasets.ImageFolder(test_dir, transform=test_transform)
         test_set = get_subset_with_len(test_set, length=3000, shuffle=True)
+    elif dataset == 'brain':
+        n_classes = 2
+        if train_transform_cutpasted:
+            train_set = Brain(transform=train_transform_cutpasted, is_train=True)
+        else:
+            train_set = Brain(transform=train_transform, is_train=True)
+
+        test_set = Brain(transform=test_transform, is_train=False, test_id=1)
+
 
     else:
         raise NotImplementedError()
