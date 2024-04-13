@@ -5,7 +5,7 @@ import torch
 from torch.utils.data.dataset import Subset
 from torchvision import datasets, transforms
 from torch.utils.data import DataLoader, Dataset
-import glob
+from glob import glob
 from utils_.utils import set_random_seed
 from datasets.cutpast_transformation import *
 from PIL import Image
@@ -40,17 +40,17 @@ class Brain(Dataset):
         self.is_train = is_train
         self.transform = transform
         if is_train:
-            self.image_paths = glob.glob('./Br35H/dataset/train/normal/*')
+            self.image_paths = glob('./Br35H/dataset/train/normal/*')
         else:
             if test_id==1:
-                test_normal_path = glob.glob('./Br35H/dataset/test/normal/*')
-                test_anomaly_path = glob.glob('./Br35H/dataset/test/anomaly/*')
+                test_normal_path = glob('./Br35H/dataset/test/normal/*')
+                test_anomaly_path = glob('./Br35H/dataset/test/anomaly/*')
 
                 self.image_paths = test_normal_path + test_anomaly_path
                 self.test_label = [0] * len(test_normal_path) + [1] * len(test_anomaly_path)
             else:
-                test_normal_path = glob.glob('./brats/dataset/test/normal/*')
-                test_anomaly_path = glob.glob('./brats/dataset/test/anomaly/*')
+                test_normal_path = glob('./brats/dataset/test/normal/*')
+                test_anomaly_path = glob('./brats/dataset/test/anomaly/*')
 
                 self.image_paths = test_normal_path + test_anomaly_path
                 self.test_label = [0] * len(test_normal_path) + [1] * len(test_anomaly_path)
