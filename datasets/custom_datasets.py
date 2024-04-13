@@ -40,7 +40,7 @@ class Brain(Dataset):
         self.is_train = is_train
         self.transform = transform
         if is_train:
-            self.image_paths = glob.glob('/kaggle/working/DRAEMT/Br35H/dataset/train/normal/*')
+            self.image_paths = glob.glob('./Br35H/dataset/train/normal/*')
         else:
             if test_id==1:
                 test_normal_path = glob.glob('./Br35H/dataset/test/normal/*')
