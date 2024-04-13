@@ -61,7 +61,7 @@ class Brain(Dataset):
 
     def __getitem__(self, idx):
         img = Image.open(self.image_paths[idx])
-        img = Image.convert('RGB')
+        img = img.convert('RGB')
         if self.transform is not None:
             img = self.transform(img)
         if self.is_train:
