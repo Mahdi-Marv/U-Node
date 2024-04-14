@@ -17,7 +17,7 @@ if P.normal_labels:
     normal_labels = [int(num) for num in P.normal_labels.split(',')]
     print("normal_labels: ", normal_labels)
 
-cls_list = get_superclass_list(P.dataset)
+cls_list = list(range(2))
 anomaly_labels = [elem for elem in cls_list if elem not in normal_labels]
 
 ### Set torch device ###
