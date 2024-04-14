@@ -282,6 +282,7 @@ class MVTecDataset_Cutpasted(Dataset):
 
         if train:
             good_images = glob(os.path.join(root, category, "train", "good", "*.png"))
+            print('len of good images: ', len(good_images))
             good_images.sort(key=lambda y: y.lower())
 
             if count != -1:
