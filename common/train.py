@@ -107,7 +107,7 @@ for ood in P.ood_dataset:
     ood_test_loader[ood] = DataLoader(ood_test_set, shuffle=False, batch_size=P.test_batch_size, **kwargs)
     print("Unique labels(ood_test_loader):", get_loader_unique_label(ood_test_loader[ood]))
  
-train_exposure_loader = get_exposure_dataloader(P=P, batch_size=P.batch_size, count=len(train_set), image_size=image_size_, cls_list=normal_labels)
+train_exposure_loader = get_exposure_dataloader(P=P, batch_size=P.batch_size, count=len(train_set)//2, image_size=image_size_, cls_list=normal_labels)
 print("exposure loader batches, train loader batchs", len(train_exposure_loader), len(train_loader))
 ### Initialize model ###
 
