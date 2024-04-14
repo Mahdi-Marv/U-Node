@@ -37,6 +37,7 @@ DATA_PATH = './data/'
 
 class Brain(Dataset):
     def __init__(self, transform, is_train=True, test_id=1):
+        print('brain dataset')
         self.is_train = is_train
         self.transform = transform
         if is_train:
