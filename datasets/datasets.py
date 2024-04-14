@@ -565,7 +565,7 @@ def get_breastmnist_train(anomaly_class_indx, path, transform):
     return train_dataset
 
 
-def get_dataset(P, dataset, test_only=False, image_size=(32, 32, 3), download=False, eval=False, train_transform_cutpasted=None, labels=None):
+def get_dataset(P, dataset, test_only=False, image_size=(32, 32, 3), download=False, eval=False, train_transform_cutpasted=None, labels=None, test_id=1):
     if dataset in ['imagenet', 'cub', 'stanford_dogs', 'flowers102',
                    'places365', 'food_101', 'caltech_256', 'dtd', 'pets']:
         if eval:
@@ -1462,7 +1462,7 @@ def get_dataset(P, dataset, test_only=False, image_size=(32, 32, 3), download=Fa
         else:
             train_set = Brain(transform=train_transform, is_train=True)
 
-        test_set = Brain(transform=test_transform, is_train=False, test_id=2)
+        test_set = Brain(transform=test_transform, is_train=False, test_id=test_id)
 
 
     else:

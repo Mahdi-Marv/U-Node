@@ -46,7 +46,7 @@ def parse_args(default=False):
                         default=32, type=int)
     parser.add_argument('--save_step', help='None: multi-class, Not None: one-class',
                         default=20, type=int)
-
+    parser.add_argument('--test_id', default=1, type=int)
     parser.add_argument('--noise_mean', help='',
                         default=0.0, type=float)
     parser.add_argument('--noise_std', help='',
