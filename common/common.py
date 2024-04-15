@@ -1,7 +1,7 @@
 from argparse import ArgumentParser
 
 
-def parse_args(default=False):
+def parse_args(default=False, return_parser=False):
     """Command-line argument parser for training."""
 
     parser = ArgumentParser(description='Pytorch implementation of CSI')
@@ -142,6 +142,8 @@ def parse_args(default=False):
 
     parser.add_argument('--freezing_layer', help='Freezing Layer',
                         default=133, type=int)
+    if return_parser:
+        return parser
     if default:
         return parser.parse_args('')  # empty string
     else:
