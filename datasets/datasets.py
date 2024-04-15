@@ -1192,16 +1192,12 @@ def get_dataset(P, dataset, test_only=False, image_size=(32, 32, 3), download=Fa
         if P.test_id == 2:
             import pandas as pd
             df = pd.read_csv('/kaggle/input/pad-ufes-20/PAD-UFES-20/metadata.csv')
-            label = df["diagnostic"].to_numpy()
-            path = df["img_id"].to_numpy()
 
-            normal_path = path[label == 0]
-            anomaly_path = path[label != 0]
+            shifted_test_label = df["diagnostic"].to_numpy()
+            shifted_test_label = (shifted_test_label != "NEV")
 
-            shifted_test_path = list(normal_path) + list(anomaly_path)
-            shifted_test_label = (label != "NEV")
-
-            shifted_test_path = '/kaggle/input/pad-ufes-20/PAD-UFES-20/Dataset/' + label
+            shifted_test_path = df["img_id"].to_numpy()
+            shifted_test_path = '/kaggle/input/pad-ufes-20/PAD-UFES-20/Dataset/' + shifted_test_path
 
             test_path = shifted_test_path
             test_label = shifted_test_label
