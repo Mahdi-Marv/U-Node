@@ -17,6 +17,7 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import seaborn as sns
 import cv2
+from torchvision.models import resnet18
 from datasets.custom_datasets import *
 from torch.utils.data import ConcatDataset
 
@@ -216,7 +217,7 @@ def get_exposure_dataloader(P, batch_size = 64, image_size=(224, 224, 3),
         train_transform_cutpasted = transforms.Compose([
             transforms.Resize((256,256)),
             transforms.CenterCrop((image_size[0], image_size[1])),
-            CutPasteUnion(transform = transforms.Compose([transforms.ToTensor(),])), # CHANGE
+            transforms.ToTensor()
         ])
         imagenet_exposure = ImageNetExposure(root=base_path, count=tiny_count, transform=tiny_transform)
         fc = [int(fake_count / len(cls_list)) for i in range(len(cls_list))] # 1000 / 1? --> [1000]
@@ -229,9 +230,16 @@ def get_exposure_dataloader(P, batch_size = 64, image_size=(224, 224, 3),
         print("cutpast couns:", fcp)
         train_ds_mvtech_fake = []
         train_ds_mvtech_cutpasted = []
+
+        #CutpastePlus
+        pre_model = resnet18(pretrained=True)
+        pre_model.to('cpu')
+        pre_model.eval()
         for idx, i in enumerate(cls_list):
             train_ds_mvtech_fake.append(FakeMVTecDataset(root=fake_root, train=True, category=categories[i], transform=fake_transform, count=fc[idx]))
-            train_ds_mvtech_cutpasted.append(MVTecDataset_Cutpasted(root=root, train=True, category=categories[i], transform=train_transform_cutpasted, count=fcp[idx]))
+            # train_ds_mvtech_cutpasted.append(MVTecDataset_Cutpasted(root=root, train=True, category=categories[i], transform=train_transform_cutpasted, count=fcp[idx]))
+            train_ds_mvtech_cutpasted.append(MVTecCutpastePlus(root=root, category=categories[i], grad_model=pre_model,
+                                                               model_type='resnet18', transform=train_transform_cutpasted, train=True, count=fcp[idx]))
         train_ds_mvtech_cutpasted = ConcatDataset(train_ds_mvtech_cutpasted)
         train_ds_mvtech_fake = ConcatDataset(train_ds_mvtech_fake)
 

@@ -178,7 +178,84 @@ class MVTecDataset_Cutpasted(Dataset):
 
     def __len__(self):
         return len(self.image_files)
-    
+
+
+
+import copy
+from pytorch_grad_cam import GradCAM, ScoreCAM, GradCAMPlusPlus, AblationCAM, XGradCAM, EigenCAM, FullGrad
+from pytorch_grad_cam.utils.model_targets import ClassifierOutputTarget
+from pytorch_grad_cam.utils.image import show_cam_on_image
+from torchvision.models import resnet18
+import numpy as np
+from PIL import Image
+import torch
+import torch.nn as nn
+import torchvision
+
+class MVTecCutpastePlus(Dataset):
+    def __init__(self, root, category, grad_model, model_type='resnet18', transform=None, train=True, count=None):
+        self.transform = transform
+        self.image_files = []
+        if train:
+            self.image_files = glob(os.path.join(root, category, "train", "good", "*.png"))
+        else:
+            image_files = glob(os.path.join(root, category, "test", "*", "*.png"))
+            normal_image_files = glob(os.path.join(root, category, "test", "good", "*.png"))
+            anomaly_image_files = list(set(image_files) - set(normal_image_files))
+            self.image_files = image_files
+        if count:
+            if count < len(self.image_files):
+                self.image_files = self.image_files[:count]
+            else:
+                t = len(self.image_files)
+                for i in range(count - len(self.image_files)):
+                    self.image_files.append(random.choice(self.image_files[:t]))
+
+        self.cutpaste = CutPastePlusUnion(transform=transforms.Compose([transforms.ToTensor(), ]))
+
+        if model_type != 'resnet18':
+            pass  #Implement if needed
+        if model_type == 'resnet18':  #using Resnet18 pretrained
+            self.model = grad_model
+            self.model.to('cpu')
+            self.model.eval()
+            module_dict = dict(self.model.named_modules())
+            target_layers = module_dict['layer4.1.conv2']
+            self.cam = GradCAM(model=self.model, target_layers=[target_layers])
+
+        self.image_files.sort(key=lambda y: y.lower())
+        self.train = train
+
+    def __getitem__(self, index):
+        image_file = self.image_files[index]
+        image = Image.open(image_file)
+        image = image.convert('RGB')
+        if self.transform is not None:
+            image = self.transform(image)
+        height = image.shape[1]
+        width = image.shape[2]
+
+        heatmap = self.cam(input_tensor=image.unsqueeze(0))
+        heats = []
+        for i in range(height):  # replace width & height if error
+            for j in range(width):
+                heats.append((heatmap[0][i][j], (i, j)))
+        sorted_heat = list(reversed(sorted(heats)))
+        ratio = 0.1
+        sep = round(ratio * len(sorted_heat))
+        paste_patch = [x[1] for x in sorted_heat][:sep]
+
+        image = self.cutpaste(image, paste_patch)
+
+        if os.path.dirname(image_file).endswith("good"):
+            target = 1
+        else:
+            target = 1
+
+        return image, target
+
+    def __len__(self):
+        return len(self.image_files)
 
 class DataOnlyDataset(Dataset):
     def __init__(self, original_dataset):
