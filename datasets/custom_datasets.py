@@ -42,6 +42,7 @@ class Brain(Dataset):
         self.transform = transform
         if is_train:
             self.image_paths = glob('./Br35H/dataset/train/normal/*')
+            brats_mod = glob()
         else:
             if test_id==1:
                 test_normal_path = glob('./Br35H/dataset/test/normal/*')
