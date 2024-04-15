@@ -147,7 +147,8 @@ def mvtecad_dataset(P, category, root = "./mvtec_anomaly_detection", image_size=
     
 
 def get_exposure_dataloader(P, batch_size = 64, image_size=(224, 224, 3),
-                            base_path = './tiny-imagenet-200', fake_root="./fake_mvtecad", root="./mvtec_anomaly_detection" ,count=-1, cls_list=None, labels=None):
+                            base_path = '/kaggle/input/tiny-imagenet/tiny-imagenet-200', fake_root="./fake_mvtecad",
+                            root="/kaggle/input/mvtecad-mvtec-anomaly-detection/mvtec_anomaly_detection" ,count=-1, cls_list=None, labels=None):
     categories = ['toothbrush', 'zipper', 'transistor', 'tile', 'grid', 'wood', 'pill', 'bottle', 'capsule', 'metal_nut', 'hazelnut', 'screw', 'carpet', 'leather', 'cable']
     if P.dataset=='high-variational-brain-tumor' or P.dataset=='head-ct' or P.dataset=='breastmnist' or  P.dataset=='mnist' or P.dataset=='fashion-mnist' or P.dataset=='Tomor_Detection':
         tiny_transform = transforms.Compose([
@@ -176,9 +177,9 @@ def get_exposure_dataloader(P, batch_size = 64, image_size=(224, 224, 3),
                 transforms.ToTensor()
         ])
 
-    fake_count = int(P.fake_data_percent*count)
-    tiny_count = int((1-(P.fake_data_percent+P.cutpast_data_percent))*count)
-    cutpast_count = int(P.cutpast_data_percent*count)
+    fake_count = int(P.fake_data_percent*count) # 1000
+    tiny_count = int((1-(P.fake_data_percent+P.cutpast_data_percent))*count) # 3000
+    cutpast_count = int(P.cutpast_data_percent*count) # 6000
     if (fake_count+tiny_count+cutpast_count)!=count:
         tiny_count += (count - (cutpast_count+fake_count+tiny_count))
     print("fake_count, tiny_count, cutpast_count", fake_count, tiny_count, cutpast_count)
@@ -215,10 +216,10 @@ def get_exposure_dataloader(P, batch_size = 64, image_size=(224, 224, 3),
         train_transform_cutpasted = transforms.Compose([
             transforms.Resize((256,256)),
             transforms.CenterCrop((image_size[0], image_size[1])),
-            CutPasteUnion(transform = transforms.Compose([transforms.ToTensor(),])),
+            CutPasteUnion(transform = transforms.Compose([transforms.ToTensor(),])), # CHANGE
         ])
         imagenet_exposure = ImageNetExposure(root=base_path, count=tiny_count, transform=tiny_transform)
-        fc = [int(fake_count / len(cls_list)) for i in range(len(cls_list))]
+        fc = [int(fake_count / len(cls_list)) for i in range(len(cls_list))] # 1000 / 1? --> [1000]
         if sum(fc) != fake_count:
             fc[0] += abs(fake_count - sum(fc))
         print("fake couns:", fc)

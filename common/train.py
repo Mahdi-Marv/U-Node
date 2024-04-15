@@ -86,13 +86,13 @@ test_loader = DataLoader(test_set, shuffle=False, batch_size=P.test_batch_size, 
 print("len train_set", len(train_set))
 print("len test_set", len(test_set))
 
-print("Unique labels(test_loader):", get_loader_unique_label(test_loader))
-print("Unique labels(train_loader):", get_loader_unique_label(train_loader))
+print("Unique labels(test_loader):", get_loader_unique_label(test_loader)) #[0]
+# print("Unique labels(train_loader):", get_loader_unique_label(train_loader)) # [0]
 
 P.ood_dataset = anomaly_labels
 if P.dataset == 'cub-birds' or P.dataset == 'ISIC2018' or P.dataset == 'high-variational-brain-tumor' or P.dataset == 'WBC' or P.dataset == 'mvtec-high-var-corruption' or P.dataset == "MVTecAD" or P.dataset == "mvtec-high-var" or P.dataset == 'cifar10-versus-100' or P.dataset == 'cifar100-versus-10':
     P.ood_dataset = [1]
-print("P.ood_dataset", P.ood_dataset)
+print("P.ood_dataset", P.ood_dataset) # [1]
 
 ood_test_loader = dict()
 for ood in P.ood_dataset:
@@ -102,7 +102,8 @@ for ood in P.ood_dataset:
     ood_test_loader[ood] = DataLoader(ood_test_set, shuffle=False, batch_size=P.test_batch_size, **kwargs)
     print("Unique labels(ood_test_loader):", get_loader_unique_label(ood_test_loader[ood]))
 
-train_exposure_loader = get_exposure_dataloader(P=P, batch_size=P.batch_size, count=len(train_set),
+
+train_exposure_loader = get_exposure_dataloader(P=P, batch_size=P.batch_size, count=len(train_set), # Bug
                                                 image_size=image_size_, cls_list=normal_labels)
 print("exposure loader batches, train loader batchs", len(train_exposure_loader), len(train_loader))
 ### Initialize model ###
