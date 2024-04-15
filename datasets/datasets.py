@@ -6,6 +6,7 @@ from torch.utils.data.dataset import Subset
 from torchvision import datasets, transforms
 from torch.utils.data import DataLoader, Dataset
 from torchvision.datasets import ImageFolder
+from sklearn.model_selection import train_test_split
 
 from utils_.utils import set_random_seed
 from datasets.cutpast_transformation import *
@@ -1212,38 +1213,31 @@ def get_dataset(P, dataset, test_only=False, image_size=(32, 32, 3), download=Fa
         print("len(test_set), len(train_set): ", len(test_set), len(train_set))
     elif dataset == 'aptos':
         n_classes = 2
-        train_path = glob('/kaggle/working/APTOS/train/NORMAL/*')
-        train_label = [0] * len(train_path)
-
-        test_anomaly_path = glob('/kaggle/working/APTOS/test/ABNORMAL/*')
-        test_anomaly_label = [1] * len(test_anomaly_path)
-        test_normal_path = glob('/kaggle/working/APTOS/test/NORMAL/*')
-        test_normal_label = [0] * len(test_normal_path)
-
-        test_label = test_anomaly_label + test_normal_label
-        test_path = test_anomaly_path + test_normal_path
 
         transform = transforms.Compose([
             transforms.Resize((image_size[0], image_size[1])),
             transforms.ToTensor(),
         ])
+        import pandas as pd
+        df = pd.read_csv('/kaggle/input/ddrdataset/DR_grading.csv')
 
-        if P.test_id == 2:
-            import pandas as pd
-            df = pd.read_csv('/kaggle/input/ddrdataset/DR_grading.csv')
-            label = df["diagnosis"].to_numpy()
-            path = df["id_code"].to_numpy()
+        # Extract labels and paths
+        label = df["diagnosis"].to_numpy()
+        path = df["id_code"].to_numpy()
 
-            normal_path = path[label == 0]
-            anomaly_path = path[label != 0]
+        # Filter paths by label
+        normal_path = path[label == 0]
+        anomaly_path = path[label != 0]
 
-            shifted_test_path = list(normal_path) + list(anomaly_path)
-            shifted_test_label = [0] * len(normal_path) + [1] * len(anomaly_path)
+        # Split the normal path into 70% train and 30% test
+        normal_path_train, normal_path_test = train_test_split(normal_path, test_size=0.30, random_state=42)
 
-            shifted_test_path = ["/kaggle/input/ddrdataset/DR_grading/DR_grading/" + s for s in shifted_test_path]
+        train_path = ["/kaggle/input/ddrdataset/DR_grading/DR_grading/" + s for s in normal_path_train]
+        train_label = [0] * len(train_path)
+        test_label = [0] * len(normal_path_test) + [1] * len(anomaly_path)
+        test_path = normal_path_test + anomaly_path
+        test_path = ["/kaggle/input/ddrdataset/DR_grading/DR_grading/" + s for s in test_path]
 
-            test_path = shifted_test_path
-            test_label = shifted_test_label
 
         if train_transform_cutpasted:
 
