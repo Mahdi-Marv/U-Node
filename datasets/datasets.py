@@ -1178,16 +1178,33 @@ def get_dataset(P, dataset, test_only=False, image_size=(32, 32, 3), download=Fa
         print("len(test_set), len(train_set): ", len(test_set), len(train_set))
     elif dataset == 'ISIC2018':
         n_classes = 2
-        train_path = glob('./ISIC_DATASET/dataset/train/NORMAL/*')
+        train_path = glob('/kaggle/input/isic-task3-dataset/dataset/train/NORMAL/*')
         train_label = [0]*len(train_path)
 
-        test_anomaly_path = glob('./ISIC_DATASET/dataset/test/ABNORMAL/*')
+        test_anomaly_path = glob('/kaggle/input/isic-task3-dataset/dataset/test/ABNORMAL/*')
         test_anomaly_label = [1]*len(test_anomaly_path)
-        test_normal_path = glob('./ISIC_DATASET/dataset/test/NORMAL/*')
+        test_normal_path = glob('/kaggle/input/isic-task3-dataset/dataset/test/NORMAL/*')
         test_normal_label = [0]*len(test_normal_path)
 
         test_label = test_anomaly_label + test_normal_label
         test_path = test_anomaly_path + test_normal_path
+
+        if P.test_id == 2:
+            import pandas as pd
+            df = pd.read_csv('/kaggle/input/pad-ufes-20/PAD-UFES-20/metadata.csv')
+            label = df["diagnostic"].to_numpy()
+            path = df["img_id"].to_numpy()
+
+            normal_path = path[label == 0]
+            anomaly_path = path[label != 0]
+
+            shifted_test_path = list(normal_path) + list(anomaly_path)
+            shifted_test_label = (label != "NEV")
+
+            shifted_test_path = ["/kaggle/input/ddrdataset/DR_grading/DR_grading/" + s for s in shifted_test_path]
+
+            test_path = shifted_test_path
+            test_label = shifted_test_label
 
         transform = transforms.Compose([
             transforms.Resize((image_size[0], image_size[1])),
