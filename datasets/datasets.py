@@ -1101,7 +1101,6 @@ def get_dataset(P, dataset, test_only=False, image_size=(32, 32, 3), download=Fa
             # transforms.Grayscale(num_output_channels=3),
             transforms.ToTensor(),
         ])
-        import pandas as pd
         labels_df = pd.read_csv('./head-ct/labels.csv')
         labels_ = np.array(labels_df[' hemorrhage'].tolist())
         images = np.array(sorted(glob('./head-ct/head_ct/head_ct/*.png')))
@@ -1195,15 +1194,7 @@ def get_dataset(P, dataset, test_only=False, image_size=(32, 32, 3), download=Fa
             transforms.ToTensor(),
         ])
         if train_transform_cutpasted:
-            '''
-            train_transform_cutpasted = transforms.Compose([
-                transforms.Resize((image_size[0], image_size[1])),
-                CutPasteScar(),
-                CutPasteScar(),
-                CutPasteUnion,
-                CutPasteUnion(transform = transforms.Compose([transforms.ToTensor(),])),
-            ])
-            '''
+
             train_transform_cutpasted = transforms.Compose([
                 transforms.Resize((image_size[0], image_size[1])),
                 CutPasteUnion(),
@@ -1220,6 +1211,53 @@ def get_dataset(P, dataset, test_only=False, image_size=(32, 32, 3), download=Fa
         print("test_set shapes: ", test_set[0][0].shape)
         print("len(test_set), len(train_set): ", len(test_set), len(train_set))
     elif dataset == 'aptos':
+        n_classes = 2
+        train_path = glob('/kaggle/working/APTOS/train/NORMAL*')
+        train_label = [0] * len(train_path)
+
+        test_anomaly_path = glob('/kaggle/working/APTOS/test/ABNORMAL*')
+        test_anomaly_label = [1] * len(test_anomaly_path)
+        test_normal_path = glob('/kaggle/working/APTOS/test/NORMAL*')
+        test_normal_label = [0] * len(test_normal_path)
+
+        test_label = test_anomaly_label + test_normal_label
+        test_path = test_anomaly_path + test_normal_path
+
+        transform = transforms.Compose([
+            transforms.Resize((image_size[0], image_size[1])),
+            transforms.ToTensor(),
+        ])
+
+        if P.test_id == 2:
+            import pandas as pd
+            df = pd.read_csv('/kaggle/input/ddrdataset/DR_grading.csv')
+            label = df["diagnosis"].to_numpy()
+            path = df["id_code"].to_numpy()
+
+            normal_path = path[label == 0]
+            anomaly_path = path[label != 0]
+
+            shifted_test_path = list(normal_path) + list(anomaly_path)
+            shifted_test_label = [0] * len(normal_path) + [1] * len(anomaly_path)
+
+            shifted_test_path = ["/kaggle/input/ddrdataset/DR_grading/DR_grading/" + s for s in shifted_test_path]
+
+            test_path = shifted_test_path
+            test_label = shifted_test_label
+
+        if train_transform_cutpasted:
+
+            train_transform_cutpasted = transforms.Compose([
+                transforms.Resize((image_size[0], image_size[1])),
+                CutPasteUnion(),
+                CutPasteUnion(transform=transforms.Compose([transforms.ToTensor(), ])),
+            ])
+
+            train_set = Aptos(image_path=train_path, labels=train_label, transform=train_transform_cutpasted)
+        else:
+            train_set = Aptos(image_path=train_path, labels=train_label, transform=transform)
+
+        test_set = Aptos(image_path=test_path, labels=test_label, transform=transform)
 
     elif dataset == 'cifar100-versus-other-eval':
         n_classes = 2
@@ -1322,7 +1360,6 @@ def get_dataset(P, dataset, test_only=False, image_size=(32, 32, 3), download=Fa
         print("train_set shapes: ", train_set[0][0].shape)
         print("test_set shapes: ", test_set[0][0].shape)
     elif dataset == 'stanford-cars':
-        import pandas as pd
         from scipy.io import loadmat
         n_classes = 20
         cars_train_annos = loadmat('./stanford_cars/devkit/cars_train_annos.mat')
