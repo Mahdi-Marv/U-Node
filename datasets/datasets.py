@@ -1219,6 +1219,8 @@ def get_dataset(P, dataset, test_only=False, image_size=(32, 32, 3), download=Fa
         print("train_set shapes: ", train_set[0][0].shape)
         print("test_set shapes: ", test_set[0][0].shape)
         print("len(test_set), len(train_set): ", len(test_set), len(train_set))
+    elif dataset == 'aptos':
+
     elif dataset == 'cifar100-versus-other-eval':
         n_classes = 2
         cifar_transform = transforms.Compose([
