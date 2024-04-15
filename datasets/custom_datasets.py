@@ -197,7 +197,7 @@ class MVTecDataset(Dataset):
         image = Image.open(image_file)
         image = image.convert('RGB')
 
-        if self.train:
+        if self.train and augment:
             image = add_pad(image)
 
         imagenet_30 = IMAGENET30_TEST_DATASET()
@@ -207,7 +207,8 @@ class MVTecDataset(Dataset):
         imagenet30_img = imagenet_30[random_index]
         imagenet30_img = imagenet30_img.convert('RGB')
 
-        image = center_paste(imagenet30_img, image, self.shrink_factor)
+        if not self.train:
+            image = center_paste(imagenet30_img, image, self.shrink_factor)
 
 
 
