@@ -74,7 +74,7 @@ for epoch in range(start_epoch, P.epochs + 1):
             "--noise_scale",str(0.0),
             "--noist_probability", str(0.0),
             '--activation_function', str(P.activation_function),
-            '--shrink_factor', 1
+            # '--shrink_factor', str(1)
         ]
 
         result = subprocess.run(["python", "eval.py"] + arguments_to_pass, capture_output=True, text=True)
