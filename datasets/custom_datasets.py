@@ -42,7 +42,17 @@ class Brain(Dataset):
         self.transform = transform
         if is_train:
             self.image_paths = glob('./Br35H/dataset/train/normal/*')
-            brats_mod = glob()
+            brats_mod = glob('./brats/dataset/train/normal/*')
+
+            random.seed(1)
+
+
+            random_brats_images = random.sample(brats_mod, 150)
+
+            print('added 150 normal brat images')
+
+            self.image_paths.extend(random_brats_images)
+
         else:
             if test_id==1:
                 test_normal_path = glob('./Br35H/dataset/test/normal/*')
