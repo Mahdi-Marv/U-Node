@@ -241,7 +241,7 @@ class MVTecCutpastePlus(Dataset):
             for j in range(width):
                 heats.append((heatmap[0][i][j], (i, j)))
         sorted_heat = list(reversed(sorted(heats)))
-        ratio = 0.1
+        ratio = 0.05
         sep = round(ratio * len(sorted_heat))
         paste_patch = [x[1] for x in sorted_heat][:sep]
 
