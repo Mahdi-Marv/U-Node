@@ -1212,12 +1212,12 @@ def get_dataset(P, dataset, test_only=False, image_size=(32, 32, 3), download=Fa
         print("len(test_set), len(train_set): ", len(test_set), len(train_set))
     elif dataset == 'aptos':
         n_classes = 2
-        train_path = glob('/kaggle/working/APTOS/train/NORMAL*')
+        train_path = glob('/kaggle/working/APTOS/train/NORMAL/*')
         train_label = [0] * len(train_path)
 
-        test_anomaly_path = glob('/kaggle/working/APTOS/test/ABNORMAL*')
+        test_anomaly_path = glob('/kaggle/working/APTOS/test/ABNORMAL/*')
         test_anomaly_label = [1] * len(test_anomaly_path)
-        test_normal_path = glob('/kaggle/working/APTOS/test/NORMAL*')
+        test_normal_path = glob('/kaggle/working/APTOS/test/NORMAL/*')
         test_normal_label = [0] * len(test_normal_path)
 
         test_label = test_anomaly_label + test_normal_label
