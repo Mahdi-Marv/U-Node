@@ -151,6 +151,7 @@ class MVTecDataset_Cutpasted(Dataset):
         self.transform = transform
         self.image_files = []
         print("category MVTecDataset_Cutpasted:", category)
+        print(root, os.listdir(root))
         if train:
             self.image_files = glob(os.path.join(root, category, "train", "good", "*.png"))
         else:
