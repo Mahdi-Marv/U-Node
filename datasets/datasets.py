@@ -1232,10 +1232,15 @@ def get_dataset(P, dataset, test_only=False, image_size=(32, 32, 3), download=Fa
         # Split the normal path into 70% train and 30% test
         normal_path_train, normal_path_test = train_test_split(normal_path, test_size=0.30, random_state=42)
 
+        # Prepend the full path to the filenames
         train_path = ["/kaggle/input/ddrdataset/DR_grading/DR_grading/" + s for s in normal_path_train]
         train_label = [0] * len(train_path)
+
+        # Handling test paths and labels
         test_label = [0] * len(normal_path_test) + [1] * len(anomaly_path)
-        test_path = normal_path_test + anomaly_path
+
+        # Ensure correct concatenation
+        test_path = np.concatenate([normal_path_test, anomaly_path])
         test_path = ["/kaggle/input/ddrdataset/DR_grading/DR_grading/" + s for s in test_path]
 
 
