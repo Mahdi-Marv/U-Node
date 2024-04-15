@@ -16,6 +16,17 @@ import rasterio
 import re
 from torchvision.datasets.folder import default_loader
 
+import copy
+from pytorch_grad_cam import GradCAM, ScoreCAM, GradCAMPlusPlus, AblationCAM, XGradCAM, EigenCAM, FullGrad
+from pytorch_grad_cam.utils.model_targets import ClassifierOutputTarget
+from pytorch_grad_cam.utils.image import show_cam_on_image
+from torchvision.models import resnet18
+import numpy as np
+from PIL import Image
+import torch
+import torch.nn as nn
+import torchvision
+
 import pandas as pd
 import matplotlib.pyplot as plt
 import seaborn as sns
@@ -57,6 +68,7 @@ class Brain(Dataset):
                 self.test_label = [0] * len(test_normal_path) + [1] * len(test_anomaly_path)
 
 
+
     def __len__(self):
         return len(self.image_paths)
 
@@ -65,11 +77,71 @@ class Brain(Dataset):
         img = img.convert('RGB')
         if self.transform is not None:
             img = self.transform(img)
+
         if self.is_train:
             return img, 0
         else :
             return img, self.test_label[idx]
 
+
+class BrainCutPastePlus(Dataset):
+    def __init__(self, transform, grad_model, is_train=True, test_id=1):
+        print('brain dataset')
+        self.is_train = is_train
+        self.transform = transform
+        if is_train:
+            self.image_paths = glob('./Br35H/dataset/train/normal/*')
+        else:
+            if test_id == 1:
+                test_normal_path = glob('./Br35H/dataset/test/normal/*')
+                test_anomaly_path = glob('./Br35H/dataset/test/anomaly/*')
+
+                self.image_paths = test_normal_path + test_anomaly_path
+                self.test_label = [0] * len(test_normal_path) + [1] * len(test_anomaly_path)
+            else:
+                test_normal_path = glob('./brats/dataset/test/normal/*')
+                test_anomaly_path = glob('./brats/dataset/test/anomaly/*')
+
+                self.image_paths = test_normal_path + test_anomaly_path
+                self.test_label = [0] * len(test_normal_path) + [1] * len(test_anomaly_path)
+
+        self.cutpaste = CutPastePlusUnion(transform=transforms.Compose([transforms.ToTensor(), ]))
+
+        self.model = grad_model
+        self.model.to('cpu')
+        self.model.eval()
+        module_dict = dict(self.model.named_modules())
+        target_layers = module_dict['layer4.1.conv2']
+        self.cam = GradCAM(model=self.model, target_layers=[target_layers])
+
+    def __len__(self):
+        return len(self.image_paths)
+
+    def __getitem__(self, idx):
+        image = Image.open(self.image_paths[idx])
+        image = image.convert('RGB')
+        if self.transform is not None:
+            image = self.transform(image)
+
+        height = image.shape[1]
+        width = image.shape[2]
+
+        heatmap = self.cam(input_tensor=image.unsqueeze(0))
+        heats = []
+        for i in range(height):  # replace width & height if error
+            for j in range(width):
+                heats.append((heatmap[0][i][j], (i, j)))
+        sorted_heat = list(reversed(sorted(heats)))
+        ratio = 0.05
+        sep = round(ratio * len(sorted_heat))
+        paste_patch = [x[1] for x in sorted_heat][:sep]
+
+        image = self.cutpaste(image, paste_patch)
+
+        if self.is_train:
+            return image, 1
+        else:
+            return image, self.test_label[idx]
 
 
 class MultiDataTransform(object):

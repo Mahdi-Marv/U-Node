@@ -1458,7 +1458,11 @@ def get_dataset(P, dataset, test_only=False, image_size=(32, 32, 3), download=Fa
     elif dataset == 'brain':
         n_classes = 2
         if train_transform_cutpasted:
-            train_set = Brain(transform=train_transform_cutpasted, is_train=True)
+            # train_set = Brain(transform=train_transform_cutpasted, is_train=True)
+            from torchvision.models import resnet18
+            pre_model = resnet18(pretrained=True)
+            train_set = BrainCutPastePlus(transform= get_transform(image_size), grad_model=pre_model,
+                                          is_train=True)
         else:
             train_set = Brain(transform=train_transform, is_train=True)
 
