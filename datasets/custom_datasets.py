@@ -227,7 +227,7 @@ class MVTecCutpastePlus(Dataset):
             self.grads = []
             image_len = len(self.image_files)
             for k in range(image_len):
-                if k % 50 == 1:
+                if k % 100 == 1:
                     print(f'grad: {k} / {image_len}')
                 image_file = self.image_files[k]
                 img = Image.open(image_file)
