@@ -248,9 +248,9 @@ class MVTecCutpastePlus(Dataset):
         image = self.cutpaste(image, paste_patch)
 
         if os.path.dirname(image_file).endswith("good"):
-            target = 1
+            target = -1
         else:
-            target = 1
+            target = -1
 
         return image, target
 
