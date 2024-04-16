@@ -108,11 +108,35 @@ class BrainCutPastePlus(Dataset):
         self.cutpaste = CutPastePlusUnion(transform=transforms.Compose([transforms.ToTensor(), ]))
 
         self.model = grad_model
-        self.model.to('cpu')
+        device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
+        self.model.to(device)
         self.model.eval()
         module_dict = dict(self.model.named_modules())
         target_layers = module_dict['layer4.1.conv2']
         self.cam = GradCAM(model=self.model, target_layers=[target_layers])
+        self.grads = []
+        image_len = len(self.image_files)
+        for k in range(image_len):
+            if k % 100 == 1:
+                print(f'grad: {k} / {image_len}')
+            image_file = self.image_files[k]
+            img = Image.open(image_file)
+            img = img.convert('RGB')
+            if self.transform is not None:
+                img = self.transform(img)
+            height = img.shape[1]
+            width = img.shape[2]
+
+            heatmap = self.cam(input_tensor=img.unsqueeze(0))
+            heats = []
+            for m in range(height):  # replace width & height if error
+                for n in range(width):
+                    heats.append((heatmap[0][m][n], (m, n)))
+            sorted_heat = list(reversed(sorted(heats)))
+            ratio = 0.05
+            sep = round(ratio * len(sorted_heat))
+            self.grads.append([x[1] for x in sorted_heat][:sep])
+        print('Finished Collecting Gradcams!')
 
     def __len__(self):
         return len(self.image_paths)
@@ -122,21 +146,6 @@ class BrainCutPastePlus(Dataset):
         image = image.convert('RGB')
         if self.transform is not None:
             image = self.transform(image)
-
-        height = image.shape[1]
-        width = image.shape[2]
-
-        heatmap = self.cam(input_tensor=image.unsqueeze(0))
-        heats = []
-        for i in range(height):  # replace width & height if error
-            for j in range(width):
-                heats.append((heatmap[0][i][j], (i, j)))
-        sorted_heat = list(reversed(sorted(heats)))
-        ratio = 0.05
-        sep = round(ratio * len(sorted_heat))
-        paste_patch = [x[1] for x in sorted_heat][:sep]
-
-        image = self.cutpaste(image, paste_patch)
 
         if self.is_train:
             return image, 1

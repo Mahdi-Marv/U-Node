@@ -4,9 +4,10 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="13e74ec9-857e-4f7d-9163-eccafbdf79cf" name="Changes" comment="test set 2">
+    <list default="true" id="13e74ec9-857e-4f7d-9163-eccafbdf79cf" name="Changes" comment="fix bug">
+      <change beforePath="$PROJECT_DIR$/.idea/inspectionProfiles/Project_Default.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/inspectionProfiles/Project_Default.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/inspectionProfiles/profiles_settings.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/inspectionProfiles/profiles_settings.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/datasets/custom_datasets.py" beforeDir="false" afterPath="$PROJECT_DIR$/datasets/custom_datasets.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/datasets/cutpast_transformation.py" beforeDir="false" afterPath="$PROJECT_DIR$/datasets/cutpast_transformation.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/datasets/datasets.py" beforeDir="false" afterPath="$PROJECT_DIR$/datasets/datasets.py" afterDir="false" />
     </list>
@@ -38,6 +39,7 @@
   "keyToString": {
     "RunOnceActivity.OpenProjectViewOnStart": "true",
     "RunOnceActivity.ShowReadmeOnStart": "true",
+    "SHARE_PROJECT_CONFIGURATION_FILES": "true",
     "git-widget-placeholder": "brain__cutpasteplus",
     "last_opened_file_path": "C:/Users/Lenovo/Desktop/Semesters/Semester8/Roh/CSI"
   }
@@ -290,16 +292,48 @@
       <option name="project" value="LOCAL" />
       <updated>1713090308302</updated>
     </task>
-    <option name="localTasksCounter" value="30" />
+    <task id="LOCAL-00030" summary="add visualize">
+      <option name="closed" value="true" />
+      <created>1713257580140</created>
+      <option name="number" value="00030" />
+      <option name="presentableId" value="LOCAL-00030" />
+      <option name="project" value="LOCAL" />
+      <updated>1713257580140</updated>
+    </task>
+    <task id="LOCAL-00031" summary="fix bug">
+      <option name="closed" value="true" />
+      <created>1713265364488</created>
+      <option name="number" value="00031" />
+      <option name="presentableId" value="LOCAL-00031" />
+      <option name="project" value="LOCAL" />
+      <updated>1713265364488</updated>
+    </task>
+    <task id="LOCAL-00032" summary="fix bug">
+      <option name="closed" value="true" />
+      <created>1713265826732</created>
+      <option name="number" value="00032" />
+      <option name="presentableId" value="LOCAL-00032" />
+      <option name="project" value="LOCAL" />
+      <updated>1713265826732</updated>
+    </task>
+    <task id="LOCAL-00033" summary="fix bug">
+      <option name="closed" value="true" />
+      <created>1713268501173</created>
+      <option name="number" value="00033" />
+      <option name="presentableId" value="LOCAL-00033" />
+      <option name="project" value="LOCAL" />
+      <updated>1713268501173</updated>
+    </task>
+    <option name="localTasksCounter" value="34" />
     <servers />
   </component>
   <component name="VcsManagerConfiguration">
     <MESSAGE value="add train pad code" />
     <MESSAGE value="initial brain code" />
     <MESSAGE value="b" />
+    <MESSAGE value="test set 2" />
     <MESSAGE value="add visualize" />
     <MESSAGE value="fix bug" />
-    <MESSAGE value="test set 2" />
-    <option name="LAST_COMMIT_MESSAGE" value="test set 2" />
+    <option name="LAST_COMMIT_MESSAGE" value="fix bug" />
   </component>
 </project>
