@@ -9,6 +9,53 @@ import models.classifier as C
 
 from datasets import set_dataset_count, mvtecad_dataset, get_dataset, get_superclass_list, get_subclass_dataset
 from utils_.utils import get_loader_unique_label
+import pandas as pd
+import numpy as np
+import random
+def show_images(images, labels, dataset_name):
+    num_images = len(images)
+    rows = int(np.ceil(num_images / 5))  # Use np.ceil to ensure enough rows
+
+    fig, axes = plt.subplots(rows, 5, figsize=(15, rows * 3), squeeze=False)  # Ensure axes is always a 2D array
+
+    for i, ax in enumerate(axes.flatten()):
+        if i < num_images:
+            # Check if image is a tensor, if so, convert to numpy
+            if isinstance(images[i], torch.Tensor):
+                image = images[i].numpy()
+            else:
+                image = images[i]
+            # If image is in (C, H, W) format, transpose it to (H, W, C)
+            if image.shape[0] in {1, 3}:  # Assuming grayscale (1 channel) or RGB (3 channels)
+                image = image.transpose(1, 2, 0)
+            if image.shape[2] == 1:  # If grayscale, convert to RGB for consistency
+                image = np.repeat(image, 3, axis=2)
+            ax.imshow(image)
+            ax.set_title(f"Label: {labels[i].item()}")
+        ax.axis("off")
+
+    plt.tight_layout()
+    plt.savefig(f'{dataset_name}_visualization.png')
+
+
+def visualize_random_samples_from_clean_dataset(dataset, dataset_name):
+    print(f"Start visualization of clean dataset: {dataset_name}")
+    # Choose 20 random indices from the dataset
+    if len(dataset) > 20:
+        random_indices = random.sample(range(len(dataset)), 20)
+    else:
+        random_indices = [i for i in range(len(dataset))]
+
+    # Retrieve corresponding samples
+    random_samples = [dataset[i] for i in random_indices]
+
+    # Separate images and labels
+    images, labels = zip(*random_samples)
+
+    labels = torch.tensor(labels)
+
+    # Show the 20 random samples
+    show_images(images, labels, dataset_name)
 
 P = parse_args()
 
@@ -45,6 +92,9 @@ else:
     train_set, test_set, image_size, n_classes = get_dataset(P, dataset=P.dataset, eval=True, download=True, image_size=image_size_, labels=normal_labels, test_id=P.test_id)
 P.image_size = image_size
 P.n_classes = n_classes
+
+
+visualize_random_samples_from_clean_dataset(test_set, f'visualize for test set {P.test_id}')
 
 print("full test set:", len(test_set))
 print("full train set:", len(train_set))
