@@ -218,7 +218,8 @@ class MVTecCutpastePlus(Dataset):
         if model_type == 'resnet18':  #using Resnet18 pretrained
             print('Collecting gradcams...')
             self.model = grad_model
-            self.model.to('cuda:0')
+            device = torch.device(f"cuda" if torch.cuda.is_available() else "cpu")
+            self.model.to(device)
             self.model.eval()
             module_dict = dict(self.model.named_modules())
             target_layers = module_dict['layer4.1.conv2']
