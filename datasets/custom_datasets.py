@@ -115,11 +115,11 @@ class BrainCutPastePlus(Dataset):
         target_layers = module_dict['layer4.1.conv2']
         self.cam = GradCAM(model=self.model, target_layers=[target_layers])
         self.grads = []
-        image_len = len(self.image_files)
+        image_len = len(self.image_paths)
         for k in range(image_len):
             if k % 100 == 1:
                 print(f'grad: {k} / {image_len}')
-            image_file = self.image_files[k]
+            image_file = self.image_paths[k]
             img = Image.open(image_file)
             img = img.convert('RGB')
             if self.transform is not None:
