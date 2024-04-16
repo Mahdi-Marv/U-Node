@@ -233,7 +233,7 @@ def get_exposure_dataloader(P, batch_size = 64, image_size=(224, 224, 3),
 
         #CutpastePlus
         pre_model = resnet18(pretrained=True)
-        pre_model.to('cpu')
+        pre_model.to('cuda:0')
         pre_model.eval()
         for idx, i in enumerate(cls_list):
             train_ds_mvtech_fake.append(FakeMVTecDataset(root=fake_root, train=True, category=categories[i], transform=fake_transform, count=fc[idx]))
