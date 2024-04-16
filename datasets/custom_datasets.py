@@ -118,6 +118,7 @@ class BrainCutPastePlus(Dataset):
         return len(self.image_paths)
 
     def __getitem__(self, idx):
+        print('tuple?  ', self.image_paths[idx])
         image = Image.open(self.image_paths[idx])
         image = image.convert('RGB')
         if self.transform is not None:
