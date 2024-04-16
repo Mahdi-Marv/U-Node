@@ -216,6 +216,7 @@ class MVTecCutpastePlus(Dataset):
         if model_type != 'resnet18':
             pass  #Implement if needed
         if model_type == 'resnet18':  #using Resnet18 pretrained
+            print('Collecting gradcams...')
             self.model = grad_model
             self.model.to('cpu')
             self.model.eval()
@@ -242,6 +243,7 @@ class MVTecCutpastePlus(Dataset):
                 ratio = 0.05
                 sep = round(ratio * len(sorted_heat))
                 self.grads.append([x[1] for x in sorted_heat][:sep])
+            print('Finished Collecting Gradcams!')
 
 
         self.image_files.sort(key=lambda y: y.lower())
