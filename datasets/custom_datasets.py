@@ -256,6 +256,8 @@ class MVTecCutpastePlus(Dataset):
         image_file = self.image_files[index]
         image = Image.open(image_file)
         image = image.convert('RGB')
+        if self.transform is not None:
+            image = self.transform(image)
 
         image = self.cutpaste(image, self.grads[index])
 
