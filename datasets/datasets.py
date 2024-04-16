@@ -1463,6 +1463,7 @@ def get_dataset(P, dataset, test_only=False, image_size=(32, 32, 3), download=Fa
             pre_model = resnet18(pretrained=True)
             train_set = BrainCutPastePlus(transform= get_transform(image_size), grad_model=pre_model,
                                           is_train=True)
+            visualize_random_samples_from_clean_dataset(train_set, 'trainset cutpasted')
         else:
             train_set = Brain(transform=train_transform, is_train=True)
 
