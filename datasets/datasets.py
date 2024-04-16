@@ -833,6 +833,8 @@ def get_dataset(P, dataset, test_only=False, image_size=(32, 32, 3), download=Fa
         n_classes = 2
         train_dataset = []
         test_dataset = []
+        import os
+        print(os.listdir('/kaggle/input'))
         root = "/kaggle/input/mvtecad-mvtec-anomaly-detection/mvtec_anomaly_detection"
         train_transform = transforms.Compose([
                 transforms.Resize((256, 256)),
