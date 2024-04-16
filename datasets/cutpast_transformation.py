@@ -240,7 +240,7 @@ class CutPastePlusScar(CutPaste):
         rotation (list): rotation to sample from. List of [min, max]
     """
 
-    def __init__(self, width=[2, 16], height=[10, 25], rotation=[-45, 45], **kwags):
+    def __init__(self, width=[10, 25], height=[10, 25], rotation=[-45, 45], **kwags):
         super(CutPastePlusScar, self).__init__(**kwags)
         self.width = width
         self.height = height
