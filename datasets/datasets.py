@@ -194,7 +194,7 @@ def mvtecad_dataset(P, category, root = "./mvtec_anomaly_detection", image_size=
 def get_exposure_dataloader(P, batch_size = 64, image_size=(224, 224, 3),
                             base_path = './tiny-imagenet-200', fake_root="./fake_mvtecad", root="./mvtec_anomaly_detection" ,count=-1, cls_list=None, labels=None):
     categories = ['toothbrush', 'zipper', 'transistor', 'tile', 'grid', 'wood', 'pill', 'bottle', 'capsule', 'metal_nut', 'hazelnut', 'screw', 'carpet', 'leather', 'cable']
-    if (P.dataset=='high-variational-brain-tumor' or P.dataset=='head-ct' or P.dataset=='brain' or  P.dataset=='mnist' or P.dataset=='fashion-mnist' or P.dataset=='Tomor_Detection'
+    if (P.dataset=='chest', P.dataset=='high-variational-brain-tumor' or P.dataset=='head-ct' or P.dataset=='brain' or  P.dataset=='mnist' or P.dataset=='fashion-mnist' or P.dataset=='Tomor_Detection'
             or P.dataset=='brain'):
         tiny_transform = transforms.Compose([
                 transforms.Resize((image_size[0], image_size[1])),
@@ -297,7 +297,7 @@ def get_exposure_dataloader(P, batch_size = 64, image_size=(224, 224, 3),
                 transforms.RandomRotation((90, 270)),
                 CutPasteUnion(transform = transforms.Compose([transforms.ToTensor(),])),
             ])
-        elif P.dataset=='head-ct' or P.dataset=='brain':
+        elif P.dataset=='head-ct' or P.dataset=='brain' or P.dataset=='chest':
             train_transform_cutpasted = transforms.Compose([
                 transforms.Resize((image_size[0], image_size[1])),
                 transforms.Grayscale(num_output_channels=1),
@@ -500,7 +500,7 @@ def get_exposure_dataloader(P, batch_size = 64, image_size=(224, 224, 3),
             if len(train_ds_tumor_detection_fake) > 0:
                 print("number of fake data:", len(train_ds_tumor_detection_fake), "shape:", train_ds_tumor_detection_fake[0][0].shape)
             exposureset = torch.utils.data.ConcatDataset([cutpast_train_set, train_ds_tumor_detection_fake, imagenet_exposure])
-        elif P.dataset=='brain':
+        elif P.dataset=='brain' or P.dataset=='chest':
             exposureset = torch.utils.data.ConcatDataset([cutpast_train_set, imagenet_exposure])
             visualize_random_samples_from_clean_dataset(exposureset, 'exposure set')
         elif P.dataset=="head-ct":
@@ -1463,6 +1463,14 @@ def get_dataset(P, dataset, test_only=False, image_size=(32, 32, 3), download=Fa
             train_set = Brain(transform=train_transform, is_train=True)
 
         test_set = Brain(transform=test_transform, is_train=False, test_id=test_id)
+    elif dataset == 'chest':
+        n_classes = 2
+        if train_transform_cutpasted:
+            train_set = Chest(transform=train_transform_cutpasted, is_train=True)
+        else:
+            train_set = Chest(transform=train_transform, is_train=True)
+
+        test_set = Chest(transform=test_transform, is_train=False, test_id=test_id)
 
 
     else:

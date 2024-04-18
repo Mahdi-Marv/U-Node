@@ -94,7 +94,6 @@ else:
 
 ### only use one ood_layer while training
 P.ood_layer = P.ood_layer[0]
-P.dataset = 'brain'
 P.fake_data_percent = 0
 ### Initialize dataset ###
 image_size_ = (P.image_size, P.image_size, 3)
@@ -106,7 +105,6 @@ P.image_size = image_size
 P.n_classes = n_classes
 
 visualize_random_samples_from_clean_dataset(train_set, "train set")
-visualize_random_samples_from_clean_dataset(test_set, 'test set')
 
 print("full test set:", len(test_set))
 print("full train set:", len(train_set))

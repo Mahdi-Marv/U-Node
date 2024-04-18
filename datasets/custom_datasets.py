@@ -15,6 +15,7 @@ import random
 import rasterio
 import re
 from torchvision.datasets.folder import default_loader
+import pydicom
 
 import pandas as pd
 import matplotlib.pyplot as plt
@@ -69,6 +70,68 @@ class Brain(Dataset):
             return img, 0
         else :
             return img, self.test_label[idx]
+
+
+class Chest(Dataset):
+    def __init__(self, transform, is_train=True, test_id=1):
+        print('brain dataset')
+        self.is_train = is_train
+        self.transform = transform
+        self.test_id = test_id
+        if is_train:
+            self.image_paths = glob('/kaggle/working/train/normal/*')
+            self.test_label = [0] * len(self.image_paths)
+        else:
+            test_normal_path = glob('/kaggle/working/test/normal/*')
+            test_anomaly_path = glob('/kaggle/working/test/anomaly/*')
+
+            self.image_paths = test_normal_path + test_anomaly_path
+            self.test_label = [0] * len(test_normal_path) + [1] * len(test_anomaly_path)
+
+            if self.test_id == 2:
+                shifted_test_normal_path = glob('/kaggle/working/4. Operations Department/Test/1/*')
+                shifted_test_anomaly_path = (glob('/kaggle/working/4. Operations Department/Test/0/*') + glob(
+                    '/kaggle/working/4. Operations Department/Test/2/*') +
+                                             glob('/kaggle/working/4. Operations Department/Test/3/*'))
+
+                self.image_paths = shifted_test_normal_path + shifted_test_anomaly_path
+                self.test_label = [0] * len(shifted_test_normal_path) + [1] * len(shifted_test_anomaly_path)
+
+            if self.test_id == 3:
+                test_normal_path = glob('/kaggle/working/chest_xray/test/NORMAL/*')
+                test_anomaly_path = glob('/kaggle/working/chest_xray/test/PNEUMONIA/*')
+
+                self.image_paths = test_normal_path + test_anomaly_path
+                self.test_label = [0] * len(test_normal_path) + [1] * len(test_anomaly_path)
+
+
+    def __len__(self):
+        return len(self.image_paths)
+
+    def __getitem__(self, idx):
+        if self.test_id==1 or self.is_train:
+            dicom = pydicom.dcmread(self.image_paths[idx])
+            image = dicom.pixel_array
+
+            # Convert to a PIL Image
+            image = Image.fromarray(image).convert('RGB')
+
+            # Apply the transform if it's provided
+            if self.transform is not None:
+                image = self.transform(image)
+            return image, self.test_label[idx]
+
+
+
+        img = Image.open(self.image_paths[idx])
+        img = img.convert('RGB')
+        if self.transform is not None:
+            img = self.transform(img)
+        if self.is_train:
+            return img, 0
+        else :
+            return img, self.test_label[idx]
+
 
 
 
