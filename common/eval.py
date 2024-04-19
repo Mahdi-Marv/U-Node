@@ -9,6 +9,9 @@ import models.classifier as C
 
 from datasets import set_dataset_count, mvtecad_dataset, get_dataset, get_superclass_list, get_subclass_dataset
 from utils_.utils import get_loader_unique_label
+import random
+import matplotlib.pyplot as plt
+import numpy as np
 
 def show_images(images, labels, dataset_name):
     num_images = len(images)
