@@ -31,7 +31,7 @@ class BaseModel(nn.Module, metaclass=ABCMeta):
 
         if simclr:
             _return_aux = True
-            _aux['simclr'] = features #self.simclr_layer(features)
+            _aux['simclr'] =  self.simclr_layer(features)
 
         if shift:
             _return_aux = True
