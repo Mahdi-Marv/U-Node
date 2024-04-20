@@ -45,7 +45,7 @@ def parse_args(default=False):
     parser.add_argument('--image_size', help='None: multi-class, Not None: one-class',
                         default=32, type=int)
     parser.add_argument('--save_step', help='None: multi-class, Not None: one-class',
-                        default=20, type=int)
+                        default=5, type=int)
 
     parser.add_argument('--noise_mean', help='',
                         default=0.0, type=float)
