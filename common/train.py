@@ -85,7 +85,7 @@ print("len train_set", len(train_set))
 print("len test_set", len(test_set))
 
 print("Unique labels(test_loader):", get_loader_unique_label(test_loader))
-print("Unique labels(train_loader):", get_loader_unique_label(train_loader))
+# print("Unique labels(train_loader):", get_loader_unique_label(train_loader))
 
 P.ood_dataset = anomaly_labels
 if P.dataset=='cub-birds' or P.dataset=='ISIC2018' or P.dataset=='high-variational-brain-tumor' or P.dataset=='WBC' or P.dataset=='mvtec-high-var-corruption' or P.dataset=="MVTecAD" or P.dataset=="mvtec-high-var" or P.dataset=='cifar10-versus-100' or P.dataset=='cifar100-versus-10':
