@@ -19,6 +19,7 @@ def eval_ood_detection(P, model, id_loader, ood_loaders, ood_scores, train_loade
     auroc_dict = dict()
     for ood in ood_loaders.keys():
         auroc_dict[ood] = dict()
+    print('here!')
 
     assert len(ood_scores) == 1  # assume single ood_score for simplicity
     ood_score = ood_scores[0]
