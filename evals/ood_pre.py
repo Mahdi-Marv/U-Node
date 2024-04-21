@@ -82,14 +82,14 @@ def eval_ood_detection(P, model, id_loader, ood_loaders, ood_scores, train_loade
             feats_ood[ood] = get_features(P, ood, model, ood_loader, prefix=prefix, **kwargs)
 
     print(f'Compute OOD scores... (score: {ood_score})')
-    print('feats_id', feats_id)
+    print('feats_id', feats_id['simclr'].shape, feats_id['shift'].shape)
     scores_id = get_scores(P, feats_id, ood_score).numpy()
     scores_ood = dict()
     if P.one_class_idx is not None:
         one_class_score = []
 
     for ood, feats in feats_ood.items():
-        print('ood', ood, feats, ood_score)
+        print('ood', ood, feats['simclr'].shape, feats['shift'].shape)
         scores_ood[ood] = get_scores(P, feats, ood_score).numpy()
         auroc_dict[ood][ood_score] = get_auroc(scores_id, scores_ood[ood])
         if P.one_class_idx is not None:
