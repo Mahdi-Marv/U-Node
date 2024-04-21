@@ -82,12 +82,14 @@ def eval_ood_detection(P, model, id_loader, ood_loaders, ood_scores, train_loade
             feats_ood[ood] = get_features(P, ood, model, ood_loader, prefix=prefix, **kwargs)
 
     print(f'Compute OOD scores... (score: {ood_score})')
+    print('feats_id', feats_id)
     scores_id = get_scores(P, feats_id, ood_score).numpy()
     scores_ood = dict()
     if P.one_class_idx is not None:
         one_class_score = []
 
     for ood, feats in feats_ood.items():
+        print('ood', ood, feats, ood_score)
         scores_ood[ood] = get_scores(P, feats, ood_score).numpy()
         auroc_dict[ood][ood_score] = get_auroc(scores_id, scores_ood[ood])
         if P.one_class_idx is not None:
@@ -114,6 +116,7 @@ def get_scores(P, feats_dict, ood_score):
 
     # compute scores
     scores = []
+    print('len(feats_sim)', len(feats_sim))
     for f_sim, f_shi in zip(feats_sim, feats_shi):
         f_sim = [f.mean(dim=0, keepdim=True) for f in f_sim.chunk(P.K_shift)]  # list of (1, d)
         f_shi = [f.mean(dim=0, keepdim=True) for f in f_shi.chunk(P.K_shift)]  # list of (1, 4)
