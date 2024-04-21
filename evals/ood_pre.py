@@ -126,6 +126,7 @@ def get_scores(P, feats_dict, ood_score):
     scores = torch.tensor(scores)
 
     assert scores.dim() == 1 and scores.size(0) == N  # (N)
+    print('!', type(scores), scores)
     return scores.cpu()
 
 
