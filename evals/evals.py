@@ -84,6 +84,7 @@ def test_classifier(P, model, loader, steps, marginal=False, logger=None):
 
 def eval_ood_detection(P, model, id_loader, ood_loaders, ood_scores, train_loader=None, simclr_aug=None):
     auroc_dict = dict()
+    print('oodsc', ood_scores)
     for ood in ood_loaders.keys():
         auroc_dict[ood] = dict()
 
