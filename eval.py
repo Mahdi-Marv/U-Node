@@ -20,11 +20,10 @@ elif P.mode in ['ood', 'ood_pre']:
         from evals.ood_pre_2 import eval_ood_detection as eval_ood_detection_2
         from evals.ood_pre_3 import eval_ood_detection as eval_ood_detection_3
     print(P)
-    print('here')
     with torch.no_grad():
         auroc_dict = eval_ood_detection(P, model, test_loader, ood_test_loader, P.ood_score,
                                         train_loader=train_loader, simclr_aug=simclr_aug)
-
+    print('here')
     if P.one_class_idx is not None:
         mean_dict = dict()
         for ood_score in P.ood_score:
