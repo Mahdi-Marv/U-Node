@@ -68,6 +68,9 @@ def eval_ood_detection(P, model, id_loader, ood_loaders, ood_scores, train_loade
     else:
         raise ValueError()
 
+    print('P.weight_sim:', P.weight_sim)
+    print('P.weight_shi:', P.weight_shi)
+
     print(f'weight_sim:\t' + '\t'.join(map('{:.4f}'.format, P.weight_sim)))
     print(f'weight_shi:\t' + '\t'.join(map('{:.4f}'.format, P.weight_shi)))
 
@@ -119,7 +122,7 @@ def get_scores(P, feats_dict, ood_score):
         score = 0
         for shi in range(P.K_shift):
             score += (f_sim[shi] * P.axis[shi]).sum(dim=1).max().item() * P.weight_sim[shi] #latent
-            # score += f_shi[shi][:, shi].item() * P.weight_shi[shi] # head
+            score += f_shi[shi][:, shi].item() * P.weight_shi[shi] # head
         score = score / P.K_shift
         scores.append(score)
     scores = torch.tensor(scores)
