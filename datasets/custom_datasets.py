@@ -123,7 +123,7 @@ class MVTecDataset(Dataset):
 
 
 class Waterbird(torch.utils.data.Dataset):
-    def __init__(self, root, df, transform, train=True, count_train_landbg=-1, count_train_waterbg=-1, mode='bg_all'):
+    def __init__(self, root, df, transform, train=True, count_train_landbg=-1, count_train_waterbg=-1, mode='bg_all', count=-1):
         self.transform = transform
         self.train = train
         self.df = df
@@ -158,6 +158,16 @@ class Waterbird(torch.utils.data.Dataset):
                 if full_path not in self.normal_paths:
                     self.image_paths.append(full_path)
                     self.labels.append(all_paths[i][1])
+
+        if count != -1:
+            if count<len(self.image_paths):
+                self.image_files = self.image_paths[:count]
+            else:
+                t = len(self.image_files)
+                for i in range(count-t):
+                    self.image_files.append(random.choice(self.image_files[:t]))
+                    if not train:
+                        self.labels.append(random.choice(self.labels[:t]))
 
     def __len__(self):
         return len(self.image_paths)
