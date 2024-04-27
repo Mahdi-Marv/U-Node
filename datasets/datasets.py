@@ -46,6 +46,7 @@ DTD_SUPERCLASS = list(range(46))
 WBC_SUPERCLASS = list(range(2))
 DIOR_SUPERCLASS = list(range(19))
 ISIC2018_SUPERCLASS = list(range(2))
+WATERBIRDS_SUPERCLASS = list(range(2))
 
 
 def sparse2coarse(targets):
@@ -1594,6 +1595,8 @@ def get_superclass_list(dataset):
         return IMAGENET_SUPERCLASS
     elif dataset == 'dior':
         return DIOR_SUPERCLASS
+    elif dataset == 'waterbirds':
+        return WATERBIRDS_SUPERCLASS
     else:
         raise NotImplementedError()
 
