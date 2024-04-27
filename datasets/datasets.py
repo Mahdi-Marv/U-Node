@@ -280,6 +280,7 @@ def get_exposure_dataloader(P, batch_size=64, image_size=(224, 224, 3),
             train_ds_waterbirds_cutpasted.append(Waterbird(root=root, df=df, transform=train_transform_cutpasted, train=True,
                       count_train_landbg=3500,
                       count_train_waterbg=100, mode='bg_all', count=fcp[idx]))
+            print('now len', len(train_ds_waterbirds_cutpasted[-1]))
 
         train_ds_waterbirds_cutpasted = ConcatDataset(train_ds_waterbirds_cutpasted)
         exposureset = torch.utils.data.ConcatDataset(
