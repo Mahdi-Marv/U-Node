@@ -160,23 +160,19 @@ class Waterbird(torch.utils.data.Dataset):
                     self.labels.append(all_paths[i][1])
 
         if count != -1:
-            print(len(self.image_paths))
             random.seed(42)
             random.shuffle(self.image_paths)
             if count<len(self.image_paths):
-                self.image_files = self.image_paths[:count]
+                self.image_paths = self.image_paths[:count]
                 if not train:
                     self.labels = self.labels[:count]
-                print('Here')
-                print(len(self.image_files))
             else:
-                t = len(self.image_files)
+                t = len(self.image_paths)
                 for i in range(count-t):
-                    self.image_files.append(random.choice(self.image_files[:t]))
+                    self.image_paths.append(random.choice(self.image_paths[:t]))
                     if not train:
                         self.labels.append(random.choice(self.labels[:t]))
 
-        print('Length:', len(self.image_paths))
 
     def __len__(self):
         return len(self.image_paths)
