@@ -162,6 +162,9 @@ class Waterbird(torch.utils.data.Dataset):
         if count != -1:
             if count<len(self.image_paths):
                 self.image_files = self.image_paths[:count]
+                if not train:
+                    self.labels = self.labels[:count]
+                print('Here')
             else:
                 t = len(self.image_files)
                 for i in range(count-t):
