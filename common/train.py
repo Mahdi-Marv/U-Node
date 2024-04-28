@@ -104,8 +104,32 @@ for ood in P.ood_dataset:
 
 train_exposure_loader = get_exposure_dataloader(P=P, batch_size=P.batch_size, count=len(train_set),
                                                 image_size=image_size_, cls_list=normal_labels)
+
 print("exposure loader batches, train loader batchs", len(train_exposure_loader), len(train_loader))
 ### Initialize model ###
+
+
+from matplotlib import pyplot as plt
+
+
+def disp(image_list, title):
+    plt.figure(figsize=(10, 10), constrained_layout=True)
+    for i, img in enumerate(image_list):
+        ax = plt.subplot(1, len(image_list), i + 1)
+        plt.imshow(img.permute(1, 2, 0))
+        plt.title(title[i])
+        plt.axis('off')
+    return plt  # !python ma
+
+
+dataloaders = [train_loader, test_loader, ood_test_loader, train_exposure_loader]
+loader_names = ["train_loader", "test_loader", "ood_test_loader", "train_exposure_loader"]
+for i, loader in enumerate(dataloaders):
+    images, labels = next(iter(loader))
+    print(f"images.shape: {images.shape}, labels.shape: {labels.shape}")
+    plt = disp(images[:10], labels[:10])
+    plt.show()
+    plt.savefig(f"{loader_names[i]}.png")
 
 simclr_aug = C.get_simclr_augmentation(P, image_size=P.image_size).to(device)
 P.shift_trans, P.K_shift = C.get_shift_module(P, eval=True)
