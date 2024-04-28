@@ -90,7 +90,8 @@ print("Unique labels(test_loader):", get_loader_unique_label(test_loader))
 print("Unique labels(train_loader):", get_loader_unique_label(train_loader))
 
 P.ood_dataset = anomaly_labels
-if P.dataset == 'cub-birds' or P.dataset == 'ISIC2018' or P.dataset == 'high-variational-brain-tumor' or P.dataset == 'WBC' or P.dataset == 'mvtec-high-var-corruption' or P.dataset == "MVTecAD" or P.dataset == "mvtec-high-var" or P.dataset == 'cifar10-versus-100' or P.dataset == 'cifar100-versus-10':
+if P.dataset == 'cub-birds' or P.dataset == 'ISIC2018' or P.dataset == 'high-variational-brain-tumor' or P.dataset == 'WBC' or P.dataset == 'mvtec-high-var-corruption' or P.dataset == "MVTecAD" or P.dataset == "mvtec-high-var" or P.dataset == 'cifar10-versus-100' or P.dataset == 'cifar100-versus-10' \
+        or P.dataset == 'waterbirds':
     P.ood_dataset = [1]
 print("P.ood_dataset", P.ood_dataset)
 
@@ -122,8 +123,8 @@ def disp(image_list, title):
     return plt  # !python ma
 
 
-dataloaders = [train_loader, test_loader, ood_test_loader, train_exposure_loader]
-loader_names = ["train_loader", "test_loader", "ood_test_loader", "train_exposure_loader"]
+dataloaders = [train_loader, test_loader, ood_test_loader[1], train_exposure_loader]
+loader_names = ["train_loader", "test_loader", "ood_test_loader[1]", "train_exposure_loader"]
 for i, loader in enumerate(dataloaders):
     images, labels = next(iter(loader))
     print(f"images.shape: {images.shape}, labels.shape: {labels.shape}")
