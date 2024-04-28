@@ -36,6 +36,55 @@ import gdown
 CLASS_NAMES = ['toothbrush', 'zipper', 'transistor', 'tile', 'grid', 'wood', 'pill', 'bottle', 'capsule', 'metal_nut', 'hazelnut', 'screw', 'carpet', 'leather', 'cable']
 DATA_PATH = './data/'
 
+class Camelyon17(Dataset):
+    def __init__(self, transform, is_train=True, test_id=1):
+        self.is_train = is_train
+        self.transform = transform
+        if is_train:
+            node0_train = glob('/kaggle/input/camelyon17-clean/node0/train/normal/*')
+            node1_train = glob('/kaggle/input/camelyon17-clean/node1/train/normal/*')
+            node2_train = glob('/kaggle/input/camelyon17-clean/node2/train/normal/*')
+
+            self.image_paths = node0_train + node1_train + node2_train
+        else:
+            if test_id == 1:
+                node0_test_normal = glob('/kaggle/input/camelyon17-clean/node0/test/normal/*')
+                node0_test_anomaly = glob('/kaggle/input/camelyon17-clean/node0/test/anomaly/*')
+
+                node1_test_normal = glob('/kaggle/input/camelyon17-clean/node1/test/normal/*')
+                node1_test_anomaly = glob('/kaggle/input/camelyon17-clean/node1/test/anomaly/*')
+
+                node2_test_normal = glob('/kaggle/input/camelyon17-clean/node2/test/normal/*')
+                node2_test_anomaly = glob('/kaggle/input/camelyon17-clean/node2/test/anomaly/*')
+
+                test_path_normal = node0_test_normal + node1_test_normal + node2_test_normal
+                test_path_anomaly = node0_test_anomaly + node1_test_anomaly + node2_test_anomaly
+
+                self.image_paths = test_path_normal + test_path_anomaly
+                self.test_label = [0] * len(test_path_normal) + [1] * len(test_path_anomaly)
+            else:
+                node3_test_normal = glob('/kaggle/input/camelyon17-clean/node3/test/normal/*')
+                node3_test_anomaly = glob('/kaggle/input/camelyon17-clean/node3/test/anomaly/*')
+
+                node4_test_normal = glob('/kaggle/input/camelyon17-clean/node4/test/normal/*')
+                node4_test_anomaly = glob('/kaggle/input/camelyon17-clean/node4/test/anomaly/*')
+
+                shifted_test_path_normal = node3_test_normal + node4_test_normal
+                shifted_test_path_anomaly = node4_test_anomaly + node4_test_anomaly
+
+                self.image_paths = shifted_test_path_normal + shifted_test_path_anomaly
+                self.test_label = [0] * len(shifted_test_path_normal) + [1] * len(shifted_test_path_anomaly)
+    def __getitem__(self, idx):
+        img = Image.open(self.image_paths[idx])
+        img = img.convert('RGB')
+        if self.transform is not None:
+            img = self.transform(img)
+        if self.is_train:
+            return img, 0
+        else:
+            return img, self.test_label[idx]
+    def __len__(self):
+        return len(self.image_path)
 class Brain(Dataset):
     def __init__(self, transform, is_train=True, test_id=1):
         print('brain dataset')

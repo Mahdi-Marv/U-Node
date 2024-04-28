@@ -215,6 +215,7 @@ def get_exposure_dataloader(P, batch_size = 64, image_size=(224, 224, 3),
                 transforms.ToTensor()
         ])
     else:
+        print('code unreachable my ass')
         tiny_transform = transforms.Compose([
                 transforms.Resize((image_size[0], image_size[1])),
                 transforms.AutoAugment(),
@@ -526,6 +527,7 @@ def get_exposure_dataloader(P, batch_size = 64, image_size=(224, 224, 3),
                 print("number of fake data:", len(wbc_fake_dataset), "shape:", wbc_fake_dataset[0][0].shape)
             exposureset = torch.utils.data.ConcatDataset([cutpast_train_set, wbc_fake_dataset, imagenet_exposure])
         else:
+            visualize_random_samples_from_clean_dataset(cutpast_train_set, 'cutpaste visualization')
             exposureset = torch.utils.data.ConcatDataset([cutpast_train_set, imagenet_exposure])
         
         if len(cutpast_train_set) > 0:
@@ -1471,6 +1473,15 @@ def get_dataset(P, dataset, test_only=False, image_size=(32, 32, 3), download=Fa
             train_set = Chest(transform=train_transform, is_train=True)
 
         test_set = Chest(transform=test_transform, is_train=False, test_id=test_id)
+    elif dataset == 'camelyon17':
+        n_classes = 2
+        if train_transform_cutpasted:
+            train_set = Chest(transform=train_transform_cutpasted, is_train=True)
+        else:
+            train_set = Chest(transform=train_transform, is_train=True)
+
+        test_set = Chest(transform=test_transform, is_train=False, test_id=test_id)
+
 
 
     else:
