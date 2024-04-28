@@ -127,7 +127,7 @@ loader_names = ["train_loader", "test_loader", "ood_test_loader[one_class_1]", "
 for i, loader in enumerate(dataloaders):
     images, labels = next(iter(loader))
     print(f"images.shape: {images.shape}, labels.shape: {labels.shape}")
-    plt = disp(images[:10], [f"{loader_names[i]}_img_{j}" for j in range(10)])
+    plt = disp(images[:10], labels[:10])
     plt.show()
     plt.savefig(f"images_{loader_names[i]}.png")
 
