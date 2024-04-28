@@ -84,7 +84,7 @@ class Camelyon17(Dataset):
         else:
             return img, self.test_label[idx]
     def __len__(self):
-        return len(self.image_path)
+        return len(self.image_paths)
 class Brain(Dataset):
     def __init__(self, transform, is_train=True, test_id=1):
         print('brain dataset')
