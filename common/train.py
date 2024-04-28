@@ -168,3 +168,7 @@ if P.multi_gpu:
     model = apex.parallel.DistributedDataParallel(model, delay_allreduce=True)
 
 count_parameters(model)
+
+
+def get_loaders():
+    return train_loader, test_loader, ood_test_loader, train_exposure_loader
