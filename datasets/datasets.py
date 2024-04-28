@@ -7,6 +7,9 @@ from torchvision import datasets, transforms
 from torch.utils.data import DataLoader, Dataset
 from torchvision.datasets import ImageFolder
 
+import torchvision.transforms as transforms
+import random
+
 from utils_.utils import set_random_seed
 from datasets.cutpast_transformation import *
 from PIL import Image
@@ -151,6 +154,21 @@ def mvtecad_dataset(P, category, root="./mvtec_anomaly_detection", image_size=(2
     return train_ds_mvtech_normal, test_ds_mvtech, image_size, n_classes
 
 
+
+class RandomRotationTransform:
+    def __init__(self, transform=None):
+        # List of angles
+        self.angles = [90, 180, 270]
+        self.transform = transform
+
+    def __call__(self, x):
+        # Select a random angle
+        angle = random.choice(self.angles)
+        if self.transform:
+            x = self.transform(x)
+        return transforms.functional.rotate(x, angle)
+
+
 def get_exposure_dataloader(P, batch_size=64, image_size=(224, 224, 3),
                             base_path='./tiny-imagenet-200', fake_root="./fake_mvtecad",
                             root="./mvtec_anomaly_detection", count=-1, cls_list=None, labels=None):
@@ -271,8 +289,7 @@ def get_exposure_dataloader(P, batch_size=64, image_size=(224, 224, 3),
         # we need a transform to 1. Resize 2. Rotate the picture randomly wither 90 or 180 or 270 degrees
         tranform_rotate = transforms.Compose([
             transforms.Resize((image_size[0], image_size[1])),
-            transforms.RandomRotation([90, 180, 270]),
-            transforms.ToTensor()
+            RandomRotationTransform(transform=transforms.Compose([transforms.ToTensor(), ])),
         ])
         imagenet_exposure = ImageNetExposure(root=base_path, count=tiny_count, transform=tiny_transform)
         fcp = [int(cutpast_count / len(cls_list)) for i in range(len(cls_list))]
