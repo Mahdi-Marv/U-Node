@@ -127,9 +127,25 @@ loader_names = ["train_loader", "test_loader", "ood_test_loader[one_class_1]", "
 for i, loader in enumerate(dataloaders):
     images, labels = next(iter(loader))
     print(f"images.shape: {images.shape}, labels.shape: {labels.shape}")
-    plt = disp(images[:10], labels[:10])
+    plt1 = disp(images[:10], [f"{labels[j].item()}" for j in range(10)])
+    plt2 = disp(images[10:20], [f"{labels[j].item()}" for j in range(10, 20)])
+    for _ in range(10):
+        images, labels = next(iter(loader))
+    plt3 = disp(images[:10], [f"{labels[j].item()}" for j in range(10)])
+    plt4 = disp(images[10:20], [f"{labels[j].item()}" for j in range(10, 20)])
+    ## concat all 4 plots vertically
+    plt.figure(figsize=(10, 10), constrained_layout=True)
+    plt.subplot(4, 1, 1)
+    plt.imshow(plt1)
+    plt.subplot(4, 1, 2)
+    plt.imshow(plt2)
+    plt.subplot(4, 1, 3)
+    plt.imshow(plt3)
+    plt.subplot(4, 1, 4)
+    plt.imshow(plt4)
     plt.show()
-    plt.savefig(f"{loader_names[i]}.png")
+    plt.savefig(f"images_{loader_names[i]}.png")
+
 
 simclr_aug = C.get_simclr_augmentation(P, image_size=P.image_size).to(device)
 P.shift_trans, P.K_shift = C.get_shift_module(P, eval=True)
