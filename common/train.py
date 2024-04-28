@@ -122,7 +122,7 @@ def disp(image_list, title):
         plt.axis('off')
     return plt  # !python ma
 
-
+print(ood_test_loader)
 dataloaders = [train_loader, test_loader, ood_test_loader[1], train_exposure_loader]
 loader_names = ["train_loader", "test_loader", "ood_test_loader[1]", "train_exposure_loader"]
 for i, loader in enumerate(dataloaders):
