@@ -1476,11 +1476,11 @@ def get_dataset(P, dataset, test_only=False, image_size=(32, 32, 3), download=Fa
     elif dataset == 'camelyon17':
         n_classes = 2
         if train_transform_cutpasted:
-            train_set = Chest(transform=train_transform_cutpasted, is_train=True)
+            train_set = Camelyon17(transform=train_transform_cutpasted, is_train=True)
         else:
-            train_set = Chest(transform=train_transform, is_train=True)
+            train_set = Camelyon17(transform=train_transform, is_train=True)
 
-        test_set = Chest(transform=test_transform, is_train=False, test_id=test_id)
+        test_set = Camelyon17(transform=test_transform, is_train=False, test_id=test_id)
 
 
 
