@@ -71,7 +71,7 @@ def parse_args(default=False):
                         default='simclr', type=str)
     parser.add_argument('--simclr_dim', help='Dimension of simclr layer',
                         default=128, type=int)
-    parser.add_argument('--rotate_data_percent, type=float', help='rotate_data_percent',
+    parser.add_argument('--rotate_data_percent', type=float, help='rotate_data_percent',
                         default=0.0)
 
     parser.add_argument('--shift_trans_type', help='shifting transformation type', default='none',
