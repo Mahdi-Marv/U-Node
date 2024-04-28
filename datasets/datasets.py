@@ -252,6 +252,7 @@ def get_exposure_dataloader(P, batch_size=64, image_size=(224, 224, 3),
         train_ds_mvtech_cutpasted = ConcatDataset(train_ds_mvtech_cutpasted)
         train_ds_mvtech_fake = ConcatDataset(train_ds_mvtech_fake)
 
+
         exposureset = torch.utils.data.ConcatDataset(
             [train_ds_mvtech_fake, imagenet_exposure, train_ds_mvtech_cutpasted])
         if len(train_ds_mvtech_fake) > 0:
@@ -266,6 +267,12 @@ def get_exposure_dataloader(P, batch_size=64, image_size=(224, 224, 3),
         train_transform_cutpasted = transforms.Compose([
             transforms.Resize((image_size[0], image_size[1])),
             CutPasteUnion(transform=transforms.Compose([transforms.ToTensor(), ])),
+        ])
+        # we need a transform to 1. Resize 2. Rotate the picture randomly wither 90 or 180 or 270 degrees
+        tranform_rotate = transforms.Compose([
+            transforms.Resize((image_size[0], image_size[1])),
+            transforms.RandomRotation([90, 180, 270]),
+            transforms.ToTensor()
         ])
         imagenet_exposure = ImageNetExposure(root=base_path, count=tiny_count, transform=tiny_transform)
         fcp = [int(cutpast_count / len(cls_list)) for i in range(len(cls_list))]
@@ -286,11 +293,27 @@ def get_exposure_dataloader(P, batch_size=64, image_size=(224, 224, 3),
 
 
         train_ds_waterbirds_cutpasted = ConcatDataset(train_ds_waterbirds_cutpasted)
+
+        frot = [int(rotate_count / len(cls_list)) for i in range(len(cls_list))]
+        if sum(frot) != rotate_count:
+            frot[0] += abs(rotate_count - sum(frot))
+        print("rotate couns:", frot)
+        train_ds_waterbirds_rotate = []
+        for idx, i in enumerate(cls_list):
+            train_ds_waterbirds_rotate.append(Waterbird(root=root, df=df, transform=tranform_rotate, train=True,
+                      count_train_landbg=3500,
+                      count_train_waterbg=100, mode='bg_all', count=frot[idx]))
+
+
+        train_ds_waterbirds_rotate = ConcatDataset(train_ds_waterbirds_rotate)
         exposureset = torch.utils.data.ConcatDataset(
-            [imagenet_exposure, train_ds_waterbirds_cutpasted])
+            [imagenet_exposure, train_ds_waterbirds_cutpasted, train_ds_waterbirds_rotate])
         if len(train_ds_waterbirds_cutpasted) > 0:
             print("number of cutpast data:", len(train_ds_waterbirds_cutpasted), 'shape:',
                   train_ds_waterbirds_cutpasted[0][0].shape)
+        if len(train_ds_waterbirds_rotate) > 0:
+            print("number of rotate data:", len(train_ds_waterbirds_rotate), 'shape:',
+                  train_ds_waterbirds_rotate[0][0].shape)
         print("number of tiny data:", len(imagenet_exposure), 'shape:', imagenet_exposure[0][0].shape)
         print("number of exposure:", len(exposureset))
         train_loader = DataLoader(exposureset, batch_size=batch_size, shuffle=True)
