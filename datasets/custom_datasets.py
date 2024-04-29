@@ -70,7 +70,7 @@ class Camelyon17(Dataset):
                 node4_test_anomaly = glob('/kaggle/input/camelyon17-clean/node4/test/anomaly/*')
 
                 shifted_test_path_normal = node3_test_normal + node4_test_normal
-                shifted_test_path_anomaly = node4_test_anomaly + node4_test_anomaly
+                shifted_test_path_anomaly = node3_test_anomaly + node4_test_anomaly
 
                 self.image_paths = shifted_test_path_normal + shifted_test_path_anomaly
                 self.test_label = [0] * len(shifted_test_path_normal) + [1] * len(shifted_test_path_anomaly)
