@@ -980,7 +980,11 @@ def get_dataset(P, dataset, test_only=False, image_size=(32, 32, 3), download=Fa
         else:
             train_set = Waterbird(root=root, df=df, transform=train_transform, train=True, count_train_landbg=3500,
                                   count_train_waterbg=100, mode='bg_all')
-        test_set = Waterbird(root=root, df=df, transform=test_transform, train=False, count_train_landbg=3500,
+        if P.shifted == 1:
+            test_set = Waterbird(root=root, df=df, transform=test_transform, train=False, count_train_landbg=3500,
+                                 count_train_waterbg=100, mode='bg_water')
+        else:
+            test_set = Waterbird(root=root, df=df, transform=test_transform, train=False, count_train_landbg=3500,
                              count_train_waterbg=100, mode='bg_land')  ## background land
         print("train_set shapes: ", train_set[0][0].shape)
         print("test_set shapes: ", test_set[0][0].shape)

@@ -110,6 +110,8 @@ def parse_args(default=False):
     parser.add_argument('--test_batch_size', help='Batch size for test loader',
                         default=100, type=int)
 
+    parser.add_argument('--shifted', type=int, default=0, help='main or shifted eval')
+
     ##### Objective Configurations #####
     parser.add_argument('--sim_lambda', help='Weight for SimCLR loss',
                         default=1.0, type=float)
