@@ -90,6 +90,8 @@ def parse_args(default=False):
     parser.add_argument('--error_step', help='Epoch steps to compute errors',
                         default=5, type=int)
 
+    parser.add_argument('--wb_copy', action='store_true', help='copy wb shifted dataset to make it balanced')
+
     ##### Training Configurations #####
     parser.add_argument('--epochs', help='Epochs',
                         default=1000, type=int)

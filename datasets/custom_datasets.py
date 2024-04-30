@@ -123,7 +123,8 @@ class MVTecDataset(Dataset):
 
 
 class Waterbird(torch.utils.data.Dataset):
-    def __init__(self, root, df, transform, train=True, count_train_landbg=-1, count_train_waterbg=-1, mode='bg_all', count=-1):
+    def __init__(self, root, df, transform, train=True, count_train_landbg=-1, count_train_waterbg=-1, mode='bg_all', count=-1,
+                 copy=False):
         self.transform = transform
         self.train = train
         self.df = df
@@ -137,7 +138,11 @@ class Waterbird(torch.utils.data.Dataset):
         self.normal_paths.extend([os.path.join(root, x) for x in normal_df_np][:count_train_landbg])
         normal_df = lb_on_w.iloc[:count_train_waterbg]
         normal_df_np = normal_df['img_filename'].to_numpy()
-        self.normal_paths.extend([os.path.join(root, x) for x in normal_df_np][:count_train_waterbg])
+        copy_count = 1
+        if copy:
+            copy_count = count_train_landbg // count_train_waterbg
+        for _ in range(copy_count):
+            self.normal_paths.extend([os.path.join(root, x) for x in normal_df_np][:count_train_waterbg])
 
         if train:
             self.image_paths = self.normal_paths

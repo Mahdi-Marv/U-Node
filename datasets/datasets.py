@@ -304,7 +304,7 @@ def get_exposure_dataloader(P, batch_size=64, image_size=(224, 224, 3),
         for idx, i in enumerate(cls_list):
             train_ds_waterbirds_cutpasted.append(Waterbird(root=root, df=df, transform=train_transform_cutpasted, train=True,
                       count_train_landbg=3500,
-                      count_train_waterbg=100, mode='bg_all', count=fcp[idx]))
+                      count_train_waterbg=100, mode='bg_all', count=fcp[idx], copy=P.wb_copy))
             print('now len', len(train_ds_waterbirds_cutpasted[-1]))
 
 
@@ -319,7 +319,7 @@ def get_exposure_dataloader(P, batch_size=64, image_size=(224, 224, 3),
         for idx, i in enumerate(cls_list):
             train_ds_waterbirds_rotate.append(Waterbird(root=root, df=df, transform=tranform_rotate, train=True,
                       count_train_landbg=3500,
-                      count_train_waterbg=100, mode='bg_all', count=frot[idx]))
+                      count_train_waterbg=100, mode='bg_all', count=frot[idx], copy=P.wb_copy))
 
 
         train_ds_waterbirds_rotate = ConcatDataset(train_ds_waterbirds_rotate)
@@ -976,10 +976,10 @@ def get_dataset(P, dataset, test_only=False, image_size=(32, 32, 3), download=Fa
         if train_transform_cutpasted:
             train_set = Waterbird(root=root, df=df, transform=train_transform_cutpasted, train=True,
                                   count_train_landbg=3500,
-                                  count_train_waterbg=100, mode='bg_all')
+                                  count_train_waterbg=100, mode='bg_all', copy=P.wb_copy)
         else:
             train_set = Waterbird(root=root, df=df, transform=train_transform, train=True, count_train_landbg=3500,
-                                  count_train_waterbg=100, mode='bg_all')
+                                  count_train_waterbg=100, mode='bg_all', copy=P.wb_copy)
         if P.shifted == 1:
             test_set = Waterbird(root=root, df=df, transform=test_transform, train=False, count_train_landbg=3500,
                                  count_train_waterbg=100, mode='bg_water')

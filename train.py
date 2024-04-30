@@ -51,10 +51,10 @@ for epoch in range(start_epoch, P.epochs + 1):
     model.eval()
     save_states = model.state_dict()
     save_checkpoint(epoch, save_states, optimizer.state_dict(), logger.logdir)    
-    if (epoch % P.save_step == 0):
+    if (epoch % P.save_step == 0 or epoch == P.epochs):
         torch.cuda.empty_cache()
         from evals.ood_pre import eval_ood_detection
-        P.load_path = logger.logdir + '/last.model'
+        P.load_path = logger.logdir + f'/last{epoch}.model'
         import subprocess
 
         arguments_to_pass = [
@@ -73,9 +73,25 @@ for epoch in range(start_epoch, P.epochs + 1):
             "--normal_labels", str(P.normal_labels),
             "--noise_scale",str(0.0),
             "--noist_probability", str(0.0),
-            '--activation_function', str(P.activation_function)
+            '--activation_function', str(P.activation_function),
+            '--shifted', 0
         ]
 
+        print('Main eval:')
+        result = subprocess.run(["python", "eval.py"] + arguments_to_pass, capture_output=True, text=True)
+
+        # Check the result
+        if result.returncode == 0:
+            logger.log("Script executed successfully.")
+            logger.log("Output:")
+            logger.log(result.stdout)
+        else:
+            logger.log("Script execution failed.")
+            logger.log("Error:")
+            logger.log(result.stderr)
+
+        print('Shifted eval:')
+        arguments_to_pass[-1] = 1
         result = subprocess.run(["python", "eval.py"] + arguments_to_pass, capture_output=True, text=True)
 
         # Check the result
