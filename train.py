@@ -74,7 +74,7 @@ for epoch in range(start_epoch, P.epochs + 1):
             "--noise_scale",str(0.0),
             "--noist_probability", str(0.0),
             '--activation_function', str(P.activation_function),
-            '--shifted', 0
+            '--shifted', str(0)
         ]
 
         print('Main eval:')
@@ -91,7 +91,7 @@ for epoch in range(start_epoch, P.epochs + 1):
             logger.log(result.stderr)
 
         print('Shifted eval:')
-        arguments_to_pass[-1] = 1
+        arguments_to_pass[-1] = str(1)
         result = subprocess.run(["python", "eval.py"] + arguments_to_pass, capture_output=True, text=True)
 
         # Check the result
