@@ -195,6 +195,7 @@ if P.resume_path is not None:
     start_epoch = config['epoch']
     # best = config['best']
     error = 100.0
+    print('loaded model')
 else:
     resume = False
     start_epoch = 1
