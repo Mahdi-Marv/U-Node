@@ -1285,22 +1285,22 @@ class MNIST_Dataset(Dataset):
     def __init__(self, train, test_id=1, transform=None):
         self.transform = transform
         if train:
-            with open('/content/content/mnist_shifted_dataset/train_normal.pkl', 'rb') as f:
+            with open('./content/mnist_shifted_dataset/train_normal.pkl', 'rb') as f:
                 normal_train = pickle.load(f)
             self.images = normal_train['images']
             self.labels = [0]*len(self.images)
         else:
             if test_id == 1:
-                with open('/content/content/mnist_shifted_dataset/test_normal_main.pkl', 'rb') as f:
+                with open('./content/mnist_shifted_dataset/test_normal_main.pkl', 'rb') as f:
                     normal_test = pickle.load(f)
-                with open('/content/content/mnist_shifted_dataset/test_abnormal_main.pkl', 'rb') as f:
+                with open('./content/mnist_shifted_dataset/test_abnormal_main.pkl', 'rb') as f:
                     abnormal_test = pickle.load(f)
                 self.images = normal_test['images'] + abnormal_test['images']
                 self.labels = [0]*len(normal_test['images']) + [1]*len(abnormal_test['images'])
             else:
-                with open('/content/content/mnist_shifted_dataset/test_normal_shifted.pkl', 'rb') as f:
+                with open('./content/mnist_shifted_dataset/test_normal_shifted.pkl', 'rb') as f:
                     normal_test = pickle.load(f)
-                with open('/content/content/mnist_shifted_dataset/test_abnormal_shifted.pkl', 'rb') as f:
+                with open('./content/mnist_shifted_dataset/test_abnormal_shifted.pkl', 'rb') as f:
                     abnormal_test = pickle.load(f)
                 self.images = normal_test['images'] + abnormal_test['images']
                 self.labels = [0]*len(normal_test['images']) + [1]*len(abnormal_test['images'])
