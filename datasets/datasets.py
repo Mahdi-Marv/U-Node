@@ -1174,7 +1174,7 @@ def get_dataset(P, dataset, test_only=False, image_size=(32, 32, 3), download=Fa
         else:
             train_set = MNIST_Dataset(train=True, transform=transform)
 
-        test_set = MNIST_Dataset(train=False, transform=transform, test_id=1)
+        test_set = MNIST_Dataset(train=False, transform=transform, test_id=P.mnist_shift_test_id)
 
         print("train_set shapes: ", train_set[0][0].shape)
         print("test_set shapes: ", test_set[0][0].shape)

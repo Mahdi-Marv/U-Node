@@ -139,6 +139,8 @@ def parse_args(default=False):
     parser.add_argument("--save_score", help='save ood score for plotting histogram',
                         action='store_true')
     parser.add_argument('--timer', default=None, type=int)
+    parser.add_argument("--mnist_shift_test_id", help='',
+                        default=1, type=int)
 
     parser.add_argument('--freezing_layer', help='Freezing Layer',
                         default=133, type=int)
