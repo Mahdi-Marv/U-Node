@@ -64,6 +64,19 @@ def sparse2coarse(targets):
 
 CLASS_NAMES = ['toothbrush', 'zipper', 'transistor', 'tile', 'grid', 'wood', 'pill', 'bottle', 'capsule', 'metal_nut', 'hazelnut', 'screw', 'carpet', 'leather', 'cable']
 
+class RandomRotationTransform:
+    def __init__(self, transform=None):
+        # List of angles
+        self.angles = [90, 180, 270]
+        self.transform = transform
+
+    def __call__(self, x):
+        # Select a random angle
+        angle = random.choice(self.angles)
+        if self.transform:
+            x = self.transform(x)
+        return transforms.functional.rotate(x, angle)
+
 def get_transform(image_size=None):
     # Note: data augmentation is implemented in the layers
     # Hence, we only define the identity transformation here
@@ -1155,7 +1168,7 @@ def get_dataset(P, dataset, test_only=False, image_size=(32, 32, 3), download=Fa
             train_transform_cutpasted = transforms.Compose([
                 transforms.ToPILImage(),
                 transforms.Resize((image_size[0], image_size[1])),
-                CutPasteUnion(transform = transforms.Compose([transforms.ToTensor(),])),
+                RandomRotationTransform(transform=transforms.Compose([transforms.ToTensor(),])),
             ])
             train_set = MNIST_Dataset(train=True, transform=train_transform_cutpasted)
         else:
