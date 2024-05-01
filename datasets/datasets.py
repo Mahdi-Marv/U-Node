@@ -1145,6 +1145,7 @@ def get_dataset(P, dataset, test_only=False, image_size=(32, 32, 3), download=Fa
         print("test_set shapes: ", test_set[0][0].shape)
         print("len(test_set), len(train_set): ", len(test_set), len(train_set))
     elif dataset == 'Shifted_MNIST':
+        n_classes = 2
         transform = transforms.Compose([
             transforms.ToPILImage(),
             transforms.Resize((image_size[0], image_size[1])),
