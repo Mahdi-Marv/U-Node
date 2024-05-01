@@ -1269,3 +1269,49 @@ def subsample_classes(dataset, include_classes=range(160)):
     dataset.target_transform = lambda x: target_xform_dict[x]
 
     return dataset
+
+
+from torchvision import datasets, transforms
+from torch.utils.data import DataLoader, Dataset
+
+from torchvision import datasets, transforms
+from torch.utils.data import Dataset, DataLoader
+import numpy as np
+from torch.utils.data.dataset import Subset
+import pickle
+from matplotlib import pyplot as plt
+
+class MNIST_Dataset(Dataset):
+    def __init__(self, train, test_id=1, transform=None):
+        self.transform = transform
+        if train:
+            with open('/content/content/mnist_shifted_dataset/train_normal.pkl', 'rb') as f:
+                normal_train = pickle.load(f)
+            self.images = normal_train['images']
+            self.labels = [0]*len(self.images)
+        else:
+            if test_id == 1:
+                with open('/content/content/mnist_shifted_dataset/test_normal_main.pkl', 'rb') as f:
+                    normal_test = pickle.load(f)
+                with open('/content/content/mnist_shifted_dataset/test_abnormal_main.pkl', 'rb') as f:
+                    abnormal_test = pickle.load(f)
+                self.images = normal_test['images'] + abnormal_test['images']
+                self.labels = [0]*len(normal_test['images']) + [1]*len(abnormal_test['images'])
+            else:
+                with open('/content/content/mnist_shifted_dataset/test_normal_shifted.pkl', 'rb') as f:
+                    normal_test = pickle.load(f)
+                with open('/content/content/mnist_shifted_dataset/test_abnormal_shifted.pkl', 'rb') as f:
+                    abnormal_test = pickle.load(f)
+                self.images = normal_test['images'] + abnormal_test['images']
+                self.labels = [0]*len(normal_test['images']) + [1]*len(abnormal_test['images'])
+
+    def __getitem__(self, index):
+        image = torch.tensor(self.images[index])
+
+        if self.transform is not None:
+            image = self.transform(image)
+
+        return image, self.labels[index]
+
+    def __len__(self):
+        return len(self.images)

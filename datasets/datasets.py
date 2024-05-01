@@ -47,6 +47,7 @@ DTD_SUPERCLASS = list(range(46))
 WBC_SUPERCLASS = list(range(2))
 DIOR_SUPERCLASS = list(range(19))
 ISIC2018_SUPERCLASS = list(range(2))
+Shifted_MNIST_SUPERCLASS = list(range(2))
 
 def sparse2coarse(targets):
     coarse_labels = np.array(
@@ -1143,6 +1144,27 @@ def get_dataset(P, dataset, test_only=False, image_size=(32, 32, 3), download=Fa
         print("train_set shapes: ", train_set[0][0].shape)
         print("test_set shapes: ", test_set[0][0].shape)
         print("len(test_set), len(train_set): ", len(test_set), len(train_set))
+    elif dataset == 'Shifted_MNIST':
+        transform = transforms.Compose([
+            transforms.ToPILImage(),
+            transforms.Resize((image_size[0], image_size[1])),
+            transforms.ToTensor(),
+        ])
+        if train_transform_cutpasted:
+            train_transform_cutpasted = transforms.Compose([
+                transforms.ToPILImage(),
+                transforms.Resize((image_size[0], image_size[1])),
+                CutPasteUnion(transform = transforms.Compose([transforms.ToTensor(),])),
+            ])
+            train_set = MNIST_Dataset(train=True, transform=train_transform_cutpasted)
+        else:
+            train_set = MNIST_Dataset(train=True, transform=transform)
+
+        test_set = MNIST_Dataset(train=False, transform=transform, test_id=1)
+
+        print("train_set shapes: ", train_set[0][0].shape)
+        print("test_set shapes: ", test_set[0][0].shape)
+        print("len(test_set), len(train_set): ", len(test_set), len(train_set))
     elif dataset == 'ISIC2018':
         n_classes = 2
         train_path = glob('./ISIC_DATASET/dataset/train/NORMAL/*')
@@ -1486,6 +1508,8 @@ def get_superclass_list(dataset):
         return UCSD_SUPERCLASS
     elif dataset == 'ISIC2018':
         return ISIC2018_SUPERCLASS
+    elif dataset == 'Shifted_MNIST':
+        return Shifted_MNIST_SUPERCLASS
     elif dataset == 'imagenet':
         return IMAGENET_SUPERCLASS
     elif dataset == 'dior':
