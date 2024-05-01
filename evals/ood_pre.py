@@ -120,6 +120,7 @@ def get_scores(P, feats_dict, ood_score):
         for shi in range(P.K_shift):
             # score += (f_sim[shi] * P.axis[shi]).sum(dim=1).max().item() * P.weight_sim[shi] # latent
             score += f_shi[shi][:, shi].item() * P.weight_shi[shi] # head
+            break
         score = score / P.K_shift
         scores.append(score)
     scores = torch.tensor(scores)

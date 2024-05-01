@@ -5,10 +5,8 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="13e74ec9-857e-4f7d-9163-eccafbdf79cf" name="Changes" comment="fix bug">
-      <change beforePath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Checkout_at_4_14_2024_7_11_PM__Changes_.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Checkout_at_4_14_2024_7_11_PM__Changes_.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Checkout_at_4_17_2024_6_41_PM_[Changes]/shelved.patch" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Checkout_at_4_17_2024_6_41_PM__Changes_.xml" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/evals/ood_pre.py" beforeDir="false" afterPath="$PROJECT_DIR$/evals/ood_pre.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -39,7 +37,7 @@
     &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
     &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
     &quot;git-widget-placeholder&quot;: &quot;camelyon17&quot;,
-    &quot;last_opened_file_path&quot;: &quot;C:/Users/Lenovo/Desktop/Semesters/Semester8/Roh/ReContrast&quot;
+    &quot;last_opened_file_path&quot;: &quot;C:/Users/Lenovo/Desktop/Semesters/Semester8/Roh/CSI_Original&quot;
   }
 }</component>
   <component name="SharedIndexes">
@@ -330,7 +328,15 @@
       <option name="project" value="LOCAL" />
       <updated>1714339540529</updated>
     </task>
-    <option name="localTasksCounter" value="35" />
+    <task id="LOCAL-00035" summary="fix bug">
+      <option name="closed" value="true" />
+      <created>1714400908932</created>
+      <option name="number" value="00035" />
+      <option name="presentableId" value="LOCAL-00035" />
+      <option name="project" value="LOCAL" />
+      <updated>1714400908932</updated>
+    </task>
+    <option name="localTasksCounter" value="36" />
     <servers />
   </component>
   <component name="VcsManagerConfiguration">
