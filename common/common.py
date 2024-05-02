@@ -17,7 +17,7 @@ def parse_args(default=False):
                         default="./CIFAR-10-C/defocus_blur.npy", type=str)
     parser.add_argument('--mnist_corruption_folder', help='',
                         default="./mnist_c/", type=str)
-    parser.add_argument('--brats', default=150, type=int)
+    parser.add_argument('--brats', default=-1, type=int)
     parser.add_argument('--mnist_corruption_type', help='MNIST corruption type',
                         choices=[
                             "brightness",

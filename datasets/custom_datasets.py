@@ -36,7 +36,7 @@ CLASS_NAMES = ['toothbrush', 'zipper', 'transistor', 'tile', 'grid', 'wood', 'pi
 DATA_PATH = './data/'
 
 class Brain(Dataset):
-    def __init__(self, transform, is_train=True, test_id=1, brats=150):
+    def __init__(self, transform, is_train=True, test_id=1, brats=-1):
         print('brain dataset')
         self.is_train = is_train
         self.transform = transform
