@@ -4,7 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="13e74ec9-857e-4f7d-9163-eccafbdf79cf" name="Changes" comment="add brats flag">
+    <list default="true" id="13e74ec9-857e-4f7d-9163-eccafbdf79cf" name="Changes" comment="add print">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -303,7 +303,15 @@
       <option name="project" value="LOCAL" />
       <updated>1714661464487</updated>
     </task>
-    <option name="localTasksCounter" value="32" />
+    <task id="LOCAL-00032" summary="add print">
+      <option name="closed" value="true" />
+      <created>1714667603920</created>
+      <option name="number" value="00032" />
+      <option name="presentableId" value="LOCAL-00032" />
+      <option name="project" value="LOCAL" />
+      <updated>1714667603920</updated>
+    </task>
+    <option name="localTasksCounter" value="33" />
     <servers />
   </component>
   <component name="VcsManagerConfiguration">
@@ -316,6 +324,7 @@
     <MESSAGE value="fix bugs" />
     <MESSAGE value="nothing" />
     <MESSAGE value="add brats flag" />
-    <option name="LAST_COMMIT_MESSAGE" value="add brats flag" />
+    <MESSAGE value="add print" />
+    <option name="LAST_COMMIT_MESSAGE" value="add print" />
   </component>
 </project>
