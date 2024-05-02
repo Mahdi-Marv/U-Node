@@ -4,8 +4,12 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="13e74ec9-857e-4f7d-9163-eccafbdf79cf" name="Changes" comment="add print">
+    <list default="true" id="13e74ec9-857e-4f7d-9163-eccafbdf79cf" name="Changes" comment="fix bug">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/common/eval.py" beforeDir="false" afterPath="$PROJECT_DIR$/common/eval.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/common/train.py" beforeDir="false" afterPath="$PROJECT_DIR$/common/train.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/datasets/datasets.py" beforeDir="false" afterPath="$PROJECT_DIR$/datasets/datasets.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/train.py" beforeDir="false" afterPath="$PROJECT_DIR$/train.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -311,7 +315,15 @@
       <option name="project" value="LOCAL" />
       <updated>1714667603920</updated>
     </task>
-    <option name="localTasksCounter" value="33" />
+    <task id="LOCAL-00033" summary="fix bug">
+      <option name="closed" value="true" />
+      <created>1714668606082</created>
+      <option name="number" value="00033" />
+      <option name="presentableId" value="LOCAL-00033" />
+      <option name="project" value="LOCAL" />
+      <updated>1714668606083</updated>
+    </task>
+    <option name="localTasksCounter" value="34" />
     <servers />
   </component>
   <component name="VcsManagerConfiguration">
@@ -319,12 +331,12 @@
     <MESSAGE value="initial brain code" />
     <MESSAGE value="b" />
     <MESSAGE value="add visualize" />
-    <MESSAGE value="fix bug" />
     <MESSAGE value="test set 2" />
     <MESSAGE value="fix bugs" />
     <MESSAGE value="nothing" />
     <MESSAGE value="add brats flag" />
     <MESSAGE value="add print" />
-    <option name="LAST_COMMIT_MESSAGE" value="add print" />
+    <MESSAGE value="fix bug" />
+    <option name="LAST_COMMIT_MESSAGE" value="fix bug" />
   </component>
 </project>

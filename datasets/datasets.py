@@ -1462,7 +1462,7 @@ def get_dataset(P, dataset, test_only=False, image_size=(32, 32, 3), download=Fa
         else:
             train_set = Brain(transform=train_transform, is_train=True, brats=P.brats)
 
-        test_set = Brain(transform=test_transform, is_train=False, test_id=test_id)
+        test_set = Brain(transform=test_transform, is_train=False, test_id=test_id, brats=P.brats)
 
 
     else:
