@@ -36,7 +36,7 @@ CLASS_NAMES = ['toothbrush', 'zipper', 'transistor', 'tile', 'grid', 'wood', 'pi
 DATA_PATH = './data/'
 
 class Brain(Dataset):
-    def __init__(self, transform, is_train=True, test_id=1):
+    def __init__(self, transform, is_train=True, test_id=1, brats=150):
         print('brain dataset')
         self.is_train = is_train
         self.transform = transform
@@ -47,9 +47,9 @@ class Brain(Dataset):
             random.seed(1)
 
 
-            random_brats_images = random.sample(brats_mod, 150)
+            random_brats_images = random.sample(brats_mod, brats)
 
-            print('added 150 normal brat images')
+            print(f'added {brats} normal brat images')
 
             self.image_paths.extend(random_brats_images)
 
