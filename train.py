@@ -29,6 +29,7 @@ epoch = 0
 # Run experiments
 for epoch in range(start_epoch, P.epochs + 1):
     if P.timer is not None and P.timer < (time.time() - start_time):
+        'timer finished'
         break
     logger.log_dirname(f"Epoch {epoch}")
     model.train()
