@@ -79,7 +79,27 @@ for epoch in range(start_epoch, P.epochs + 1):
         ]
 
         result = subprocess.run(["python", "eval.py"] + arguments_to_pass, capture_output=True, text=True)
-
+        arguments_to_pass = [
+            "--image_size", str(P.image_size[0]),
+            "--mode", "ood_pre",
+            "--dataset", str(P.dataset),
+            "--model", str(P.model),
+            "--ood_score", "CSI",
+            "--shift_trans_type", "rotation",
+            "--print_score",
+            "--ood_samples", "10",
+            "--resize_factor", str(0.54),
+            "--resize_fix",
+            "--one_class_idx", str(P.one_class_idx),
+            "--load_path", str(P.load_path),
+            "--normal_labels", str(P.normal_labels),
+            "--noise_scale", str(0.0),
+            "--noist_probability", str(0.0),
+            '--activation_function', str(P.activation_function),
+            '--brats', str(P.brats),
+            '--test_id', str(2)
+        ]
+        result2 = subprocess.run(["python", "eval.py"] + arguments_to_pass, capture_output=True, text=True)
         # Check the result
         if result.returncode == 0:
             logger.log("Script executed successfully.")
