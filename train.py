@@ -79,6 +79,7 @@ for epoch in range(start_epoch, P.epochs + 1):
         ]
 
         result = subprocess.run(["python", "eval.py"] + arguments_to_pass, capture_output=True, text=True)
+        print('first subprocess done')
         arguments_to_pass = [
             "--image_size", str(P.image_size[0]),
             "--mode", "ood_pre",
