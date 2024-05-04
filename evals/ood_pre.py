@@ -209,7 +209,7 @@ def _get_features(P, model, loader, interp=False, imagenet=False, simclr_aug=Non
             for layer in layers:    
                 feats = output_aux[layer].cpu()
                 if layer=='shift':
-                    print("output_aux[shift]")
+                    print("output_aux[shift]", feats)
                 if imagenet is False:
                     feats_batch[layer] += feats.chunk(P.K_shift)
                 else:
