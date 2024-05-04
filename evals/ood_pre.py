@@ -179,11 +179,7 @@ def _get_features(P, model, loader, interp=False, imagenet=False, simclr_aug=Non
         print(x.shape)
         print(x[0][0][0])
         # print(x[0][0][:,0])
-        if interp:
-            x_interp = (x + last) / 2 if i > 0 else x  # omit the first batch, assume batch sizes are equal
-            last = x  # save the last batch
-            x = x_interp  # use interp as current batch
-
+        
         if imagenet is True:
             x = torch.cat(x[0], dim=0)  # augmented list of x
 
@@ -194,11 +190,7 @@ def _get_features(P, model, loader, interp=False, imagenet=False, simclr_aug=Non
         for seed in range(sample_num):
             set_random_seed(seed)
 
-            if P.K_shift > 1:
-                x_t = torch.cat([P.shift_trans(hflip(x), k) for k in range(P.K_shift)])
-            else:
-                x_t = x # No shifting: SimCLR
-            x_t = simclr_aug(x_t)
+            # x_t = simclr_aug(x_t)
 
             # compute augmented features
             with torch.no_grad():
