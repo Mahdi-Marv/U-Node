@@ -110,10 +110,7 @@ class MVTecDataset(Dataset):
         image_file = self.image_files[index]
         image = Image.open(image_file)
         image = image.convert('RGB')
-        if index == 0:
-            print('train:', self.train)
-            to_ten = torchvision.transforms.ToTensor()
-            print(to_ten(image)[0][0])
+
         if self.transform is not None:
             image = self.transform(image)
         if os.path.dirname(image_file).endswith("good"):
