@@ -176,7 +176,7 @@ def _get_features(P, model, loader, interp=False, imagenet=False, simclr_aug=Non
     for i, (x, _) in enumerate(loader):
         print(x.shape)
         print(x[0][0][0])
-        print(x[0][0][:][0])
+        # print(x[0][0][:,0])
         if interp:
             x_interp = (x + last) / 2 if i > 0 else x  # omit the first batch, assume batch sizes are equal
             last = x  # save the last batch
