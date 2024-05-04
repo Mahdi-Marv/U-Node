@@ -171,7 +171,7 @@ def _get_features(P, model, loader, interp=False, imagenet=False, simclr_aug=Non
 
     if imagenet is True:  # assume batch_size = 1 for ImageNet
         sample_num = 1
-
+    sample_num = 1
     # compute features in full dataset
     model.eval()
     feats_all = {layer: [] for layer in layers}  # initialize: empty list
@@ -206,8 +206,10 @@ def _get_features(P, model, loader, interp=False, imagenet=False, simclr_aug=Non
                 _, output_aux = model(x_t, **kwargs)
 
             # add features in one batch
-            for layer in layers:
+            for layer in layers:    
                 feats = output_aux[layer].cpu()
+                if layer=='shift':
+                    print("output_aux[shift]")
                 if imagenet is False:
                     feats_batch[layer] += feats.chunk(P.K_shift)
                 else:
