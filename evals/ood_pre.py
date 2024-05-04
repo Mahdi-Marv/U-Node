@@ -120,7 +120,7 @@ def get_scores(P, feats_dict, ood_score):
         score = 0
         for shi in range(P.K_shift):
             # score += (f_sim[shi] * P.axis[shi]).sum(dim=1).max().item() * P.weight_sim[shi]
-            score += f_shi[shi][:, shi].item() * P.weight_shi[shi]
+            score += f_shi[shi][:, shi].item()
             print('!', score)
             # score += f_shi[shi][:, shi].item() * 1
             break
