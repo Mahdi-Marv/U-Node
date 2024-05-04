@@ -850,6 +850,7 @@ def get_dataset(P, dataset, test_only=False, image_size=(32, 32, 3), download=Fa
                 transforms.Resize((image_size[0], image_size[1])),
                 transforms.ToTensor(),
             ])
+        torch.manual_seed(0)
         for class_idx in labels:
             if train_transform_cutpasted:
                 train_dataset.append(MVTecDataset_Cutpasted(root=root, train=True, category=CLASS_NAMES[class_idx], transform=train_transform_cutpasted, count=-1))
