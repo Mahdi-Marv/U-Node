@@ -2,6 +2,7 @@ from copy import deepcopy
 
 import torch
 import torch.nn as nn
+import torchvision
 from torch.utils.data import DataLoader
 
 from common.common import parse_args
@@ -67,6 +68,10 @@ print("number of normal train set:", len(train_set))
 kwargs = {'pin_memory': False, 'num_workers': 4}
 
 torch.manual_seed(0)
+main0 = train_set[0]
+topil = torchvision.transforms.ToPILImage()
+main0 = topil(main0[0])
+main0.save('main0.png')
 train_loader = DataLoader(train_set, shuffle=False, batch_size=P.batch_size, **kwargs)
 test_loader = DataLoader(test_set, shuffle=False, batch_size=P.test_batch_size, **kwargs)
 
