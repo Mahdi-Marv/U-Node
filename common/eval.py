@@ -67,7 +67,7 @@ print("number of normal train set:", len(train_set))
 kwargs = {'pin_memory': False, 'num_workers': 4}
 
 torch.manual_seed(0)
-train_loader = DataLoader(train_set, shuffle=True, batch_size=P.batch_size, **kwargs)
+train_loader = DataLoader(train_set, shuffle=False, batch_size=P.batch_size, **kwargs)
 test_loader = DataLoader(test_set, shuffle=False, batch_size=P.test_batch_size, **kwargs)
 
 
