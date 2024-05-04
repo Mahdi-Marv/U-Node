@@ -51,7 +51,7 @@ def eval_ood_detection(P, model, id_loader, ood_loaders, ood_scores, train_loade
 
     f_sim = [f.mean(dim=1) for f in feats_train['simclr'].chunk(P.K_shift, dim=1)]  # list of (M, d)
     f_shi = [f.mean(dim=1) for f in feats_train['shift'].chunk(P.K_shift, dim=1)]  # list of (M, 4)
-
+    print('::::', f_shi)
     weight_sim = []
     weight_shi = []
     for shi in range(P.K_shift):
