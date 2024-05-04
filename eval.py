@@ -1,6 +1,7 @@
 from common.eval import *
 
 model.eval()
+print('outttt', model(torch.ones(1, 3, 224, 224).cuda()))
 print(P)
 if P.mode == 'test_acc':
     from evals import test_classifier
