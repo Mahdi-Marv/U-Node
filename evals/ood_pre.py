@@ -223,8 +223,8 @@ def _get_features(P, model, loader, interp=False, imagenet=False, simclr_aug=Non
         # add features in full dataset
         for layer in layers:
             feats_all[layer] += [feats_batch[layer]]
-        for j in range(len(feats_all['shift'])):
-            print(f'{j}: {feats_all["shift"][j]}')
+        for j in range(len(feats_all['shift'][0])):
+            print(f'{j}: {feats_all["shift"][0][j]}')
 
     # concatenate features in full dataset
     for key, val in feats_all.items():
