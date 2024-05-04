@@ -189,8 +189,9 @@ def _get_features(P, model, loader, interp=False, imagenet=False, simclr_aug=Non
         feats_batch = {layer: [] for layer in layers}  # initialize: empty list
         for seed in range(sample_num):
             set_random_seed(seed)
-
-            # x_t = simclr_aug(x_t)
+        
+            x_t = x # No shifting: SimCLR
+            #x_t = simclr_aug(x_t)
 
             # compute augmented features
             with torch.no_grad():
