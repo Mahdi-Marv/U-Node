@@ -1,6 +1,6 @@
 def setup(mode, P):
     fname = f'{P.dataset}_{P.model}_unsup_{mode}'
-
+    print('mode: ', mode)
     if mode == 'simclr':
         from .simclr import train
     elif mode == 'simclr_CSI':
