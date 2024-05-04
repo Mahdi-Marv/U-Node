@@ -842,7 +842,7 @@ def get_dataset(P, dataset, test_only=False, image_size=(32, 32, 3), download=Fa
         train_transform = transforms.Compose([
                 transforms.Resize((256, 256)),
                 transforms.CenterCrop((image_size[0], image_size[1])),
-                transforms.RandomHorizontalFlip(),
+                # transforms.RandomHorizontalFlip(),
                 transforms.ToTensor(),
             ])
         
