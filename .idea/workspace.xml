@@ -6,7 +6,6 @@
   <component name="ChangeListManager">
     <list default="true" id="13e74ec9-857e-4f7d-9163-eccafbdf79cf" name="Changes" comment="fix bug">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/evals/ood_pre.py" beforeDir="false" afterPath="$PROJECT_DIR$/evals/ood_pre.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -57,7 +56,7 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1712929018923</updated>
-      <workItem from="1714915321242" duration="1427000" />
+      <workItem from="1714915321242" duration="2402000" />
     </task>
     <task id="LOCAL-00001" summary="add train pad code">
       <option name="closed" value="true" />
