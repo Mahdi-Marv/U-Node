@@ -59,6 +59,7 @@ def visualize_random_samples_from_clean_dataset(dataset, dataset_name):
     show_images(images, labels, dataset_name)
 
 P = parse_args()
+print(P.save_step)
 
 normal_labels = None
 if P.normal_labels:
