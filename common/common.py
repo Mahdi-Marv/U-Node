@@ -7,7 +7,7 @@ def parse_args(default=False):
     parser = ArgumentParser(description='Pytorch implementation of CSI')
 
     parser.add_argument('--dataset', help='Dataset',
-                        choices=['Shifted_MNIST', 'STL-10', 'cub-birds', 'stanford-cars', 'cifar100-versus-other-eval', 'cifar10-versus-other-eval', 'ISIC2018', 'ArtBench', 'high-variational-brain-tumor', 'svhn-10-corruption', 'mvtec-high-var-corruption', 'cifar100-corruption', 'cifar100-versus-10', 'cifar10-versus-100', 'WBC', 'dtd', 'cifar10-corruption', 'mnist-corruption', 'Tomor_Detection', 'ucsd', 'mvtec-high-var', 'breastmnist', 'head-ct', 'fashion-mnist', 'mnist', 'cifar10', 'cifar100', 'imagenet', 'svhn-10', 'MVTecAD', 'dior'],
+                        choices=["visa", 'Shifted_MNIST', 'STL-10', 'cub-birds', 'stanford-cars', 'cifar100-versus-other-eval', 'cifar10-versus-other-eval', 'ISIC2018', 'ArtBench', 'high-variational-brain-tumor', 'svhn-10-corruption', 'mvtec-high-var-corruption', 'cifar100-corruption', 'cifar100-versus-10', 'cifar10-versus-100', 'WBC', 'dtd', 'cifar10-corruption', 'mnist-corruption', 'Tomor_Detection', 'ucsd', 'mvtec-high-var', 'breastmnist', 'head-ct', 'fashion-mnist', 'mnist', 'cifar10', 'cifar100', 'imagenet', 'svhn-10', 'MVTecAD', 'dior'],
                         default="cifar10", type=str)
     parser.add_argument('--outlier_dataset', help='',
                             default="mnist",choices=['imagenet30', 'mnist', 'svhn', 'fashion-mnist'] ,type=str)
@@ -141,6 +141,10 @@ def parse_args(default=False):
     parser.add_argument('--timer', default=None, type=int)
     parser.add_argument("--mnist_shift_test_id", help='',
                         default=1, type=int)
+    parser.add_argument("--test_shrink_factor", help='',
+                        default=1, type=float)
+    parser.add_argument("--train_shrink_factor", help='',
+                        default=1, type=float)
 
     parser.add_argument('--freezing_layer', help='Freezing Layer',
                         default=133, type=int)

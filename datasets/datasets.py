@@ -37,6 +37,7 @@ MVTecAD_SUPERCLASS = list(range(2))
 HEAD_CT_SUPERCLASS = list(range(2))
 ART_BENCH_SUPERCLASS = list(range(10))
 MVTEC_HV_SUPERCLASS = list(range(2))
+VISA_SUPERCLASS = list(range(2))
 breastmnist_SUPERCLASS = list(range(2))
 CIFAR100_SUPERCLASS = list(range(20))
 UCSD_SUPERCLASS = list(range(2))
@@ -218,16 +219,56 @@ def get_exposure_dataloader(P, batch_size = 64, image_size=(224, 224, 3),
 
         print("number of exposure:", len(exposureset))
         train_loader = DataLoader(exposureset, batch_size = batch_size, shuffle=True)
+    elif P.dataset=="visa":
+        item_list = ['candle', 'capsules', 'cashew', 'chewinggum', 'fryum', 'macaroni1', 'macaroni2','pcb1', 'pcb2', 'pcb3', 'pcb4', 'pipe_fryum']
+        fake_root = './fake_mvtecad'
+        fake_transform = transforms.Compose([
+            transforms.Resize((image_size[0], image_size[1])),
+            transforms.CenterCrop((image_size[0], image_size[1])),
+            transforms.RandomHorizontalFlip(),
+            transforms.ToTensor()
+        ])
+        imagenet_exposure = ImageNetExposure(root=base_path, count=tiny_count, transform=tiny_transform)
+        fc = [int(fake_count / len(cls_list)) for i in range(len(cls_list))]
+        if sum(fc) != fake_count:
+            fc[0] += abs(fake_count - sum(fc))
+        print("fake couns:", fc)
+        fcp = [int(cutpast_count / len(cls_list)) for i in range(len(cls_list))]
+        if sum(fcp) != cutpast_count:
+            fcp[0] += abs(cutpast_count - sum(fcp))
+        print("cutpast couns:", fcp)
+        
+        train_transform_cutpasted = transforms.Compose([
+                transforms.Resize((image_size[0], image_size[1])),
+                transforms.CenterCrop((image_size[0], image_size[1])),
+                transforms.RandomHorizontalFlip(),
+                CutPasteUnion(transform = transforms.Compose([transforms.ToTensor(),])),
+            ])
+
+        _class_ = item_list[cls_list[0]]        
+        train_path = './VisA/1cls/' + _class_ + '/train/good/*'
+        if P.train_shrink_factor == 1:
+            train_ds_mvtech_cutpasted = Train_Visa(root=train_path, transform=train_transform_cutpasted, imagenet_percent=0.0, count=fcp[0])
+        else:
+            train_ds_mvtech_cutpasted = Train_Visa(root=train_path, transform=train_transform_cutpasted, imagenet_percent=0.05, count=fcp[0])
+
+        exposureset = torch.utils.data.ConcatDataset([imagenet_exposure, train_ds_mvtech_cutpasted])
+        if len(train_ds_mvtech_cutpasted) > 0:
+            print("number of cutpast data:", len(train_ds_mvtech_cutpasted), 'shape:', train_ds_mvtech_cutpasted[0][0].shape)
+        print("number of tiny data:", len(imagenet_exposure), 'shape:', imagenet_exposure[0][0].shape)
+        print("number of exposure:", len(exposureset))
+        train_loader = DataLoader(exposureset, batch_size = batch_size, shuffle=True)
+
     elif P.dataset=="mvtec-high-var":
         fake_root = './fake_mvtecad'
         fake_transform = transforms.Compose([
-            transforms.Resize((256,256)),
+            transforms.Resize((image_size[0], image_size[1])),
             transforms.CenterCrop((image_size[0], image_size[1])),
             transforms.RandomHorizontalFlip(),
             transforms.ToTensor()
         ])
         train_transform_cutpasted = transforms.Compose([
-            transforms.Resize((256,256)),
+            transforms.Resize((image_size[0], image_size[1])),
             transforms.CenterCrop((image_size[0], image_size[1])),
             CutPasteUnion(transform = transforms.Compose([transforms.ToTensor(),])),
         ])
@@ -833,7 +874,44 @@ def get_dataset(P, dataset, test_only=False, image_size=(32, 32, 3), download=Fa
         print("train_set shapes: ", train_set[0][0].shape, len(train_set))
         print("test_set shapes: ", test_set[0][0].shape, len(test_set))
         '''
+    elif dataset == 'visa':
+        n_classes = 2
+        batch_size = 128
+        test_path = './VisA/1cls/' + _class_
+        item_list = ['candle', 'capsules', 'cashew', 'chewinggum', 'fryum', 'macaroni1', 'macaroni2','pcb1', 'pcb2', 'pcb3', 'pcb4', 'pipe_fryum']
+        _class_ = item_list[labels[0]]
+        train_transform = transforms.Compose([
+                transforms.Resize((image_size[0], image_size[1])),
+                transforms.CenterCrop((image_size[0], image_size[1])),
+                transforms.RandomHorizontalFlip(),
+                transforms.ToTensor(),
+            ])
+        test_transform = transforms.Compose([
+                transforms.Resize((image_size[0], image_size[1])),
+                transforms.CenterCrop((image_size[0], image_size[1])),
+                transforms.ToTensor(),
+            ])
 
+        if P.train_shrink_factor == 1:
+            train_path = './VisA/1cls/' + _class_ + '/train'        
+            train_set = ImageFolder(root=train_path, transform=train_transform)
+        else:
+            train_path = './VisA/1cls/' + _class_ + '/train/good/*'
+            train_set = Train_Visa(root=train_path, transform=train_transform)
+
+        if P.test_shrink_factor == 1:
+            test_set = VisaDataset(root=test_path, transform=test_transform, phase="test")
+        else:
+            test_set = VisaDataset(root=test_path, transform=test_transform, phase="test", shrink_factor=P.test_shrink_factor)
+
+        print("train_set shapes: ", train_set[0][0].shape)
+        print("test_set shapes: ", test_set[0][0].shape)
+        print("len(test_dataset), len(train_dataset)", len(test_set), len(train_set))
+        '''
+        train_loader = torch.utils.data.DataLoader(train_set, batch_size=batch_size, shuffle=True, num_workers=4,
+                                                        drop_last=False)
+        test_loader = torch.utils.data.DataLoader(test_set, batch_size=batch_size, shuffle=True, num_workers=1)
+        '''
     elif dataset == 'mvtec-high-var':
         n_classes = 2
         train_dataset = []
@@ -1510,6 +1588,8 @@ def get_superclass_list(dataset):
         return HEAD_CT_SUPERCLASS
     elif dataset == 'mvtec-high-var' or dataset == 'mvtec-high-var-corruption':
         return MVTEC_HV_SUPERCLASS
+    elif dataset == 'visa':
+        return VISA_SUPERCLASS
     elif dataset == 'cifar10':
         return CIFAR10_SUPERCLASS
     elif dataset == 'fashion-mnist':
