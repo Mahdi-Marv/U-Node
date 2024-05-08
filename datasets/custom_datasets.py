@@ -1367,6 +1367,7 @@ class IMAGENET30_TEST_DATASET(Dataset):
             class_path = os.path.join(root_dir, class_name)
             for instance_folder in os.listdir(class_path):
                 instance_path = os.path.join(class_path, instance_folder)
+                print(instance_path)
                 if instance_path != "/kaggle/input/imagenet30-dataset/one_class_test/one_class_test/airliner/._1.JPEG" and instance_path != "/kaggle/input/imagenet30-dataset/one_class_test/airliner/._1.JPEG":
                     for img_name in os.listdir(instance_path):
                         if img_name.endswith('.JPEG'):
