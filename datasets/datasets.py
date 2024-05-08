@@ -222,7 +222,7 @@ def get_exposure_dataloader(P, batch_size=64, image_size=(224, 224, 3),
             transforms.CenterCrop((image_size[0], image_size[1])),
             CutPasteUnion(transform=transforms.Compose([transforms.ToTensor(), ])),
         ])
-        imagenet_exposure = ImageNetExposure(root=base_path, count=tiny_count, transform=tiny_transform)
+        imagenet_exposure = IMAGENET30_TEST_DATASET(transform=tiny_transform, count=tiny_count)
         train_ds_mvtech_fake = FakeMVTecDataset(root=fake_root, train=True, category=categories[P.one_class_idx],
                                                 transform=fake_transform, count=fake_count)
         train_ds_mvtech_cutpasted = MVTecDataset_Cutpasted(root=root, train=True, category=categories[P.one_class_idx],
