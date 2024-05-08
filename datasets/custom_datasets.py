@@ -310,12 +310,12 @@ class WBCDataset(torch.utils.data.Dataset):  ####  FOR MAIN / SHIFTED
         if count != -1:
             if count < len(self.image_paths):
                 self.image_paths = self.image_paths[:count]
-                self.labels = self.targets[:count]
+                self.targets = self.targets[:count]
             else:
                 t = len(self.image_paths)
                 for i in range(count - t):
                     self.image_paths.append(random.choice(self.image_paths[:t]))
-                    self.labels.append(random.choice(self.targets[:t]))
+                    self.targets.append(random.choice(self.targets[:t]))
     def __len__(self):
         return len(self.image_paths)
 
