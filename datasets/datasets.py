@@ -877,9 +877,9 @@ def get_dataset(P, dataset, test_only=False, image_size=(32, 32, 3), download=Fa
     elif dataset == 'visa':
         n_classes = 2
         batch_size = 128
-        test_path = './VisA/1cls/' + _class_
         item_list = ['candle', 'capsules', 'cashew', 'chewinggum', 'fryum', 'macaroni1', 'macaroni2','pcb1', 'pcb2', 'pcb3', 'pcb4', 'pipe_fryum']
         _class_ = item_list[labels[0]]
+        test_path = './VisA/1cls/' + _class_
         train_transform = transforms.Compose([
                 transforms.Resize((image_size[0], image_size[1])),
                 transforms.CenterCrop((image_size[0], image_size[1])),
