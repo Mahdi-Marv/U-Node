@@ -64,7 +64,7 @@ class MultiDataTransformList(object):
 class ImageNetExposure(Dataset):
     def __init__(self, root, count, transform=None):
         self.transform = transform
-        image_files = glob(os.path.join(root, 'train', "*", "images", "*.JPEG"))
+        image_files = glob.glob(os.path.join(root, 'train', "*", "images", "*.JPEG"))
         if count==-1:
             final_length = len(image_files)
         else:
