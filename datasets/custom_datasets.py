@@ -1346,7 +1346,7 @@ def center_paste_2(large_img, small_img, shrink_factor):
     return result_img
 
 class IMAGENET30_TEST_DATASET(Dataset):
-    def __init__(self, root_dir="/kaggle/input/imagenet30-dataset/one_class_test", transform=None):
+    def __init__(self, root_dir="/kaggle/input/imagenet30-dataset/one_class_test/one_class_test", transform=None):
         """
         Args:
             root_dir (string): Directory with all the classes.
