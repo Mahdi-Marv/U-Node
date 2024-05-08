@@ -1346,7 +1346,7 @@ def center_paste_2(large_img, small_img, shrink_factor):
     return result_img
 
 class IMAGENET30_TEST_DATASET(Dataset):
-    def __init__(self, root_dir="./one_class_test/one_class_test/", transform=None):
+    def __init__(self, root_dir="/kaggle/input/imagenet30-dataset/one_class_test", transform=None):
         """
         Args:
             root_dir (string): Directory with all the classes.
@@ -1367,7 +1367,7 @@ class IMAGENET30_TEST_DATASET(Dataset):
             class_path = os.path.join(root_dir, class_name)
             for instance_folder in os.listdir(class_path):
                 instance_path = os.path.join(class_path, instance_folder)
-                if instance_path != "./one_class_test/one_class_test/airliner/._1.JPEG":
+                if instance_path != "/kaggle/input/imagenet30-dataset/one_class_test/airliner/._1.JPEG":
                     for img_name in os.listdir(instance_path):
                         if img_name.endswith('.JPEG'):
                             img_path = os.path.join(instance_path, img_name)
