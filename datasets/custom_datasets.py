@@ -1368,13 +1368,14 @@ class IMAGENET30_TEST_DATASET(Dataset):
             for instance_folder in os.listdir(class_path):
                 instance_path = os.path.join(class_path, instance_folder)
                 print(instance_path)
-                if instance_path != "/kaggle/input/imagenet30-dataset/one_class_test/one_class_test/airliner/._1.JPEG" and instance_path != "/kaggle/input/imagenet30-dataset/one_class_test/airliner/._1.JPEG":
+                if  instance_path != "/kaggle/input/imagenet30-dataset/one_class_test/airliner/._1.JPEG":
                     for img_name in os.listdir(instance_path):
                         if img_name.endswith('.JPEG'):
                             img_path = os.path.join(instance_path, img_name)
-                            # image = Image.open(img_path).convert('RGB')
-                            self.img_path_list.append(img_path)
-                            self.targets.append(self.class_to_idx[class_name])
+                            if img_path != '/kaggle/input/imagenet30-dataset/one_class_test/one_class_test/airliner/._1.JPEG':
+                                # image = Image.open(img_path).convert('RGB')
+                                self.img_path_list.append(img_path)
+                                self.targets.append(self.class_to_idx[class_name])
 
     def __len__(self):
         return len(self.img_path_list)
