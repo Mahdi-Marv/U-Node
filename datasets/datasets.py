@@ -1478,6 +1478,7 @@ def get_dataset(P, dataset, test_only=False, image_size=(32, 32, 3), download=Fa
         print("len(test_set), len(train_set): ", len(test_set), len(train_set))
 
     elif dataset == 'gta':
+        n_classes = 2
         train_transform = transforms.Compose([transforms.Resize((image_size[0], image_size[1])),
                                               transforms.RandomHorizontalFlip(),
                                               transforms.ToTensor()])
