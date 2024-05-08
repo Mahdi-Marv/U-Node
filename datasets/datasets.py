@@ -230,6 +230,7 @@ def get_exposure_dataloader(P, batch_size = 64, image_size=(224, 224, 3),
         ])
         base_path = ''
         imagenet_exposure = ImageNetExposure(root=base_path, count=tiny_count, transform=tiny_transform)
+        print("fsdsdf", len(imagenet_exposure))
         fc = [int(fake_count / len(cls_list)) for i in range(len(cls_list))]
         if sum(fc) != fake_count:
             fc[0] += abs(fake_count - sum(fc))
