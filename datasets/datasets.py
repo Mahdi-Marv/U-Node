@@ -335,6 +335,35 @@ def get_exposure_dataloader(P, batch_size=64, image_size=(224, 224, 3),
         print("number of exposure:", len(exposureset))
         train_loader = DataLoader(exposureset, batch_size=batch_size, shuffle=True)
 
+    elif P.dataset == 'wbc_shifted':
+        train_transform_cutpasted = transforms.Compose([
+            transforms.Resize((image_size[0], image_size[1])),
+            CutPasteUnion(transform=transforms.Compose([transforms.ToTensor(), ])),
+        ])
+
+        imagenet_exposure = ImageNetExposure(root=base_path, count=tiny_count, transform=tiny_transform)
+        fcp = [int(cutpast_count / len(cls_list)) for i in range(len(cls_list))]
+        if sum(fcp) != cutpast_count:
+            fcp[0] += abs(cutpast_count - sum(fcp))
+        print("cutpast couns:", fcp)
+
+
+        root1 = '/kaggle/working/segmentation_WBC/Dataset 1'
+        root2 = '/kaggle/working/segmentation_WBC/Dataset 2'
+        import pandas as pd
+        df1 = pd.read_csv('/kaggle/working/segmentation_WBC/Class Labels of Dataset 1.csv')
+        df2 = pd.read_csv('/kaggle/working/segmentation_WBC/Class Labels of Dataset 2.csv')
+        train_ds_wbc_cutpaste = WBCDataset(root1=root1, root2=root2,
+                               labels1=df1, labels2=df2, transform=train_transform_cutpasted, train=True)
+        exposureset = torch.utils.data.ConcatDataset(
+            [imagenet_exposure, train_ds_wbc_cutpaste])
+        if len(train_ds_wbc_cutpaste) > 0:
+            print("number of cutpast data:", len(train_ds_wbc_cutpaste), 'shape:',
+                  train_ds_wbc_cutpaste[0][0].shape)
+
+        print("number of tiny data:", len(imagenet_exposure), 'shape:', imagenet_exposure[0][0].shape)
+        print("number of exposure:", len(exposureset))
+        train_loader = DataLoader(exposureset, batch_size=batch_size, shuffle=True)
 
 
     else:
@@ -804,7 +833,7 @@ def get_dataset(P, dataset, test_only=False, image_size=(32, 32, 3), download=Fa
             train_set = get_breastmnist_train(anomaly_class_indx=P.one_class_idx, path='./data/', transform=transform)
         print("train_set shapes: ", train_set[0][0].shape)
         print("test_set shapes: ", test_set[0][0].shape)
-    elif dataset == 'WBC':
+    elif dataset == 'WBC':   ### OLD!
         n_classes = 2
         data_path_good_train = "./CELL_MIR"
         orig_transform = transforms.Compose([
@@ -924,6 +953,41 @@ def get_dataset(P, dataset, test_only=False, image_size=(32, 32, 3), download=Fa
         print("train_set shapes: ", train_set[0][0].shape, len(train_set))
         print("test_set shapes: ", test_set[0][0].shape, len(test_set))
         '''
+    elif dataset == 'wbc_shifted':
+        n_classes = 2
+        train_transform = transforms.Compose([
+            transforms.Resize((image_size[0], image_size[1])),
+            # transforms.CenterCrop((image_size[0], image_size[1])),
+            transforms.RandomHorizontalFlip(),
+            transforms.ToTensor(),
+        ])
+
+        test_transform = transforms.Compose([
+            transforms.Resize((image_size[0], image_size[1])),
+            transforms.ToTensor(),
+        ])
+        root1 = '/kaggle/working/segmentation_WBC/Dataset 1'
+        root2 = '/kaggle/working/segmentation_WBC/Dataset 2'
+        import pandas as pd
+        df1 = pd.read_csv('/kaggle/working/segmentation_WBC/Class Labels of Dataset 1.csv')
+        df2 = pd.read_csv('/kaggle/working/segmentation_WBC/Class Labels of Dataset 2.csv')
+        if train_transform_cutpasted:
+            train_set = WBCDataset(root1=root1, root2=root2,
+                               labels1=df1, labels2=df2, transform=train_transform_cutpasted, train=True)
+        else:
+            train_set = WBCDataset(root1=root1, root2=root2,
+                                   labels1=df1, labels2=df2, transform=train_transform, train=True)
+        if P.test_id == 1:
+            test_set = WBCDataset(root1=root1, root2=root2,
+                               labels1=df1, labels2=df2, transform=test_transform, train=False, test_id=1)
+        else:
+            test_set = WBCDataset(root1=root1, root2=root2,
+                               labels1=df1, labels2=df2, transform=test_transform, train=False, test_id=2)
+
+        print("train_set shapes: ", train_set[0][0].shape)
+        print("test_set shapes: ", test_set[0][0].shape)
+
+        print("len(test_dataset), len(train_dataset)", len(test_set), len(train_set))
 
     elif dataset == 'mvtec-high-var':
         n_classes = 2
@@ -1645,6 +1709,8 @@ def get_superclass_list(dataset):
         return DIOR_SUPERCLASS
     elif dataset == 'waterbirds':
         return WATERBIRDS_SUPERCLASS
+    elif dataset == 'wbc_shifted':
+        return WBC_SUPERCLASS
     else:
         raise NotImplementedError()
 
