@@ -354,7 +354,7 @@ def get_exposure_dataloader(P, batch_size=64, image_size=(224, 224, 3),
         df1 = pd.read_csv('/kaggle/working/segmentation_WBC/Class Labels of Dataset 1.csv')
         df2 = pd.read_csv('/kaggle/working/segmentation_WBC/Class Labels of Dataset 2.csv')
         train_ds_wbc_cutpaste = WBCDataset(root1=root1, root2=root2,
-                               labels1=df1, labels2=df2, transform=train_transform_cutpasted, train=True)
+                               labels1=df1, labels2=df2, transform=train_transform_cutpasted, train=True, count=fcp[0])
         exposureset = torch.utils.data.ConcatDataset(
             [imagenet_exposure, train_ds_wbc_cutpaste])
         if len(train_ds_wbc_cutpaste) > 0:

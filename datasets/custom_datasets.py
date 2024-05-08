@@ -268,7 +268,7 @@ def three_digits(a: int):
 
 class WBCDataset(torch.utils.data.Dataset):  ####  FOR MAIN / SHIFTED
     def __init__(self, root1, root2,
-                 labels1: pd.DataFrame, labels2: pd.DataFrame, transform=None, train=True, test_id=1, ratio=0.7):
+                 labels1: pd.DataFrame, labels2: pd.DataFrame, transform=None, train=True, test_id=1, ratio=0.7, count=-1):
         self.transform = transform
         self.root1 = root1
         self.root2 = root2
@@ -307,6 +307,15 @@ class WBCDataset(torch.utils.data.Dataset):  ####  FOR MAIN / SHIFTED
                     0 if labels2[labels2['image ID'] == int(os.path.basename(x).split('.')[0])]['class'].item() == 1
                     else 1 for x in self.image_paths]
 
+        if count != -1:
+            if count < len(self.image_paths):
+                self.image_paths = self.image_paths[:count]
+                self.labels = self.targets[:count]
+            else:
+                t = len(self.image_paths)
+                for i in range(count - t):
+                    self.image_paths.append(random.choice(self.image_paths[:t]))
+                    self.labels.append(random.choice(self.labels[:t]))
     def __len__(self):
         return len(self.image_paths)
 
