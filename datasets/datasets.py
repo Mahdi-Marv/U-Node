@@ -246,7 +246,7 @@ def get_exposure_dataloader(P, batch_size = 64, image_size=(224, 224, 3),
             ])
 
         _class_ = item_list[cls_list[0]]        
-        train_path = './VisA/1cls/' + _class_ + '/train/good/*'
+        train_path = '/kaggle/input/visa-ds/VisA/1cls/' + _class_ + '/train/good/*'
         if P.train_shrink_factor == 1:
             train_ds_mvtech_cutpasted = Train_Visa(root=train_path, transform=train_transform_cutpasted, imagenet_percent=0.0, count=fcp[0])
         else:
@@ -879,7 +879,7 @@ def get_dataset(P, dataset, test_only=False, image_size=(32, 32, 3), download=Fa
         batch_size = 128
         item_list = ['candle', 'capsules', 'cashew', 'chewinggum', 'fryum', 'macaroni1', 'macaroni2','pcb1', 'pcb2', 'pcb3', 'pcb4', 'pipe_fryum']
         _class_ = item_list[labels[0]]
-        test_path = './VisA/1cls/' + _class_
+        test_path = '/kaggle/input/visa-ds/VisA/1cls/' + _class_
         train_transform = transforms.Compose([
                 transforms.Resize((image_size[0], image_size[1])),
                 transforms.CenterCrop((image_size[0], image_size[1])),
@@ -893,10 +893,10 @@ def get_dataset(P, dataset, test_only=False, image_size=(32, 32, 3), download=Fa
             ])
 
         if P.train_shrink_factor == 1:
-            train_path = './VisA/1cls/' + _class_ + '/train'        
+            train_path = '/kaggle/input/visa-ds/VisA/1cls/' + _class_ + '/train'        
             train_set = ImageFolder(root=train_path, transform=train_transform)
         else:
-            train_path = './VisA/1cls/' + _class_ + '/train/good/*'
+            train_path = '/kaggle/input/visa-ds/VisA/1cls/' + _class_ + '/train/good/*'
             train_set = Train_Visa(root=train_path, transform=train_transform)
 
         if P.test_shrink_factor == 1:
