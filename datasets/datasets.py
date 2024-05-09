@@ -201,7 +201,8 @@ def get_exposure_dataloader(P, batch_size=64, image_size=(224, 224, 3),
         ])
 
     fake_count = int(P.fake_data_percent * count)
-    tiny_count = int((1 - (P.fake_data_percent + P.cutpast_data_percent)) * count)
+    rotate_count = int(P.rotate_data_percent * count)
+    tiny_count = int((1 - (P.fake_data_percent + P.cutpast_data_percent + P.rotate_data_percent)) * count)
     cutpast_count = int(P.cutpast_data_percent * count)
     if (fake_count + tiny_count + cutpast_count) != count:
         tiny_count += (count - (cutpast_count + fake_count + tiny_count))
@@ -282,6 +283,10 @@ def get_exposure_dataloader(P, batch_size=64, image_size=(224, 224, 3),
             transforms.Resize((image_size[0], image_size[1])),
             CutPasteUnion(transform=transforms.Compose([transforms.ToTensor(), ])),
         ])
+        tranform_rotate = transforms.Compose([
+            transforms.Resize((image_size[0], image_size[1])),
+            RandomRotationTransform(transform=transforms.Compose([transforms.ToTensor(), ])),
+        ])
         imagenet_exposure = IMAGENET30_TEST_DATASET(transform=tiny_transform, count=tiny_count)
         fc = [int(fake_count / len(cls_list)) for i in range(len(cls_list))]
         if sum(fc) != fake_count:
@@ -300,9 +305,20 @@ def get_exposure_dataloader(P, batch_size=64, image_size=(224, 224, 3),
                                                                     count=fcp[idx]))
         train_ds_mvtech_cutpasted = ConcatDataset(train_ds_mvtech_cutpasted)
         # train_ds_mvtech_fake = ConcatDataset(train_ds_mvtech_fake)
+        frot = [int(rotate_count / len(cls_list)) for i in range(len(cls_list))]
+        if sum(frot) != rotate_count:
+            frot[0] += abs(rotate_count - sum(frot))
+        print("rotate couns:", frot)
+        train_ds_mvtech_rotate = []
+        for idx, i in enumerate(cls_list):
+            train_ds_mvtech_rotate.append(GTA(image_path=train_path, labels=[-1]*len(train_path),
+                                                                    transform=train_transform_cutpasted,
+                                                                    count=frot[idx]))
 
+
+        train_ds_mvtech_rotate = ConcatDataset(train_ds_mvtech_rotate)
         exposureset = torch.utils.data.ConcatDataset(
-            [imagenet_exposure, train_ds_mvtech_cutpasted])
+            [imagenet_exposure, train_ds_mvtech_cutpasted, train_ds_mvtech_rotate])
         if len(train_ds_mvtech_fake) > 0:
             print("number of fake data:", len(train_ds_mvtech_fake), "shape:", train_ds_mvtech_fake[0][0].shape)
         if len(train_ds_mvtech_cutpasted) > 0:
