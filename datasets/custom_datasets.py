@@ -1377,6 +1377,8 @@ class IMAGENET30_TEST_DATASET(Dataset):
         # Walk through the directory and collect information about the images and their labels
         for i, class_name in enumerate(os.listdir(root_dir)):
             class_path = os.path.join(root_dir, class_name)
+            if class_name in ['ambulance', 'tank']:
+                continue
             for instance_folder in os.listdir(class_path):
                 instance_path = os.path.join(class_path, instance_folder)
                 if instance_path != "/kaggle/input/imagenet30-dataset/one_class_test/one_class_test/airliner/._1.JPEG":

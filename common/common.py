@@ -59,6 +59,8 @@ def parse_args(default=False):
                         default=0.0, type=float)
     parser.add_argument('--cutpast_data_percent', help='',
                         default=0.0, type=float)
+    parser.add_argument('--rotation_data_percent', help='',
+                        default=0.0, type=float)
     parser.add_argument('--main_count', help='count of normal data',
                         default=-1, type=int)
     parser.add_argument('--high_var', help='not used!',

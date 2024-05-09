@@ -4,9 +4,8 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="13e74ec9-857e-4f7d-9163-eccafbdf79cf" name="Changes" comment="fix bug">
-      <change beforePath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Checkout_at_4_27_2024_6_51_PM__Changes_.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Checkout_at_4_27_2024_6_51_PM__Changes_.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+    <list default="true" id="7e1983b5-6820-4074-a7fd-fcf81984bef0" name="Changes" comment="fix bug">
+      <change beforePath="$PROJECT_DIR$/common/common.py" beforeDir="false" afterPath="$PROJECT_DIR$/common/common.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
