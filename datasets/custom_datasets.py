@@ -1409,3 +1409,32 @@ class IMAGENET30_TEST_DATASET(Dataset):
         if self.transform:
             image = self.transform(image)
         return image, label
+
+
+def get_gta_globs():
+    from glob import glob
+    nums = [f'0{i}' for i in range(1, 10)] + ['10']
+    folder_paths = []
+    globs_id = []
+    globs_ood = []
+    for i in range(10):
+        id_path = f'/kaggle/input/gta5-15-5-{nums[i]}/gta5_{i}/gta5_{i}/ID/*'
+        ood_path = f'/kaggle/input/gta5-15-5-{nums[i]}/gta5_{i}/gta5_{i}/OOD/*'
+        globs_id.append(glob(id_path))
+        globs_ood.append(glob(ood_path))
+        print(i, len(globs_id[-1]), len(globs_ood[-1]))
+
+    glob_id = []
+    glob_ood = []
+    for i in range(len(globs_id)):
+        glob_id += globs_id[i]
+        glob_ood += globs_ood[i]
+
+    random.seed(42)
+    random.shuffle(glob_id)
+    train_ratio = 0.7
+    separator = int(train_ratio * len(glob_id))
+    glob_train_id = glob_id[:separator]
+    glob_test_id = glob_id[separator:]
+
+    return glob_train_id, glob_test_id, glob_ood

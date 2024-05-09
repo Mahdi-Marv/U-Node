@@ -186,9 +186,9 @@ def get_exposure_dataloader(P, batch_size=64, image_size=(224, 224, 3),
             transforms.RandomChoice(
                 [transforms.RandomApply(
                     [transforms.RandomAffine(90, translate=(0.15, 0.15), scale=(0.85, 1), shear=None)], p=0.6),
-                 transforms.RandomApply([transforms.RandomAffine(0, translate=None, scale=(0.5, 0.75), shear=30)],
-                                        p=0.6),
-                 transforms.RandomApply([transforms.AutoAugment()], p=0.9), ]),
+                    transforms.RandomApply([transforms.RandomAffine(0, translate=None, scale=(0.5, 0.75), shear=30)],
+                                           p=0.6),
+                    transforms.RandomApply([transforms.AutoAugment()], p=0.9), ]),
             transforms.RandomHorizontalFlip(),
             transforms.ToTensor()
         ])
@@ -298,11 +298,11 @@ def get_exposure_dataloader(P, batch_size=64, image_size=(224, 224, 3),
         print("cutpaste count:", fcp)
         train_ds_mvtech_fake = []
         train_ds_mvtech_cutpasted = []
-        train_path = glob('/kaggle/input/gta5-driving/gta5/train/ID/*')
+        glob_train_id, glob_test_id, glob_ood = get_gta_globs()
         for idx, i in enumerate(cls_list):
-            train_ds_mvtech_cutpasted.append(GTA(image_path=train_path, labels=[-1]*len(train_path),
-                                                                    transform=train_transform_cutpasted,
-                                                                    count=fcp[idx]))
+            train_ds_mvtech_cutpasted.append(GTA(image_path=glob_train_id, labels=[-1] * len(glob_train_id),
+                                                 transform=train_transform_cutpasted,
+                                                 count=fcp[idx]))
         train_ds_mvtech_cutpasted = ConcatDataset(train_ds_mvtech_cutpasted)
         # train_ds_mvtech_fake = ConcatDataset(train_ds_mvtech_fake)
         frot = [int(rotate_count / len(cls_list)) for i in range(len(cls_list))]
@@ -311,10 +311,9 @@ def get_exposure_dataloader(P, batch_size=64, image_size=(224, 224, 3),
         print("rotate couns:", frot)
         train_ds_mvtech_rotate = []
         for idx, i in enumerate(cls_list):
-            train_ds_mvtech_rotate.append(GTA(image_path=train_path, labels=[-1]*len(train_path),
-                                                                    transform=train_transform_cutpasted,
-                                                                    count=frot[idx]))
-
+            train_ds_mvtech_rotate.append(GTA(image_path=glob_train_id, labels=[-1] * len(glob_train_id),
+                                              transform=train_transform_cutpasted,
+                                              count=frot[idx]))
 
         train_ds_mvtech_rotate = ConcatDataset(train_ds_mvtech_rotate)
         exposureset = torch.utils.data.ConcatDataset(
@@ -1502,19 +1501,15 @@ def get_dataset(P, dataset, test_only=False, image_size=(32, 32, 3), download=Fa
         test_transform = transforms.Compose([transforms.Resize((image_size[0], image_size[1])),
                                              transforms.ToTensor()])
 
-        train_normal_path = glob('/kaggle/input/gta5-driving/gta5/train/ID/*')
-        test_id_path = glob('/kaggle/input/gta5-driving/gta5/test/ID/*')
-        test_ood_path = glob('/kaggle/input/gta5-driving/gta5/test/OOD/*')
-
-        train_label = [0] * len(train_normal_path)
-        test_path = test_id_path + test_ood_path
-        test_label = [0] * len(test_id_path) + [1] * len(test_ood_path)
+        glob_train_id, glob_test_id, glob_ood = get_gta_globs()
 
         if train_transform_cutpasted:
-            train_set = GTA(image_path=train_normal_path, labels=train_label, transform=train_transform_cutpasted)
+            train_set = GTA(image_path=glob_train_id, labels=[0] * len(glob_train_id),
+                            transform=train_transform_cutpasted)
         else:
-            train_set = GTA(image_path=train_normal_path, labels=train_label, transform=train_transform)
-        test_set = GTA(image_path=test_path, labels=test_label, transform=test_transform)
+            train_set = GTA(image_path=glob_train_id, labels=[0] * len(glob_train_id), transform=train_transform)
+        test_set = GTA(image_path=glob_test_id + glob_ood, labels=[0] * len(glob_test_id) + [1] * len(glob_ood),
+                       transform=test_transform)
 
         print("train_set shapes: ", train_set[0][0].shape)
         print("test_set shapes: ", test_set[0][0].shape)
