@@ -139,7 +139,7 @@ def load_checkpoint(logdir, mode='last'):
 
 
 def save_checkpoint(epoch, model_state, optim_state, logdir):
-    last_model = os.path.join(logdir, f'last{epoch}.model')
+    last_model = os.path.join(logdir, f'last{epoch//10}.model')
     last_optim = os.path.join(logdir, 'last.optim')
     last_config = os.path.join(logdir, 'last.config')
 
