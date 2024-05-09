@@ -204,9 +204,9 @@ def get_exposure_dataloader(P, batch_size=64, image_size=(224, 224, 3),
     rotate_count = int(P.rotation_data_percent * count)
     tiny_count = int((1 - (P.fake_data_percent + P.cutpast_data_percent + P.rotation_data_percent)) * count)
     cutpast_count = int(P.cutpast_data_percent * count)
-    if (fake_count + tiny_count + cutpast_count) != count:
-        tiny_count += (count - (cutpast_count + fake_count + tiny_count))
-    print("fake_count, tiny_count, cutpast_count", fake_count, tiny_count, cutpast_count)
+    if (fake_count + tiny_count + cutpast_count + rotate_count) != count:
+        tiny_count += (count - (cutpast_count + fake_count + tiny_count + rotate_count))
+    print("fake_count, tiny_count, cutpast_count, rotate_count", fake_count, tiny_count, cutpast_count, rotate_count)
     if P.dataset == "MVTecAD":
         fake_transform = transforms.Compose([
             transforms.Resize((256, 256)),
