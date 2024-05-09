@@ -76,7 +76,21 @@ for epoch in range(start_epoch, P.epochs + 1):
             '--activation_function', str(P.activation_function),
             '--test_id', str(1)
         ]
+        print('main eval:')
+        result = subprocess.run(["python", "eval.py"] + arguments_to_pass, capture_output=True, text=True)
 
+        # Check the result
+        if result.returncode == 0:
+            logger.log("Script executed successfully.")
+            logger.log("Output:")
+            logger.log(result.stdout)
+        else:
+            logger.log("Script execution failed.")
+            logger.log("Error:")
+            logger.log(result.stderr)
+
+        print('shifted eval:')
+        arguments_to_pass[-1] = str(2)
         result = subprocess.run(["python", "eval.py"] + arguments_to_pass, capture_output=True, text=True)
 
         # Check the result
