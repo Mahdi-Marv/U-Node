@@ -312,7 +312,7 @@ def get_exposure_dataloader(P, batch_size=64, image_size=(224, 224, 3),
         train_ds_mvtech_rotate = []
         for idx, i in enumerate(cls_list):
             train_ds_mvtech_rotate.append(GTA(image_path=glob_train_id, labels=[-1] * len(glob_train_id),
-                                              transform=train_transform_cutpasted,
+                                              transform=tranform_rotate,
                                               count=frot[idx]))
 
         train_ds_mvtech_rotate = ConcatDataset(train_ds_mvtech_rotate)
