@@ -4,9 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="7e1983b5-6820-4074-a7fd-fcf81984bef0" name="Changes" comment="fix bug">
-      <change beforePath="$PROJECT_DIR$/common/eval.py" beforeDir="false" afterPath="$PROJECT_DIR$/common/eval.py" afterDir="false" />
-    </list>
+    <list default="true" id="25bb9ed0-2959-4717-9ec5-d12e64c90c89" name="Changes" comment="fix bug" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />

@@ -1508,8 +1508,19 @@ def get_dataset(P, dataset, test_only=False, image_size=(32, 32, 3), download=Fa
                             transform=train_transform_cutpasted)
         else:
             train_set = GTA(image_path=glob_train_id, labels=[0] * len(glob_train_id), transform=train_transform)
-        test_set = GTA(image_path=glob_test_id + glob_ood, labels=[0] * len(glob_test_id) + [1] * len(glob_ood),
+
+        if P.test_id == 1:
+            test_set = GTA(image_path=glob_test_id + glob_ood, labels=[0] * len(glob_test_id) + [1] * len(glob_ood),
                        transform=test_transform)
+        else:
+            shifted_normal_path = glob('/kaggle/input/cityscapes-5-10-threshold/cityscapes/ID/*')
+            shifted_anomaly_path = glob('/kaggle/input/cityscapes-5-10-threshold/cityscapes/OOD/*')
+
+            shifted_test_path = shifted_normal_path + shifted_anomaly_path
+            shifted_test_label = [0] * len(shifted_normal_path) + [1] * len(shifted_anomaly_path)
+
+            test_set = GTA(image_path=shifted_test_path, labels=shifted_test_label,
+                           transform=test_transform)
 
         print("train_set shapes: ", train_set[0][0].shape)
         print("test_set shapes: ", test_set[0][0].shape)
