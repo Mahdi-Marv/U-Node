@@ -1387,7 +1387,7 @@ class IMAGENET30_TEST_DATASET(Dataset):
                             img_path = os.path.join(instance_path, img_name)
                             # image = Image.open(img_path).convert('RGB')
                             self.img_path_list.append(img_path)
-                            self.targets.append(self.class_to_idx[class_name])
+                            self.targets.append(-1)
 
         if count != -1:
             if count < len(self.img_path_list):
