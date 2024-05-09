@@ -54,7 +54,7 @@ for epoch in range(start_epoch, P.epochs + 1):
     if (epoch % P.save_step == 0):
         torch.cuda.empty_cache()
         from evals.ood_pre import eval_ood_detection
-        P.load_path = logger.logdir + '/last.model'
+        P.load_path = logger.logdir + f'/last{epoch}.model'
         import subprocess
 
         arguments_to_pass = [
