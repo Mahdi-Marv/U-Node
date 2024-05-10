@@ -85,7 +85,7 @@ def get_classifier(mode, n_classes=10, activation='relu', std=1.0, mean=0.0, noi
     elif mode =='pretrain-resnet152':
         classifier = Pretrain_ResNet152_Model(num_classes=n_classes)
     elif mode =='pretrain-resnet18':
-        classifier = Pretrain_ResNet18_Model(num_classes=n_classes)
+        classifier = Pretrain_ResNet18_Model(num_classes=n_classes, freezing_layer=freezing_layer)
     elif mode == 'resnet34':
         classifier = ResNet34(num_classes=n_classes)
     elif mode == 'resnet50':

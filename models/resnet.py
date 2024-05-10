@@ -191,7 +191,7 @@ class ResNet(BaseModel):
             return out
 
 class Pretrain_ResNet(BaseModel):
-    def __init__(self, block, num_blocks, num_classes=10):
+    def __init__(self, block, num_blocks, num_classes=10, freezing_layer=33):
         last_dim = 512 * block.expansion
         super(Pretrain_ResNet, self).__init__(last_dim, num_classes)
 
@@ -204,7 +204,7 @@ class Pretrain_ResNet(BaseModel):
         self.backbone = models.resnet18(pretrained=True)
         self.backbone.fc = torch.nn.Identity()
         i = 0
-        num = 30
+        num = freezing_layer
         for param in self.backbone.parameters():
             if i<num:
                 param.requires_grad = False
@@ -383,8 +383,8 @@ def ResNet34(num_classes):
 def ResNet50(num_classes):
     return ResNet(Bottleneck, [3,4,6,3], num_classes=num_classes)
 
-def Pretrain_ResNet18_Model(num_classes):
-    return Pretrain_ResNet(BasicBlock, [2,2,2,2],   num_classes=num_classes)
+def Pretrain_ResNet18_Model(num_classes, freezing_layer=30):
+    return Pretrain_ResNet(BasicBlock, [2,2,2,2],   num_classes=num_classes, freezing_layer=freezing_layer)
 
 def Pretrain_ResNet152_Model(num_classes):
     return Pretrain_ResNet152(BasicBlock, [2,2,2,2], num_classes=num_classes)

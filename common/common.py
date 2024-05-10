@@ -145,7 +145,7 @@ def parse_args(default=False):
                         default=1, type=int)
 
     parser.add_argument('--freezing_layer', help='Freezing Layer',
-                        default=133, type=int)
+                        default=30, type=int)
     parser.add_argument('--test_id', help='main=1, shifted=2', type=int, default=1, choices=[1, 2])
     parser.add_argument('--tiny', help='tiny or imagenet30', action='store_true')
     if default:
