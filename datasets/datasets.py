@@ -287,7 +287,10 @@ def get_exposure_dataloader(P, batch_size=64, image_size=(224, 224, 3),
             transforms.Resize((image_size[0], image_size[1])),
             RandomRotationTransform(transform=transforms.Compose([transforms.ToTensor(), ])),
         ])
-        imagenet_exposure = IMAGENET30_TEST_DATASET(transform=tiny_transform, count=tiny_count)
+        if P.tiny:
+            imagenet_exposure = None
+        else:
+            imagenet_exposure = IMAGENET30_TEST_DATASET(transform=tiny_transform, count=tiny_count)
         fc = [int(fake_count / len(cls_list)) for i in range(len(cls_list))]
         if sum(fc) != fake_count:
             fc[0] += abs(fake_count - sum(fc))
