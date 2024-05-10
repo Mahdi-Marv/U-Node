@@ -191,7 +191,7 @@ class ResNet(BaseModel):
             return out
 
 class Pretrain_ResNet(BaseModel):
-    def __init__(self, block, num_blocks, num_classes=10, freezing_layer=33):
+    def __init__(self, block, num_blocks, num_classes=10, freezing_layer=30):
         last_dim = 512 * block.expansion
         super(Pretrain_ResNet, self).__init__(last_dim, num_classes)
 
