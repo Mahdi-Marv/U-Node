@@ -321,10 +321,18 @@ def get_exposure_dataloader(P, batch_size=64, image_size=(224, 224, 3),
             frot[0] += abs(rotate_count - sum(frot))
         print("rotate couns:", frot)
         train_ds_mvtech_rotate = []
-        for idx, i in enumerate(cls_list):
-            train_ds_mvtech_rotate.append(GTA(image_path=glob_train_id, labels=[-1] * len(glob_train_id),
-                                              transform=tranform_rotate,
-                                              count=frot[idx]))
+        if P.dataset=='gta':
+            glob_train_id, glob_test_id, glob_ood = get_gta_globs()
+            for idx, i in enumerate(cls_list):
+                train_ds_mvtech_cutpasted.append(GTA(image_path=glob_train_id, labels=[-1] * len(glob_train_id),
+                                                    transform=tranform_rotate,
+                                                    count=frot[idx]))
+        elif P.dataset=='cityscape':
+            normal_path_train, normal_path_test, anomaly_path = get_cityscape_globs()
+            for idx, i in enumerate(cls_list):
+                train_ds_mvtech_cutpasted.append(GTA(image_path=normal_path_train, labels=[-1] * len(normal_path_train),
+                                                    transform=tranform_rotate,
+                                                    count=frot[idx]))
 
         train_ds_mvtech_rotate = ConcatDataset(train_ds_mvtech_rotate)
         exposureset = torch.utils.data.ConcatDataset(
