@@ -1495,12 +1495,51 @@ def get_dataset(P, dataset, test_only=False, image_size=(32, 32, 3), download=Fa
         print("test_set shapes: ", test_set[0][0].shape)
         print("len(test_set), len(train_set): ", len(test_set), len(train_set))
 
+    elif dataset == 'cityscape':
+        n_classes = 2
+        train_transform = transforms.Compose([transforms.Resize((image_size[0], image_size[1])),
+                                              transforms.RandomHorizontalFlip(),
+                                              transforms.ToTensor()])
+        test_transform = transforms.Compose([transforms.Resize((image_size[0], image_size[1])),
+                                             transforms.ToTensor()])
+        normal_path = glob('/kaggle/input/cityscapes-5-10-threshold/cityscapes/ID/*')
+        anomaly_path = glob('/kaggle/input/cityscapes-5-10-threshold/cityscapes/OOD/*')
+
+        random.seed(42)
+        random.shuffle(normal_path)
+        train_ratio = 0.7
+        separator = int(train_ratio * len(normal_path))
+        normal_path_train = normal_path[:separator]
+        normal_path_test = normal_path[separator:]
+        test_path = normal_path_test + anomaly_path
+
+        test_label = [0] * len(normal_path_test) + [1] * len(anomaly_path)
+        train_label = [0] * len(normal_path_train)
+        
+        if train_transform_cutpasted:
+            train_set = GTA(image_path=normal_path_train, labels=train_label,
+                        transform=train_transform_cutpasted)
+        else:
+            train_set = GTA(image_path=normal_path_train, labels=train_label,
+                        transform=test_transform)
+
+        if P.test_id == 1:
+            test_set = GTA(image_path=test_path, labels=test_label,
+                            transform=test_transform)
+        else:
+            glob_train_id, glob_test_id, glob_ood = get_gta_globs()
+            test_set = GTA(image_path=glob_test_id + glob_ood, labels=[0] * len(glob_test_id) + [1] * len(glob_ood),
+                                   transform=test_transform)
+                                   
+        print("train_set shapes: ", train_set[0][0].shape)
+        print("test_set shapes: ", test_set[0][0].shape)
+        print("len(test_set), len(train_set): ", len(test_set), len(train_set))
+
     elif dataset == 'gta':
         n_classes = 2
         train_transform = transforms.Compose([transforms.Resize((image_size[0], image_size[1])),
                                               transforms.RandomHorizontalFlip(),
                                               transforms.ToTensor()])
-
         test_transform = transforms.Compose([transforms.Resize((image_size[0], image_size[1])),
                                              transforms.ToTensor()])
 
@@ -1528,9 +1567,6 @@ def get_dataset(P, dataset, test_only=False, image_size=(32, 32, 3), download=Fa
         print("train_set shapes: ", train_set[0][0].shape)
         print("test_set shapes: ", test_set[0][0].shape)
         print("len(test_set), len(train_set): ", len(test_set), len(train_set))
-
-
-
 
     elif dataset == 'svhn':
         assert test_only and image_size is not None
