@@ -278,7 +278,7 @@ def get_exposure_dataloader(P, batch_size=64, image_size=(224, 224, 3),
         print("number of exposure:", len(exposureset))
         train_loader = DataLoader(exposureset, batch_size=batch_size, shuffle=True)
 
-    elif P.dataset == 'gta':
+    elif P.dataset=='gta' or P.dataset=='cityscape':
         train_transform_cutpasted = transforms.Compose([
             transforms.Resize((image_size[0], image_size[1])),
             CutPasteUnion(transform=transforms.Compose([transforms.ToTensor(), ])),
@@ -1530,7 +1530,7 @@ def get_dataset(P, dataset, test_only=False, image_size=(32, 32, 3), download=Fa
             glob_train_id, glob_test_id, glob_ood = get_gta_globs()
             test_set = GTA(image_path=glob_test_id + glob_ood, labels=[0] * len(glob_test_id) + [1] * len(glob_ood),
                                    transform=test_transform)
-                                   
+
         print("train_set shapes: ", train_set[0][0].shape)
         print("test_set shapes: ", test_set[0][0].shape)
         print("len(test_set), len(train_set): ", len(test_set), len(train_set))
@@ -1704,7 +1704,7 @@ def get_superclass_list(dataset):
         return IMAGENET_SUPERCLASS
     elif dataset == 'dior':
         return DIOR_SUPERCLASS
-    elif dataset == 'gta':
+    elif dataset == 'gta' or dataset=='cityscape':
         return GTA_SUPERCLASS
     else:
         raise NotImplementedError()
