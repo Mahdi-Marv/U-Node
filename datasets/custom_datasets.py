@@ -1410,6 +1410,20 @@ class IMAGENET30_TEST_DATASET(Dataset):
             image = self.transform(image)
         return image, label
 
+def get_cityscape_globs():
+    from glob import glob
+    import random
+    normal_path = glob('/kaggle/input/cityscapes-5-10-threshold/cityscapes/ID/*')
+    anomaly_path = glob('/kaggle/input/cityscapes-5-10-threshold/cityscapes/OOD/*')
+
+    random.seed(42)
+    random.shuffle(normal_path)
+    train_ratio = 0.7
+    separator = int(train_ratio * len(normal_path))
+    normal_path_train = normal_path[:separator]
+    normal_path_test = normal_path[separator:]
+
+    return normal_path_train, normal_path_test, anomaly_path
 
 def get_gta_globs():
     from glob import glob

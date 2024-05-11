@@ -301,11 +301,19 @@ def get_exposure_dataloader(P, batch_size=64, image_size=(224, 224, 3),
         print("cutpaste count:", fcp)
         train_ds_mvtech_fake = []
         train_ds_mvtech_cutpasted = []
-        glob_train_id, glob_test_id, glob_ood = get_gta_globs()
-        for idx, i in enumerate(cls_list):
-            train_ds_mvtech_cutpasted.append(GTA(image_path=glob_train_id, labels=[-1] * len(glob_train_id),
-                                                 transform=train_transform_cutpasted,
-                                                 count=fcp[idx]))
+        if P.dataset=='gta':
+            glob_train_id, glob_test_id, glob_ood = get_gta_globs()
+            for idx, i in enumerate(cls_list):
+                train_ds_mvtech_cutpasted.append(GTA(image_path=glob_train_id, labels=[-1] * len(glob_train_id),
+                                                    transform=train_transform_cutpasted,
+                                                    count=fcp[idx]))
+        elif P.dataset=='cityscape':
+            normal_path_train, normal_path_test, anomaly_path = get_cityscape_globs()
+            for idx, i in enumerate(cls_list):
+                train_ds_mvtech_cutpasted.append(GTA(image_path=normal_path_train, labels=[-1] * len(normal_path_train),
+                                                    transform=train_transform_cutpasted,
+                                                    count=fcp[idx]))
+
         train_ds_mvtech_cutpasted = ConcatDataset(train_ds_mvtech_cutpasted)
         # train_ds_mvtech_fake = ConcatDataset(train_ds_mvtech_fake)
         frot = [int(rotate_count / len(cls_list)) for i in range(len(cls_list))]
@@ -1502,15 +1510,7 @@ def get_dataset(P, dataset, test_only=False, image_size=(32, 32, 3), download=Fa
                                               transforms.ToTensor()])
         test_transform = transforms.Compose([transforms.Resize((image_size[0], image_size[1])),
                                              transforms.ToTensor()])
-        normal_path = glob('/kaggle/input/cityscapes-5-10-threshold/cityscapes/ID/*')
-        anomaly_path = glob('/kaggle/input/cityscapes-5-10-threshold/cityscapes/OOD/*')
-
-        random.seed(42)
-        random.shuffle(normal_path)
-        train_ratio = 0.7
-        separator = int(train_ratio * len(normal_path))
-        normal_path_train = normal_path[:separator]
-        normal_path_test = normal_path[separator:]
+        normal_path_train, normal_path_test, anomaly_path = get_cityscape_globs()
         test_path = normal_path_test + anomaly_path
 
         test_label = [0] * len(normal_path_test) + [1] * len(anomaly_path)
