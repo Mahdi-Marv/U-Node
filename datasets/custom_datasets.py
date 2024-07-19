@@ -128,15 +128,36 @@ class Waterbird(torch.utils.data.Dataset):
         self.transform = transform
         self.train = train
         self.df = df
-        lb_on_l = df[(df['y'] == 0) & (df['place'] == 0)]
-        lb_on_w = df[(df['y'] == 0) & (df['place'] == 1)]
+
+        cols = self.df.columns
+        arr = self.df.to_numpy()
+        ## random shuffle arr using seed 10
+        random.seed(10)
+        random.shuffle(arr)
+        new_arr = []
+        wbg = 0
+        lbg = 0
+        for item in arr:
+            if item[2] == 1:
+                if item[4] == 0 and lbg < 100:
+                    lbg += 1
+                    new_arr.append(item)
+                elif item[4] == 1 and wbg < 1000:
+                    wbg += 1
+                    new_arr.append(item)
+        self.df = pd.DataFrame(new_arr, columns=cols)
+        ## save the new metadata
+        self.df.to_csv(f'new_df.csv', index=False)
+
+        wb_on_l = df[(df['y'] == 1) & (df['place'] == 0)]
+        wb_on_w = df[(df['y'] == 1) & (df['place'] == 1)]
         self.normal_paths = []
         self.labels = []
 
-        normal_df = lb_on_l.iloc[:count_train_landbg]
+        normal_df = wb_on_l.iloc[:count_train_landbg]
         normal_df_np = normal_df['img_filename'].to_numpy()
         self.normal_paths.extend([os.path.join(root, x) for x in normal_df_np][:count_train_landbg])
-        normal_df = lb_on_w.iloc[:count_train_waterbg]
+        normal_df = wb_on_w.iloc[:count_train_waterbg]
         normal_df_np = normal_df['img_filename'].to_numpy()
         copy_count = 1
         if copy:
