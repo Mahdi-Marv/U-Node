@@ -149,8 +149,8 @@ class Waterbird(torch.utils.data.Dataset):
         ## save the new metadata
         self.df.to_csv(f'new_df.csv', index=False)
 
-        wb_on_l = df[(df['y'] == 1) & (df['place'] == 0)]
-        wb_on_w = df[(df['y'] == 1) & (df['place'] == 1)]
+        wb_on_l = self.df[(self.df['y'] == 1) & (self.df['place'] == 0)]
+        wb_on_w = self.df[(self.df['y'] == 1) & (self.df['place'] == 1)]
         self.normal_paths = []
         self.labels = []
 
