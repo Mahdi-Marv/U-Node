@@ -167,7 +167,7 @@ class Waterbird(torch.utils.data.Dataset):
 
         if train:
             self.image_paths = self.normal_paths
-            print('here', len(self.image_paths))
+            print('here', len(self.image_paths), len(df), len(wb_on_w), len(wb_on_l))
         else:
             self.image_paths = []
             if mode == 'bg_all':
