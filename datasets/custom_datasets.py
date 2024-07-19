@@ -156,14 +156,14 @@ class Waterbird(torch.utils.data.Dataset):
 
         normal_df = wb_on_l.iloc[:count_train_landbg]
         normal_df_np = normal_df['img_filename'].to_numpy()
-        self.normal_paths.extend([os.path.join(root, x) for x in normal_df_np][:count_train_landbg])
+        self.normal_paths.extend([os.path.join(root, x) for x in normal_df_np][:])
         normal_df = wb_on_w.iloc[:count_train_waterbg]
         normal_df_np = normal_df['img_filename'].to_numpy()
         copy_count = 1
         if copy:
             copy_count = count_train_landbg // count_train_waterbg
         for _ in range(copy_count):
-            self.normal_paths.extend([os.path.join(root, x) for x in normal_df_np][:count_train_waterbg])
+            self.normal_paths.extend([os.path.join(root, x) for x in normal_df_np][:])
 
         if train:
             self.image_paths = self.normal_paths
