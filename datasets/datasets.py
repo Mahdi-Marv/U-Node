@@ -303,8 +303,8 @@ def get_exposure_dataloader(P, batch_size=64, image_size=(224, 224, 3),
         df = pd.read_csv(os.path.join(root, 'metadata.csv'))
         for idx, i in enumerate(cls_list):
             train_ds_waterbirds_cutpasted.append(Waterbird(root=root, df=df, transform=train_transform_cutpasted, train=True,
-                      count_train_landbg=3500,
-                      count_train_waterbg=100, mode='bg_all', count=fcp[idx], copy=P.wb_copy))
+                      count_train_landbg=-1,
+                      count_train_waterbg=-1, mode='bg_all', count=-1, copy=False))
             print('now len', len(train_ds_waterbirds_cutpasted[-1]))
 
 
@@ -318,8 +318,8 @@ def get_exposure_dataloader(P, batch_size=64, image_size=(224, 224, 3),
         train_ds_waterbirds_rotate = []
         for idx, i in enumerate(cls_list):
             train_ds_waterbirds_rotate.append(Waterbird(root=root, df=df, transform=tranform_rotate, train=True,
-                      count_train_landbg=3500,
-                      count_train_waterbg=100, mode='bg_all', count=frot[idx], copy=P.wb_copy))
+                      count_train_landbg=-1,
+                      count_train_waterbg=-1, mode='bg_all', count=-1, copy=False))
 
 
         train_ds_waterbirds_rotate = ConcatDataset(train_ds_waterbirds_rotate)
@@ -975,11 +975,11 @@ def get_dataset(P, dataset, test_only=False, image_size=(32, 32, 3), download=Fa
         df = pd.read_csv(os.path.join(root, 'metadata.csv'))
         if train_transform_cutpasted:
             train_set = Waterbird(root=root, df=df, transform=train_transform_cutpasted, train=True,
-                                  count_train_landbg=3500,
-                                  count_train_waterbg=100, mode='bg_all', copy=P.wb_copy)
+                                  count_train_landbg=-1,
+                                  count_train_waterbg=-1, mode='bg_all', copy=False)
         else:
-            train_set = Waterbird(root=root, df=df, transform=train_transform, train=True, count_train_landbg=3500,
-                                  count_train_waterbg=100, mode='bg_all', copy=P.wb_copy)
+            train_set = Waterbird(root=root, df=df, transform=train_transform, train=True, count_train_landbg=-1,
+                                  count_train_waterbg=-1, mode='bg_all', copy=False)
         if P.shifted == 1:
             test_set = Waterbird(root=root, df=df, transform=test_transform, train=False, count_train_landbg=3500,
                                  count_train_waterbg=100, mode='bg_water')
