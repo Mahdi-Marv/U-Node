@@ -138,19 +138,19 @@ class Waterbird(torch.utils.data.Dataset):
         wbg = 0
         lbg = 0
         for item in arr:
-            if item[2] == 1:
-                if item[4] == 0 and lbg < 100:
+            if item[2] == 0:
+                if item[4] == 0 and lbg < 1000:
                     lbg += 1
                     new_arr.append(item)
-                elif item[4] == 1 and wbg < 1000:
+                elif item[4] == 1 and wbg < 100:
                     wbg += 1
                     new_arr.append(item)
         self.df = pd.DataFrame(new_arr, columns=cols)
         ## save the new metadata
         self.df.to_csv(f'new_df.csv', index=False)
 
-        wb_on_l = self.df[(self.df['y'] == 1) & (self.df['place'] == 0)]
-        wb_on_w = self.df[(self.df['y'] == 1) & (self.df['place'] == 1)]
+        wb_on_l = self.df[(self.df['y'] == 0) & (self.df['place'] == 0)]
+        wb_on_w = self.df[(self.df['y'] == 0) & (self.df['place'] == 1)]
         self.normal_paths = []
         self.labels = []
 
@@ -184,7 +184,7 @@ class Waterbird(torch.utils.data.Dataset):
                 full_path = os.path.join(root, all_paths[i][0])
                 if full_path not in self.normal_paths:
                     self.image_paths.append(full_path)
-                    self.labels.append(1 - all_paths[i][1])
+                    self.labels.append(all_paths[i][1])
 
         if count != -1:
             random.seed(42)
