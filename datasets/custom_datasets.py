@@ -171,11 +171,11 @@ class Waterbird(torch.utils.data.Dataset):
         else:
             self.image_paths = []
             if mode == 'bg_all':
-                dff = self.df
+                dff = df
             elif mode == 'bg_water':
-                dff = self.df[(self.df['place'] == 1)]
+                dff = df[(df['place'] == 1)]
             elif mode == 'bg_land':
-                dff = self.df[(self.df['place'] == 0)]
+                dff = df[(df['place'] == 0)]
             else:
                 print('Wrong mode!')
                 raise ValueError('Wrong bg mode!')
