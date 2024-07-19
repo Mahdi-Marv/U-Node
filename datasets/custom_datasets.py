@@ -154,10 +154,10 @@ class Waterbird(torch.utils.data.Dataset):
         self.normal_paths = []
         self.labels = []
 
-        normal_df = wb_on_l.iloc[:count_train_landbg]
+        normal_df = wb_on_l.iloc[:]
         normal_df_np = normal_df['img_filename'].to_numpy()
         self.normal_paths.extend([os.path.join(root, x) for x in normal_df_np][:])
-        normal_df = wb_on_w.iloc[:count_train_waterbg]
+        normal_df = wb_on_w.iloc[:]
         normal_df_np = normal_df['img_filename'].to_numpy()
         copy_count = 1
         if copy:
