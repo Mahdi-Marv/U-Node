@@ -1452,3 +1452,20 @@ def get_gta_globs():
     glob_test_id = glob_id[separator:]
 
     return glob_train_id, glob_test_id, glob_ood
+
+
+def city_globs():
+    from glob import glob
+    ids = glob('/kaggle/working/cityscapes/ID/*')
+    oods = glob('/kaggle/working/cityscapes/OOD/*')
+
+    import random
+
+    random.seed(42)
+    random.shuffle(ids)
+    ratio = 0.7
+    sep = int(ratio * len(ids))
+    ids_train = ids[:sep]
+    ids_test = ids[sep:]
+
+    return ids_train, ids_test, oods
